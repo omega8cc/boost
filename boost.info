@@ -1,0 +1,4 @@
+; $Id$
+name = Boost
+description = Provides a performance and scalability boost through caching Drupal pages as static HTML files.
+package = Caching
