@@ -42,8 +42,8 @@ function _boost_symlink($target, $link) {
   if (!file_exists($target) || !file_exists(dirname($link)))
     return FALSE;
 
-  $target = explode('/', realpath($target));
-  $link = explode('/', realpath($link));
+  $target = explode('/', $target);
+  $link = explode('/', $link);
 
   // Only bother creating a relative link if the paths are in the same
   // top-level directory; otherwise just symlink to the absolute path.
