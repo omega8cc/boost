@@ -44,6 +44,18 @@ function boost_is_cacheable($path) {
 }
 
 /**
+ * Determines whether a given Drupal page is currently cached or not.
+ */
+function boost_is_cached($path) {
+  $path = (empty($path) ? BOOST_FRONTPAGE : $path);
+  $alias = drupal_get_path_alias($path);
+  $path = drupal_get_normal_path($path); // normalize path
+
+  // TODO: also determine if alias/symlink exists?
+  return file_exists(boost_file_path($path));
+}
+
+/**
  * Deletes all static files currently in the cache.
  */
 function boost_cache_clear_all() {
