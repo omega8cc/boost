@@ -81,3 +81,17 @@ function _boost_symlink($target, $link) {
 }
 
 //////////////////////////////////////////////////////////////////////////////
+// PHP4 COMPATIBILITY
+
+if (!function_exists('file_put_contents')) {
+  function file_put_contents($filename, $data) {
+    if ($fp = fopen($filename, 'wb')) {
+      fwrite($fp, $data);
+      fclose($fp);
+      return filesize($filename);
+    }
+    return FALSE;
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////////
