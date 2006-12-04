@@ -81,6 +81,9 @@ DirectoryIndex index.php
 
   # Rewrite rules for static page caching provided by the Boost module
   # BOOST START
+  <IfModule mod_mime.c>
+  AddCharset utf-8 .html
+  </IfModule>
   RewriteCond %{REQUEST_URI} !^/cache
   RewriteCond %{REQUEST_URI} !^/user/login
   RewriteCond %{REQUEST_URI} !^/admin
