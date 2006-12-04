@@ -44,6 +44,9 @@ function _boost_rmdir_rf($dirname, $callback = NULL) {
       }
       @unlink($file);
     }
+    else {
+      $empty = FALSE; // it's probably a symbolic link
+    }
   }
 
   // The reason for this elaborate safeguard is that Drupal will log even
