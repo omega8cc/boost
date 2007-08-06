@@ -5,7 +5,7 @@ you're an experienced user and don't mind figuring things out on your own.
 
 DESCRIPTION
 -----------
-This module provides static page caching for Drupal 4.7, enabling a
+This module provides static page caching for Drupal 5.x, enabling a
 potentially very significant performance and scalability boost for
 heavily-trafficked Drupal sites.
 
