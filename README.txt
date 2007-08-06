@@ -145,3 +145,5 @@ Post feature requests and bug reports to the issue tracking system at:
 CREDITS
 -------
 Developed and maintained by Arto Bendiken <http://bendiken.net/>
+Ported to Drupal 5.x by Alexander I. Grafov <http://drupal.ru/>
+Miscellaneous contributions by: Jacob Peddicord, Justin Miller.
