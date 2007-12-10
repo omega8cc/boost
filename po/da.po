@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Danish translation of Drupal (boost.module) $Id$\n"
 "POT-Creation-Date: 2007-12-03 20:55+0100\n"
-"PO-Revision-Date: 2007-12-10 20:09+0100\n"
+"PO-Revision-Date: 2007-12-10 20:11+0100\n"
 "Last-Translator: Morten Wulff <wulff@ratatosk.net>\n"
 "Language-Team: Danish <l10n@drupaldanmark.dk>\n"
 "MIME-Version: 1.0\n"
@@ -56,7 +56,7 @@ msgstr "Indtast én Drupal-sti pr. linje. Brug '*'-tegnet som joker. Indtast f.e
 
 #: boost.admin.inc:57
 msgid "Cache pages for which the following PHP code returns <code>TRUE</code> (PHP-mode, experts only)."
-msgstr "Sider, hvor følgende PHP-kode returnerer <code>SAND</code> (kun for erfarne brugere)."
+msgstr "Sider hvor følgende PHP-kode returnerer <code>SAND</code> (kun for erfarne brugere)."
 
 #: boost.admin.inc:58
 msgid "If the PHP-mode is chosen, enter PHP code between %php. Note that executing incorrect PHP-code can severely break your Drupal site."
