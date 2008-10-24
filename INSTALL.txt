@@ -2,7 +2,7 @@
 
 REQUIREMENTS
 ------------
-This version of Boost is designed for Drupal 4.7 running on a Unix platform.
+This version of Boost is designed for Drupal 6.x running on a Unix platform.
 Drupal's clean URLs MUST be enabled and working properly.
 
 The `path' and `pathauto' modules are recommended.

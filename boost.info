@@ -2,3 +2,4 @@
 name = Boost
 description = Provides a performance and scalability boost through caching Drupal pages as static HTML files.
 package = Caching
+core = 6.x
