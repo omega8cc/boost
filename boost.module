@@ -183,6 +183,13 @@ function boost_comment($comment, $op) {
         boost_cache_expire('node/' . $comment['nid'], TRUE);
       }
       break;
+    case 'publish':
+    case 'unpublish':
+    case 'delete':
+      if (!empty($comment->nid)) {
+        boost_cache_expire('node/' . $comment->nid, TRUE);
+      }
+      break;
   }
 }
 
