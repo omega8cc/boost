@@ -23,6 +23,15 @@ function boost_enable() {
 }
 
 /**
+ * Implementation of hook_disable().
+ */
+function boost_disable() {
+  // Make sure that the static page cache is wiped when the module is disabled:
+  boost_cache_expire_all();
+  drupal_set_message(t('Static page cache cleared.'));
+}
+
+/**
  * Implementation of hook_install().
  */
 function boost_install() {
