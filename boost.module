@@ -160,7 +160,7 @@ function boost_form_alter(&$form, $form_state, $form_id) {
 function boost_cron() {
   if (!BOOST_ENABLED) return;
 
-  if (boost_cache_expire_all()) {
+  if (variable_get('boost_expire_cron', TRUE) && boost_cache_expire_all()) {
     watchdog('boost', 'Expired stale files from static page cache.', array(), WATCHDOG_NOTICE);
   }
 }
