@@ -142,8 +142,16 @@ function boost_admin_settings_submit($form, &$form_state) {
   }
 }
 
-function boost_admin_clear_cache_submit(&$form_state, $form) {
+function boost_admin_clear_cache_submit($form, &$form_state) {
   boost_cache_expire_all();
   drupal_flush_all_caches();
   drupal_set_message(t('Static cache files deleted and all other caches cleared.'));
+}
+
+function boost_admin_site_offline_submit($form, &$form_state) {
+  if (!empty($form_state['values']['site_offline'])) {
+    if (boost_cache_expire_all()) {
+      drupal_set_message(t('Static cache files deleted.'));
+    }
+  }
 }
