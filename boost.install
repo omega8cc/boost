@@ -27,7 +27,7 @@ function boost_enable() {
  */
 function boost_disable() {
   // Make sure that the static page cache is wiped when the module is disabled:
-  boost_cache_expire_all();
+  boost_cache_clear_all();
   drupal_set_message(t('Static page cache cleared.'));
 }
 

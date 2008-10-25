@@ -55,13 +55,13 @@ function boost_help($path, $arg) {
  * Implementation of hook_init(). Performs page setup tasks if page not cached.
  */
 function boost_init() {
-  // Stop right here unless we're being called for an ordinary page request
-  if (strpos($_SERVER['PHP_SELF'], 'index.php') === FALSE || variable_get('site_offline', 0))
-    return;
-
   // This is defined here now instead of at the beginning of the file, as D6
   // loads path.inc after parsing this file looking for hook_boot():
   define('BOOST_FRONTPAGE', drupal_get_normal_path(variable_get('site_frontpage', 'node')));
+
+  // Stop right here unless we're being called for an ordinary page request
+  if (strpos($_SERVER['PHP_SELF'], 'index.php') === FALSE || variable_get('site_offline', 0))
+    return;
 
   // TODO: check interaction with other modules that use ob_start(); this
   // may have to be moved to an earlier stage of the page request.
