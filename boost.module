@@ -434,7 +434,7 @@ function boost_cache_directory($user_id = 0, $host = NULL) {
   $host = (!empty($host) ? $host : $parts['host']);
 
   // FIXME: correctly handle Drupal subdirectory installations.
-  return implode('/', array(getcwd(), BOOST_FILE_PATH, $host, $user_id));
+  return implode('/', array(getcwd(), BOOST_FILE_PATH, $host /*, $user_id*/));
 }
 
 /**
