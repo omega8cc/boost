@@ -151,6 +151,22 @@ function boost_form_alter(&$form, $form_state, $form_id) {
       module_load_include('inc', 'boost', 'boost.admin');
       $form['#submit'][] = 'boost_admin_site_offline_submit';
       break;
+
+    // Alter Drupal's modules build form in order to ensure that
+    // the static page cache gets wiped if the administrator decides to
+    // change enabled modules
+    case 'system_modules':
+      module_load_include('inc', 'boost', 'boost.admin');
+      $form['#submit'][] = 'boost_admin_modules_submit';
+      break;
+
+    // Alter Drupal's theme build form in order to ensure that
+    // the static page cache gets wiped if the administrator decides to
+    // change theme
+    case 'system_themes_form':
+      module_load_include('inc', 'boost', 'boost.admin');
+      $form['#submit'][] = 'boost_admin_themes_submit';
+      break;
   }
 }
 
