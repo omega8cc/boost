@@ -515,7 +515,7 @@ function boost_cache_set($path, $data = '') {
   if (function_exists(BOOST_PRE_PROCESS_FUNCTION)) {
     $data = call_user_func(BOOST_PRE_PROCESS_FUNCTION, $data);
   }
-
+  db_set_active();
   $alias = drupal_get_path_alias($path);
   $path = drupal_get_normal_path($path); // normalize path
 
