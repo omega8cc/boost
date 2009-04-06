@@ -165,6 +165,14 @@ function boost_cron() {
   }
 }
 
+/*
+ * Implementation of hook_flush_caches(). Deletes all static files.
+ */
+function boost_flush_caches() {
+  boost_cache_clear_all();
+  return;
+}
+
 /**
  * Implementation of hook_comment(). Acts on comment modification.
  */
