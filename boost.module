@@ -293,6 +293,7 @@ function boost_user($op, &$edit, &$account, $category = NULL) {
  */
 function boost_block($op = 'list', $delta = 0, $edit = array()) {
   global $user;
+  $GLOBALS['_boost_path'] = (empty($_REQUEST['q'])) ? 'index' : $_REQUEST['q'];  
 
   switch ($op) {
     case 'list':
