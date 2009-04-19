@@ -63,7 +63,7 @@ function boost_init() {
   // may have to be moved to an earlier stage of the page request.
   if (!variable_get('cache', CACHE_DISABLED) && BOOST_ENABLED) {
     global $user;
-	$GLOBALS['_boost_path'] = (empty($_REQUEST['q'])) ? 'index' : $_REQUEST['q'];
+    $GLOBALS['_boost_path'] = (empty($_REQUEST['q'])) ? 'index' : $_REQUEST['q'];
 
     // For authenticated users, set a special cookie to prevent them
     // inadvertently getting served pages from the static page cache.
