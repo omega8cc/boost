@@ -163,9 +163,13 @@ function boost_admin_site_offline_submit($form, &$form_state) {
 }
 
 function boost_admin_modules_submit($form, &$form_state) {
-  boost_cache_clear_all();
+  if (variable_get('preprocess_css', FALSE)==TRUE || variable_get('preprocess_js', FALSE)==TRUE) {
+    boost_cache_clear_all();
+  }
 }
 
 function boost_admin_themes_submit($form, &$form_state) {
-  boost_cache_clear_all();
+  if (variable_get('preprocess_css', FALSE)==TRUE || variable_get('preprocess_js', FALSE)==TRUE) {
+    boost_cache_clear_all();
+  }
 }

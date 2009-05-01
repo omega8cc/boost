@@ -191,7 +191,9 @@ function boost_cron() {
  * Implementation of hook_flush_caches(). Deletes all static files.
  */
 function boost_flush_caches() {
-  boost_cache_clear_all();
+  if (variable_get('preprocess_css', FALSE)==TRUE || variable_get('preprocess_js', FALSE)==TRUE) {
+    boost_cache_clear_all();
+  }
   return;
 }
 
