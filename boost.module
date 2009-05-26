@@ -24,6 +24,8 @@ define('BOOST_CRON_LIMIT',           variable_get('boost_cron_limit', 100));
 define('BOOST_ONLY_ASCII_PATH',      variable_get('boost_only_ascii_path', TRUE));
 define('BOOST_GZIP',                 variable_get('boost_gzip', TRUE));
 define('BOOST_GZIP_FILE_PATH',       str_replace(BOOST_ROOT_CACHE_PATH . '/', BOOST_ROOT_CACHE_PATH . '/gz/', BOOST_FILE_PATH));
+define('BOOST_CLEAR_CACHE_OFFLINE',  variable_get('boost_clear_cache_offline', TRUE));
+
 
 // This cookie is set for all authenticated users, so that they can be
 // excluded from caching (or in the future get a user-specific cached page):
