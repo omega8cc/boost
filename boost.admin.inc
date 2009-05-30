@@ -165,6 +165,9 @@ function boost_admin_settings_submit($form, &$form_state) {
       drupal_set_message(t('Static page cache cleared.'));
     }
   }
+  else if (variable_get('preprocess_css', FALSE)==TRUE || variable_get('preprocess_js', FALSE)==TRUE) {
+    boost_cache_clear_all();
+  }
 }
 
 function boost_admin_clear_cache_submit($form, &$form_state) {
