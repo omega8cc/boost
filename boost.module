@@ -479,6 +479,10 @@ function boost_cache_expire_all($callback = 'boost_file_is_expired') {
   if (file_exists(BOOST_GZIP_FILE_PATH)) {
     _boost_rmdir_rf(BOOST_GZIP_FILE_PATH, $callback);
   }
+  //recreate dirs
+  _boost_mkdir_p(BOOST_FILE_PATH);
+  _boost_mkdir_p(BOOST_GZIP_FILE_PATH);
+
   return TRUE;
 }
 
