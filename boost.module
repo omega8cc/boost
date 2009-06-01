@@ -425,6 +425,7 @@ function _boost_get_http_header($regex, $default = NULL) {
  * TODO: don't cache pages with unacceptable symbols
  */
 function boost_is_cacheable($path) {
+  $path = (empty($path)) ? variable_get('site_frontpage', 'node') : $path;
   $normal_path = drupal_get_normal_path($path); // normalize path
 
   // Never cache the basic user login/registration pages or any administration pages
@@ -432,7 +433,7 @@ function boost_is_cacheable($path) {
     return FALSE;
 
   // At present, RSS feeds are not cacheable due to content type restrictions
-  if ($normal_path == 'rss.xml' || preg_match('!/feed$!', $normal_path))
+  if (preg_match('!/feed$!', $normal_path) || preg_match('!\.xml$!', $normal_path))
     return FALSE;
 
   // Don't cache comment reply pages
