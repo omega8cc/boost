@@ -133,6 +133,12 @@ function boost_admin_settings($form = array()) {
     '#default_value' => BOOST_CLEAR_CACHE_OFFLINE,
     '#description'   => t('Under site maintenance when the status is set to offline, boost clears its cache. If you do not want this to happen, clear this checkbox. Pages that are not cached will still send out a Site off-line message, so be smart if turning this off.'),
   );
+  $form['advanced']['boost_multisite_single_db'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Do not store the cache file path in the database'),
+    '#default_value' => BOOST_MULTISITE_SINGLE_DB,
+    '#description'   => t('If Drupal is running on a multi-site with a single/shared database, then enabling this will allow for correct multi-site caching.'),
+  );
 
   // Apache .htaccess settings generation
   $htaccess = boost_admin_generate_htaccess();
