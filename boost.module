@@ -532,8 +532,10 @@ function boost_cache_expire_derivative($path, $wildcard = FALSE) {
   
   #flush caches
   boost_cache_expire($path_alias, $wildcard);
-  foreach($path_redirects as $path_redirect) {
-    boost_cache_expire($path_redirect['path'], $wildcard );
+  if (isset($path_redirects)) {
+    foreach($path_redirects as $path_redirect) {
+      boost_cache_expire($path_redirect['path'], $wildcard );
+    }
   }
   boost_cache_expire($path, $wildcard);
 
