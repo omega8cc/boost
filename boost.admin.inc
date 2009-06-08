@@ -133,6 +133,12 @@ function boost_admin_settings($form = array()) {
     '#default_value' => BOOST_CLEAR_CACHE_OFFLINE,
     '#description'   => t('Under site maintenance when the status is set to offline, boost clears its cache. If you do not want this to happen, clear this checkbox. Pages that are not cached will still send out a Site off-line message, so be smart if turning this off.'),
   );
+  $form['advanced']['boost_flush_dir'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Flush directories from cache if they are empty'),
+    '#default_value' => BOOST_FLUSH_DIR,
+    '#description'   => t('Disable this if you have to set settings for each dir/subdir, due to the way your server opperates (permissions, etc...).'),
+  );
   $form['advanced']['boost_halt_on_errors'] = array(
     '#type'          => 'checkbox',
     '#title'         => t('Do not cache if error on page'),
