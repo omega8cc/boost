@@ -403,11 +403,15 @@ function _boost_ob_handler($buffer) {
   // were output with a 200 OK status. Anything more is simply asking for
   // loads of trouble.
   if (_boost_get_http_status() == 200 && strlen($buffer) > 0) {
-    if (_boost_get_content_type() == 'text/html') {
-      boost_cache_set($GLOBALS['_boost_path'], $buffer);
-    }
-    else if (_boost_get_content_type() == ('application/rss' || 'text/xml' || 'application/rss+xml')) {
-      boost_cache_set($GLOBALS['_boost_path'], $buffer, BOOST_XML_EXTENSION);
+    switch (_boost_get_content_type()) {
+      case 'text/html':
+        boost_cache_set($GLOBALS['_boost_path'], $buffer);
+        break;
+      case 'application/rss';
+      case 'text/xml';
+      case 'application/rss+xml';
+        boost_cache_set($GLOBALS['_boost_path'], $buffer, BOOST_XML_EXTENSION);
+        break;
     }
   }
 
