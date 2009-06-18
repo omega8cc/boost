@@ -215,3 +215,12 @@ function boost_update_6100() {
   // Create tables.
   return drupal_install_schema('boost');
 }
+
+/**
+ * Update 6101 - Copy old variable to new one.
+ */
+function boost_update_6101() {
+  // Copy variable
+  variable_set('boost_enabled', variable_get('boost', variable_get('boost_enabled', CACHE_DISABLED)));
+  variable_del('boost');
+}
