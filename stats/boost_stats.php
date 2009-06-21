@@ -1,5 +1,5 @@
 <?php
-// $Id:
+// $Id$
 
 //Script should take under 1mb of memory to work.
 //prime php for background operations
