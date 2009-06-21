@@ -123,6 +123,44 @@ function boost_preprocess_page(&$variables) {
 }
 
 /**
+ * Implementation of hook_footer().
+ *
+ * Place boost image into pages footer.
+ */
+function boost_footer() {
+  Global $base_url;
+  $filename = 'boost_stats.php';
+  if (!(   strpos($_SERVER['SCRIPT_FILENAME'], 'index.php') === FALSE
+      || variable_get('site_offline', 0)
+      || $_SERVER['REQUEST_METHOD'] != 'GET'
+      || $_SERVER['SERVER_SOFTWARE'] === 'PHP CLI'
+      || !BOOST_ENABLED
+      || isset($_GET['nocache'])
+      || !boost_is_cacheable($GLOBALS['_boost_path'])
+      || !empty($user->uid)
+      || !file_exists($filename)
+      )) {
+    if (arg(0) == 'node' && is_numeric(arg(1)) && arg(2) == '' && variable_get('statistics_count_content_views', 0)) {
+      $nid = arg(1);
+    }
+    if ((variable_get('statistics_enable_access_log', 0)) && (module_invoke('throttle', 'status') == 0)) {
+      $title = drupal_urlencode(strip_tags(drupal_get_title()));
+      $q = $_GET['q'];
+    }
+
+    if (isset($nid) & !isset($title)) {
+      return '<img src="'. $base_url . '/' . $filename . '?nid=' . $nid . '" />';
+    }
+    elseif (isset($nid) & isset($title)) {
+      return '<img src="'. $base_url . '/' . $filename . '?nid=' . $nid . '&q=' . $q . '&title=' . $title . '" />';
+    }
+    elseif (!isset($nid) & isset($title)) {
+      return '<img src="'. $base_url . '/' . $filename . '?q=' . $q . '&title=' . $title . '" />';
+    }
+  }
+}
+
+/**
  * Implementation of hook_exit(). Performs cleanup tasks.
  *
  * For POST requests by anonymous visitors, this adds a dummy query string
