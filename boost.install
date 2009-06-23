@@ -230,5 +230,5 @@ function boost_update_6100() {
  */
 function boost_update_6101() {
   // copy variable
-  return db_query("UPDATE {variable} SET name = boost_enabled WHERE name = boost");
+  return db_query("UPDATE {variable} SET name = 'boost_enabled' WHERE name = 'boost'");
 }
