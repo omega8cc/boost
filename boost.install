@@ -230,5 +230,13 @@ function boost_update_6100() {
  */
 function boost_update_6101() {
   // copy variable
-  return db_query("UPDATE {variable} SET name = 'boost_enabled' WHERE name = 'boost'");
+  return update_sql("UPDATE {variable} SET name = 'boost_enabled' WHERE name = 'boost'");
+}
+
+/**
+ * Update 6102 - Delete old variable.
+ */
+function boost_update_6102() {
+  // copy variable
+  return update_sql("DELETE {variable} WHERE name = 'boost_permissions' LIMIT 1");
 }
