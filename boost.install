@@ -234,9 +234,9 @@ function boost_update_6101() {
 }
 
 /**
- * Update 6102 - Delete old variable.
+ * Update 6102 - Delete old boost permissions variable.
  */
 function boost_update_6102() {
-  // copy variable
-  return update_sql("DELETE {variable} WHERE name = 'boost_permissions' LIMIT 1");
+  // del variable
+  return update_sql("DELETE FROM {variable} WHERE name = 'boost_permissions' LIMIT 1");
 }
