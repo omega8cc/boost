@@ -238,5 +238,6 @@ function boost_update_6101() {
  */
 function boost_update_6102() {
   // del variable
-  return update_sql("DELETE FROM {variable} WHERE name = 'boost_permissions' LIMIT 1");
+  variable_del('boost_permissions');
+  return array(array('success' => TRUE, 'query' => 'Old permissions variable deleted.'));
 }
