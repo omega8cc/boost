@@ -57,12 +57,12 @@ function boost_admin_settings($form = array()) {
   );
   $form['boost']['boost_clear'] = array(
     '#type' => 'submit',
-    '#value' => t('Clear ALL Boost cached data: !count pages', array('!count' => boost_count_db(1))),
+    '#value' => t('Clear ALL Boost cached data: !count pages', array('!count' => boost_count_db(0))),
     '#submit' => array('boost_clear_cache_submit'),
   );
   $form['boost']['boost_clear_expired'] = array(
     '#type' => 'submit',
-    '#value' => t('Clear Boost expired data: !count pages', array('!count' => boost_count_db(0))),
+    '#value' => t('Clear Boost expired data: !count pages', array('!count' => boost_count_db(1))),
     '#submit' => array('boost_clear_expired_cache_submit'),
   );
 
