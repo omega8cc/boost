@@ -90,7 +90,7 @@ function boost_init() {
   // Make the proper filename for our query
   $GLOBALS['_boost_query'] = '_';
   foreach ($_GET as $key => $val) {
-    if ($key != 'q') {
+    if ($key != 'q' && $key != 'destination') {
       $GLOBALS['_boost_query'] .= (($GLOBALS['_boost_query'] == '_') ? '' : '&') . $key . '=' . $val;
     }
   }
@@ -783,7 +783,7 @@ function boost_cache_expire_derivative($path, $wildcard = FALSE) {
  */
 function boost_cache_expire($path, $wildcard = FALSE) {
   // Sanity check
-  if (boost_file_path($path) === FALSE) {
+  if (boost_file_path($path, FALSE) === FALSE) {
     return FALSE;
   }
 
@@ -1043,9 +1043,6 @@ function boost_file_path($path, $query = TRUE, $extension = BOOST_FILE_EXTENSION
   if ($GLOBALS['_boost_query'] != '_') {
     if ($query) {
       $path .= $GLOBALS['_boost_query'];
-    }
-    else {
-      return FALSE;
     }
   }
   else {
