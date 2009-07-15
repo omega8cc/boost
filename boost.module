@@ -811,7 +811,18 @@ function boost_cache_expire($path, $wildcard = FALSE) {
   // Get list of related files
   $tempA = glob(boost_file_path($path, FALSE, NULL) . (($wildcard) ? '*' : '') . BOOST_FILE_EXTENSION, GLOB_NOSORT);
   $tempB = glob(boost_file_path($path, FALSE, NULL) . (($wildcard) ? '*' : '') . BOOST_XML_EXTENSION, GLOB_NOSORT);
-  $filenames = array_filter($tempA + $tempB);
+  if (!empty($tempA) && !empty($tempB)) {
+    $filenames = array_filter(array_merge($tempA, $tempB));
+  }
+  elseif (!empty($tempA)) {
+    $filenames = $tempA;
+  }
+  elseif (!empty($tempB)) {
+    $filenames = $tempB;
+  }
+  else {
+    return FALSE;
+  }
   if (empty($filenames)) {
     return FALSE;
   }
