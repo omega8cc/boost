@@ -241,6 +241,12 @@ function boost_admin_boost_performace_page() {
     '#default_value' => BOOST_FLUSH_DIR,
     '#description'   => t('Disable this if you have to set settings for each dir/subdir, due to the way your server opperates (permissions, etc...).'),
   );
+  $form['advanced']['boost_overwrite_file'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Overwrite the cached file if it already exits'),
+    '#default_value' => BOOST_OVERWRITE_FILE,
+    '#description'   => t('This is useful if crawling a site before it goes live.'),
+  );
   $form['advanced']['boost_halt_on_errors'] = array(
     '#type'          => 'checkbox',
     '#title'         => t('Do not cache if error on page'),
