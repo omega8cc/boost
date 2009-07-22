@@ -305,6 +305,9 @@ function boost_nodeapi(&$node, $op, $teaser = NULL, $page = NULL) {
     case 'delete':
       // Expire all relevant node pages from the static page cache to prevent serving stale content:
       if (!empty($node->nid)) {
+        if ($node->promote == 1) {
+          boost_cache_expire_derivative('<front>');
+        }
         boost_cache_expire_derivative('node/' . $node->nid, TRUE);
       }
       break;
