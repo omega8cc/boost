@@ -74,10 +74,12 @@ Function boost_stats_init() {
   $stats = (isset($_GET['js']) && $_GET['js'] == 2) ? TRUE : NULL;
   $session_id = session_id();
   if (empty($session_id)) {
-    $session_id = $_COOKIE[session_name()];
-    if (empty($session_id)) {
+    if (empty($_COOKIE[session_name()])) {
       // This only goes in the access log; only used for stats, not creds.
       $session_id = md5($_SERVER['HTTP_USER_AGENT'] . ip_address());
+    }
+    else {
+      $session_id = $_COOKIE[session_name()];
     }
   }
   $uid = 0;
