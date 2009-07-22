@@ -253,6 +253,12 @@ function boost_admin_boost_performace_page() {
     '#default_value' => BOOST_HALT_ON_ERRORS,
     '#description'   => t('Boost will not cache the page if there are PHP errors or drupal messages. Disable this if you want to cache pages even if it might contain errors.'),
   );
+  $form['advanced']['boost_disable_clean_url'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Turn off clean url\'s for logged in users'),
+    '#default_value' => BOOST_DISABLE_CLEAN_URL,
+    '#description'   => t('Drupal will output non clean url\'s for non anonymous users. This allows for the browser to cache the page and still have logging in work. This is more on the extreme side of tweaks.'),
+  );
   $form['advanced']['boost_multisite_single_db'] = array(
     '#type'          => 'checkbox',
     '#title'         => t('Do not store the cache file path in the database'),
