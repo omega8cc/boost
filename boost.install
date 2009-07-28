@@ -96,14 +96,6 @@ function boost_requirements($phase) {
           'value'       => $t('Can not write to filesystem'),
         );
       }
-      elseif ((variable_get('statistics_count_content_views', 0) || variable_get('statistics_enable_access_log', 0)) && !file_exists('boost_stats.php')) {
-        $requirements['boost'] = array(
-          'title'       => $t('Boost'),
-          'description' => $t('Copy the boost_stats.php file to your webroot. It should be located in the modules/boost/stats directory.'),
-          'severity'    => REQUIREMENT_WARNING,
-          'value'       => $t('boost_stats.php missing from root dir'),
-        );
-      }
       else {
         $requirements['boost'] = array(
           'title'       => $t('Boost'),
