@@ -694,7 +694,7 @@ function _boost_get_http_status($default = 200) {
  */
 function _boost_get_http_header($regex, $default = NULL) {
   // The last header is the one that counts:
-  $headers = preg_grep($regex, explode("\n", drupal_set_header()));
+  $headers = preg_grep($regex, explode("\n", drupal_get_headers()));
   if (!empty($headers) && preg_match($regex, array_pop($headers), $matches)) {
     return $matches[1]; // found it
   }
