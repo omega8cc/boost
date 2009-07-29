@@ -554,7 +554,8 @@ function boost_clear_core_page_cache_submit () {
  */
 function boost_reset_database_submit () {
   if (boost_cache_clear_all()) {
-    db_query("DELETE FROM {boost_cache}");
+    db_query("TRUNCATE {boost_cache}");
+    db_query("TRUNCATE {boost_cache_settings}");
     drupal_set_message(t('Boost: Static page cache & database cleared.'));
   }
   else {
