@@ -286,6 +286,16 @@ function boost_admin_boost_performace_page() {
     '#options'       => array(0 => t('Disabled'), 1 => t('Only Ignore Complete Flushes'), 2 => t('Ignore Fluses & Expiration'), 3 => t('Ignore All Delete Commands (Not Recommended)')),
     '#description'   => t('Enable to put your site into a static state. Recommend turning on CSS & JS caching if enabled.'),
   );
+  $form['advanced']['boost_verbose'] = array(
+    '#type'          => 'select',
+    '#title'         => t('Verbose Setting'),
+    '#default_value' => BOOST_VERBOSE,
+    '#options'       => array(
+      1 => t('1 Show almost no errors'),
+      3 => t('3'),
+      5 => t('5 Show all'),
+    ),
+  );
 
   // Apache .htaccess settings generation
   $htaccess = boost_admin_generate_htaccess(variable_get('boost_server_name_http_host', '%{SERVER_NAME}'), variable_get('boost_document_root', '%{DOCUMENT_ROOT}'), 'cache', 'gz', variable_get('boost_file_extension', '.html'));
