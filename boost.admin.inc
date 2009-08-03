@@ -275,6 +275,12 @@ function boost_admin_boost_performace_page() {
     '#default_value' => BOOST_FLUSH_DIR,
     '#description'   => t('Disable this if you have to set settings for each dir/subdir, due to the way your server opperates (permissions, etc...).'),
   );
+  $form['advanced']['boost_flush_node_terms'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Flush all cached terms pages associted with a node on insert/update/delete'),
+    '#default_value' => BOOST_FLUSH_NODE_TERMS,
+    '#description'   => t('Works with view\'s taxonomy/term/% path as well as core.'),
+  );
   $form['advanced']['boost_overwrite_file'] = array(
     '#type'          => 'checkbox',
     '#title'         => t('Overwrite the cached file if it already exits'),
