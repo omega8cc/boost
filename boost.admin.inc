@@ -580,10 +580,10 @@ return $string;
  */
 function boost_count_db($all = 0) {
   if ($all == 0) {
-    return db_result(db_query("SELECT COUNT(*) FROM {boost_cache} WHERE expire <> 0"));
+    return db_result(db_query("SELECT COUNT(*) FROM {boost_cache} WHERE expire <> 0 and base_dir = '%s'", BOOST_FILE_PATH));
   }
   elseif ($all == 1) {
-    return db_result(db_query('SELECT COUNT(*) FROM {boost_cache} WHERE expire BETWEEN 1 AND %d', BOOST_TIME));
+    return db_result(db_query("SELECT COUNT(*) FROM {boost_cache} WHERE expire BETWEEN 1 AND %d AND base_dir ='%s'", BOOST_TIME, BOOST_FILE_PATH));
   }
   elseif ($all == 2) {
     return db_result(db_query("SELECT COUNT(*) FROM {boost_cache}"));
