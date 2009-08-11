@@ -16,7 +16,6 @@ TODO: FUTURE IDEAS
 ------------------
 * An administrative interface for pre-generating static files for all pages
   on the Drupal site in one go using the Batch API.
-* An administrative interface to set specific cache lifetime settings.
 * Add a cache current page button to block.
 * Other web servers than Apache are not supported at the moment. This is due
   to the way the cache dispatch is implemented using Apache mod_rewrite
