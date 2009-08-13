@@ -1,4 +1,5 @@
 <?php
+// $Id$
 
 /**
  * AJAX Menu Callback.
@@ -125,7 +126,7 @@ function boost_stats_output_stats_block() {
  * Returns a 1px image and allows for php to run in the background.
  */
 function boost_stats_async_image() {
-  // Script should take under 1mb of memory to work.
+  // Script should take under 1MB of memory to work.
   // Prime php for background operations
   ob_end_clean();
   header("Connection: close");
