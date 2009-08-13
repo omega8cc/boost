@@ -223,6 +223,12 @@ function boost_admin_boost_performace_page() {
     '#options'       => array(0 => t('Disabled'), 1 => t('Enabled')),
     '#description'   => t('Whether to perform a purge of all expired content from the static page cache on cron runs. How often your cron runs works together with the minimum cache lifetime setting, further above, to determine the <strong>effective</strong> minimum lifetime for items in the static page cache. If you don\'t enable this setting, you will need to put in place some other custom mechanism for purging expired files, or else they will never be removed (unless manually cleared from the administrative interface).'),
   );
+  $form['advanced']['boost_check_before_cron_expire'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Expire content on cron only if the sites content has changed.'),
+    '#default_value' => BOOST_CHECK_BEFORE_CRON_EXPIRE,
+    '#description'   => t('Check timestamps in the database for any changes to the site. If theres been a change, flush the expired content.'),
+  );
   $form['advanced']['boost_file_extension'] = array(
     '#type'          => 'textfield',
     '#title'         => t('Cache file extension'),
