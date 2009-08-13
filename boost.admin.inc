@@ -558,7 +558,7 @@ function boost_admin_generate_htaccess($server_name = '%{SERVER_NAME}', $documen
   # Caching for anonymous users
   # Skip boost IF not get request OR uri has wrong dir OR cookie is set OR https request
   RewriteCond %{REQUEST_METHOD} !^GET$ [OR]
-  RewriteCond %{REQUEST_URI} (^$drupal_subdir(admin|cache|misc|modules|sites|system|themes))|(/(comment/reply|user|user/(login|password|register))$) [OR]
+  RewriteCond %{REQUEST_URI} (^$drupal_subdir(admin|cache|misc|modules|sites|system|themes|node/add))|(/(comment/reply|edit|user|user/(login|password|register))$) [OR]
   RewriteCond %{HTTP_COOKIE} DRUPAL_UID [OR]
   RewriteCond %{HTTPS} on
   RewriteRule .* - [S=7]
