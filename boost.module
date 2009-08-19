@@ -925,7 +925,6 @@ function boost_is_cacheable($path) {
       || preg_match('!^user/(login|register|password)!', $normal_path)
       || preg_match('!^admin!', $normal_path)
       || preg_match('!comment/reply$!', $normal_path)
-      || preg_match('!edit$!', $normal_path)
       || preg_match('!^node/add!', $normal_path)
     ) {
     return FALSE;
