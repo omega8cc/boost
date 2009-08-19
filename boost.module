@@ -1467,7 +1467,7 @@ function boost_has_site_changed() {
  *  Returns largest time in the table.
  */
 function boost_get_time($table, $column) {
-  if (db_result(db_query_range("SHOW TABLES LIKE '%s'", $table))) {
+  if (db_result(db_query("SHOW TABLES LIKE '%s'", $table))) {
     return db_result(db_query_range("SELECT %s FROM {%s} ORDER BY %s DESC", $column, $table, $column, 0, 1));
   }
   else {
