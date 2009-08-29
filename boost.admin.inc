@@ -473,6 +473,12 @@ function boost_admin_boost_performance_page() {
       '#default_value' => $crawl_rate,
       '#disabled'      => TRUE,
     );
+    $form['crawler']['live']['boost_crawler_eta'] = array(
+      '#type'          => 'textfield',
+      '#title'         => t('Crawl ETA - highly inaccurate'),
+      '#default_value' => format_interval(($total - $number_done)/$crawl_rate),
+      '#disabled'      => TRUE,
+    );
     $form['crawler']['live']['boost_stop_crawler'] = array(
       '#type' => 'submit',
       '#value' => t('Stop Crawler. !count URL\'s left.', array('!count' => $total - $number_done)),
