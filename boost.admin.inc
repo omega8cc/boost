@@ -434,13 +434,13 @@ function boost_admin_boost_performance_page() {
     '#type'          => 'textfield',
     '#title'         => t('Crawler Throttle'),
     '#default_value' => BOOST_CRAWLER_THROTTLE,
-    '#description'   => t('Wait X micro seconds inbetween hitting each url. 1000000 is 1 second.'),
+    '#description'   => t('Wait X micro seconds in between hitting each url. 1000000 is 1 second.'),
   );
   $form['crawler']['boost_crawler_batch_size'] = array(
     '#type'          => 'textfield',
     '#title'         => t('Crawler Batch Size'),
     '#default_value' => BOOST_CRAWLER_BATCH_SIZE,
-    '#description'   => t('Number of URL\'s each thread grabs per database opperation.'),
+    '#description'   => t('Number of URL\'s each thread grabs per database operation.'),
   );
   $form['crawler']['boost_crawler_threads'] = array(
     '#type'          => 'select',
