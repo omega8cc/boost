@@ -360,7 +360,7 @@ function boost_nodeapi(&$node, $op, $teaser = NULL, $page = NULL) {
       }
 
       // get terms and flush their page
-      if (BOOST_FLUSH_NODE_TERMS) {
+      if (module_exists('taxonomy') && BOOST_FLUSH_NODE_TERMS) {
         $tids = boost_taxonomy_node_get_tids($node->nid);
         $filenames = array();
         foreach($tids as $tid) {
