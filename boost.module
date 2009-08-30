@@ -49,7 +49,7 @@ define('BOOST_POST_UPDATE_COMMAND',  variable_get('boost_post_update_command', '
 define('BOOST_CRON_LIMIT',           variable_get('boost_cron_limit', 100));
 define('BOOST_ONLY_ASCII_PATH',      variable_get('boost_only_ascii_path', TRUE));
 define('BOOST_GZIP',                 variable_get('page_compression', TRUE));
-define('BOOST_AGGRESSIVE_GZIP',      variable_get('boost_aggressive_gzip', TRUE));
+define('BOOST_AGGRESSIVE_GZIP',      variable_get('boost_aggressive_gzip', FALSE));
 define('BOOST_CLEAR_CACHE_OFFLINE',  variable_get('boost_clear_cache_offline', TRUE));
 define('BOOST_HALT_ON_ERRORS',       variable_get('boost_halt_on_errors', FALSE));
 define('BOOST_ROOT_FILE',            variable_get('boost_root_file', '.boost'));
