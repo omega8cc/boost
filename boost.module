@@ -972,7 +972,7 @@ function boost_is_cacheable($path) {
     }
   }
 
-  // Check for resevered characters if on windows
+  // Check for reserved characters if on windows
   // http://en.wikipedia.org/wiki/Filename#Reserved_characters_and_words
   // " * : < > |
   $chars = '"*:<>|';
