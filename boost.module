@@ -959,6 +959,14 @@ function boost_is_cacheable($path) {
     return FALSE;
   }
 
+  // Check for resevered characters if on windows
+  // http://en.wikipedia.org/wiki/Filename#Reserved_characters_and_words
+  // " * : < > |
+  $chars = '"*:<>|';
+  if (stristr(PHP_OS, 'WIN') && preg_match("/[".$chars."]/", $normal_path)) {
+    return FALSE;
+  }
+
   // See http://api.drupal.org/api/function/block_list/6
   // Match the user's cacheability settings against the path
   if (BOOST_CACHEABILITY_PAGES) {
