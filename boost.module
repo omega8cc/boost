@@ -220,6 +220,7 @@ function boost_menu() {
     'page callback' => 'boost_stats_ajax_callback',
     'type' => MENU_CALLBACK,
     'access callback' => 1,
+    'access arguments' => array('access content'),
     'file path' => drupal_get_path('module', 'boost'),
     'file' => 'stats/boost_stats.ajax.inc',
   );
@@ -227,6 +228,7 @@ function boost_menu() {
     'page callback' => 'boost_crawler_run',
     'type' => MENU_CALLBACK,
     'access callback' => 1,
+    'access arguments' => array('access content'),
     'file path' => drupal_get_path('module', 'boost'),
   );
   return $items;
