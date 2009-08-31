@@ -1968,7 +1968,7 @@ function _boost_gz_copy_file($src, $dest) {
   $destinations = _boost_copy_file_get_domains($dest);
   foreach ($destinations as $destination) {
     if (_boost_mkdir_p(dirname($destination))) {
-      @file_put_contents($dest, gzencode(file_get_contents($src), 9));
+      @file_put_contents($destination, gzencode(file_get_contents($src), 9));
       if (is_numeric(BOOST_PERMISSIONS_FILE)) {
         @chmod($tempfile, octdec(BOOST_PERMISSIONS_FILE));
       }
