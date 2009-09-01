@@ -37,6 +37,7 @@ function boost_disable() {
 function boost_install() {
   // Ensure that the module is loaded early in the bootstrap:
   db_query("UPDATE {system} SET weight = -90 WHERE name = '%s'", 'boost');
+  variable_set('boost_crawler_key', md5(mt_rand()));
   // Create tables.
   drupal_install_schema('boost');
 }
