@@ -994,7 +994,7 @@ function boost_is_cacheable($path) {
       // When BOOST_CACHEABILITY_OPTION has a value of 0, boost will cache
       // all pages except those listed in BOOST_CACHEABILITY_PAGES. When set
       // to 1, boost will cache only on those pages listed in BOOST_CACHEABILITY_PAGES.
-      $page_match =  !($block->visibility xor $page_match);
+      $page_match =  !(BOOST_CACHEABILITY_OPTION xor $page_match);
     }
     else {
       $page_match =  drupal_eval(BOOST_CACHEABILITY_PAGES);
