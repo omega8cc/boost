@@ -1515,7 +1515,7 @@ function boost_has_site_changed() {
   $last_comment_timestamp = boost_get_time('node_comment_statistics', 'last_comment_timestamp');
 
   $max = max($node_revisions, $history, $files, $comments, $node, $last_comment_timestamp);
-  if ($max > BOOST_MAX_TIMESTAMP) {
+  if ($max != BOOST_MAX_TIMESTAMP) {
     variable_set('boost_max_timestamp', $max);
     return TRUE;
   }
