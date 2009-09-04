@@ -1748,11 +1748,15 @@ function boost_path_redirect_load($where = array(), $args = array(), $sort = arr
  */
 function boost_cache_css_js_files($buffer) {
   if (BOOST_CACHE_CSS) {
+    // Extract external css files from html document
     $css = explode('<link type="text/css" rel="stylesheet" ', $buffer);
     array_shift($css);
-    $temp = explode(' />', array_pop($css));
-    $css[] = array_shift($temp);
+    foreach ($css as $key => $value) {
+      // Only grab the first string, containing the css filename.
+      $css[$key] = array_shift(explode(' />', $value));
+    }
     $css = implode('',$css);
+
     _boost_copy_css_files($css);
   }
   if (BOOST_CACHE_JS) {
