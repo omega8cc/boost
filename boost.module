@@ -316,7 +316,7 @@ function boost_cron() {
   }
 
   // Crawl Site
-  if (BOOST_CRAWL_ON_CRON) {
+  if (BOOST_CRAWL_ON_CRON && !variable_get('site_offline', 0)) {
     boost_crawler_run();
   }
 }
