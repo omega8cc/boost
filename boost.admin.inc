@@ -501,7 +501,7 @@ function boost_admin_boost_performance_page() {
   );
   $form['crawler']['boost_crawl_on_cron'] = array(
     '#type'          => 'checkbox',
-    '#title'         => t('Enable the cron cralwer'),
+    '#title'         => t('Enable the cron crawler'),
     '#default_value' => BOOST_CRAWL_ON_CRON,
     '#description'   => t('Touch some select URL\'s so they are cached before anyone accesses them.'),
   );
