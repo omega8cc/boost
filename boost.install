@@ -67,7 +67,7 @@ function boost_requirements($phase) {
       }
       $htaccess = file_get_contents('.htaccess');
       $char = BOOST_CHAR;
-      $crawler_response = drupal_http_request(BOOST_CRAWLER_SELF);
+      $crawler_response = drupal_http_request(BOOST_CRAWLER_SELF . '&test=1');
       $crawler_response = $crawler_response->code;
       foreach($cache_directories as $cache_directory) {
         _boost_mkdir_p($cache_directory);
