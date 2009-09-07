@@ -676,3 +676,12 @@ function boost_update_6108() {
   variable_set('boost_crawler_key', md5(mt_rand()));
   return array(array('success' => TRUE, 'query' => 'Crawler key generated.'));
 }
+
+/**
+ * Update 6109 - Change .js to .json
+ */
+function boost_update_6109() {
+  variable_set('boost_json_extension', '.json');
+  _boost_change_extension('.js', '.json');
+  return array(array('success' => TRUE, 'query' => '.js extension changed to .json.'));
+}
