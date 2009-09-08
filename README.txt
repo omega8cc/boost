@@ -49,13 +49,13 @@ INSTALLATION
      sites/all/modules/boost/ under your Drupal installation directory.
 
   3. Go to [Administer >> Site building >> Modules] and enable the Boost
-     module. You will find it in the section labelled "Caching".
+     module. You will find it in the section labeled "Caching".
 
   4. Go to [Administer >> Site configuration >> Performance >> Boost]
      Specify the cache directory, which should be something like
      cache/www.example.com (keeping the default directory is highly recommended)
      and must be writable by the web server: you may need to create the
-     directory, and set the permissions so it is writeable. If you choose to use
+     directory, and set the permissions so it is writable. If you choose to use
      gzip, for compression of files cached by Boost, you also specify and may
      need to create the folder for this; the default is of the format
      cache/gz/www.example.com
@@ -76,10 +76,12 @@ INSTALLATION
        # Rewrite URLs of the form 'x' to the form 'index.php?q=x'.
      boosted1.txt is found in the sites/all/modules/boost/htaccess/ directory.
      The default.txt file shows you the exact placement of where the rules go,
-     incase your not shure. If you fail to do this step, static page caching
+     in case your not sure. If you fail to do this step, static page caching
      will NOT work! Rules from boosted1.txt can also be found on the Boost
      Settings page (admin/settings/performance/boost) in the expandable field
-     group called "Boost Apache .htaccess settings generation."
+     group called "Boost Apache .htaccess settings generation.". If Drupal is
+     installed in a subdirectory, you have to get the rules from the Boost
+     Settings page.
 
      Should you have any trouble getting static pages served using the
      boosted1.txt configuration, try the boosted2.txt file before posting a
