@@ -54,7 +54,9 @@ exit;
 function boost_stats_async_image() {
   // Script should take under 1MB of memory to work.
   // Prime php for background operations
-  ob_end_clean();
+  while (ob_get_level()) {
+    ob_end_clean();
+  }
   header("Connection: close");
   ignore_user_abort();
 
