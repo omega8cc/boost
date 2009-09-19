@@ -470,7 +470,7 @@ function boost_admin_boost_performance_page() {
     '#type'          => 'checkbox',
     '#title'         => t('Enable the cron crawler'),
     '#default_value' => BOOST_CRAWL_ON_CRON,
-    '#description'   => t('Pre-cache boosted URL\'s so they get cached before anyone accesses them.'),
+    '#description'   => t('Pre-cache boosted URL\'s so they get cached before anyone accesses them. Enable the crawler first and save settings to use Preemptive Cache settings.'),
   );
   $form['crawler']['boost_push_html'] = array(
     '#type' => 'checkbox',
