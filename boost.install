@@ -154,7 +154,7 @@ function boost_requirements($phase) {
       if (!BOOST_ENABLED) {
           $requirements['boost_is_enabled'] = array(
             'title'       => $t('Boost'),
-            'description' => $t('Boost is disabled. <a href="@performance">Enable</a> it.', array('@performance' => url('admin/settings/performance'))),
+            'description' => $t('Boost is disabled. <a href="@performance">Enable</a> it.', array('@performance' => url('admin/settings/performance/boost'))),
             'severity'    => REQUIREMENT_WARNING,
             'value'       => $t('Boost Disabled'),
           );
