@@ -2698,7 +2698,7 @@ function boost_crawler_threads_alive() {
  * Return average page generation time.
  */
 function boost_average_time() {
-  return variable_get('boost_crawler_average_generation', 5);
+  return variable_get('boost_crawler_average_generation', 5000)/1000;
 }
 
 /**
