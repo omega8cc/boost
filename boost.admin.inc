@@ -583,7 +583,7 @@ function boost_admin_boost_performance_page() {
     '#title'         => t('Boost Apache .htaccess settings generation'),
     '#collapsible'   => TRUE,
     '#collapsed'     => TRUE,
-    '#description'   => t('!link', array('!link' => l(t('Explanation of .htaccess variables'), 'http://www.askapache.com/htaccess/mod_rewrite-variables-cheatsheet.html'))),
+    '#description'   => t('<a href="!link">Explanation of .htaccess variables</a> <br><br> Be sure to save the configuration and then come back here to copy the htaccess rules.', array('!link' => url('http://www.askapache.com/htaccess/mod_rewrite-variables-cheatsheet.html'))),
   );
   $form['htaccess']['boost_server_name_http_host'] = array(
     '#type'          => 'radios',
