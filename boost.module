@@ -2417,6 +2417,14 @@ function boost_crawler_run() {
       exit;
     }
 
+    // Kill this thread if it doesn't have a thread number assigned to it.
+    if (!isset($this_thread)) {
+      if (BOOST_VERBOSE >= 5) {
+        watchdog('boost', 'Crawler - Rogue thread killed.');
+      }
+      exit;
+    }
+
     // Try to prevent crawler from stalling.
     ini_set('max_execution_time', 600);
     // Return html so connection closes
