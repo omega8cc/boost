@@ -157,7 +157,7 @@ function boost_init() {
       || !BOOST_ENABLED
       || isset($_GET['nocache'])
       || !boost_is_cacheable($GLOBALS['_boost_path'])
-      || $GLOBALS['_boost_router_item']['page_callback'] == 'seach404_page'
+      || $GLOBALS['_boost_router_item']['page_callback'] == 'search404_page'
       ) {
     $GLOBALS['_boost_cache_this'] = FALSE;
     return;
