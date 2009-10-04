@@ -1,6 +1,11 @@
 <?php
 // $Id$
 
+/**
+ * @file
+ * Place in webroot, for faster stats if needed.
+ */
+
 if (!isset($_GET['js'])) {
   // stats not called via JS, send image out & close connection.
   boost_stats_async_image();

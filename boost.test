@@ -1,6 +1,11 @@
 <?php
 // $Id$
 
+/**
+ * @file
+ * Boost unit testings; currently very incomplete.
+ */
+
 //////////////////////////////////////////////////////////////////////////////
 // Unit tests for Simpletest 2.x
 
