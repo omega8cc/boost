@@ -252,10 +252,10 @@ function boost_schema() {
       ),
       'page_id' => array(
         'description' => 'The ID of the page.',
-        'type' => 'int',
-        'unsigned' => TRUE,
+        'type' => 'varchar',
+        'length' => 64,
         'not null' => TRUE,
-        'default' => 0,
+        'default' => ''
       ),
       'extension' => array(
         'description' => 'File Extension/Mime content type of this page.',
@@ -337,10 +337,10 @@ function boost_schema() {
       ),
       'page_id' => array(
         'description' => 'The ID of the page.',
-        'type' => 'int',
-        'unsigned' => TRUE,
+        'type' => 'varchar',
+        'length' => 64,
         'not null' => TRUE,
-        'default' => 0,
+        'default' => ''
       ),
       'extension' => array(
         'description' => 'File Extension/Mime content type of this page.',
