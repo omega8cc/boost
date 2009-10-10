@@ -406,6 +406,18 @@ function boost_admin_boost_performance_page() {
     '#default_value' => BOOST_FLUSH_NODE_TERMS,
     '#description'   => t('Works with view\'s taxonomy/term/% path as well as core.'),
   );
+  $form['advanced']['boost_flush_views'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Clear all cached views pages associated with a node on update/delete'),
+    '#default_value' => BOOST_FLUSH_VIEWS,
+    '#description'   => t(''),
+  );
+//   $form['advanced']['boost_flush_views_insert'] = array(
+//     '#type'          => 'checkbox',
+//     '#title'         => t('Clear all cached views pages associated with a node on insert'),
+//     '#default_value' => BOOST_FLUSH_VIEWS_INSERT,
+//     '#description'   => t(''),
+//   );
   $form['advanced']['boost_clear_cache_offline'] = array(
     '#type'          => 'checkbox',
     '#title'         => t('Clear Boosts cache when site goes offline'),
