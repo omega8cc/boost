@@ -466,6 +466,12 @@ function boost_admin_boost_performance_page() {
     '#default_value' => BOOST_PERMISSIONS_DIR,
     '#description'   => t('Sometimes because of funky servers you need it use a different file mode then the default.'),
   );
+  $form['advanced']['boost_expire_no_flush'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Expire content in DB, do not flush file.'),
+    '#default_value' => BOOST_EXPIRE_NO_FLUSH,
+    '#description'   => t('Instead of flushing the file ASAP this will set the database entry to expired. File will be flushed on next cron run. This is more on the extreme side of tweaks.'),
+  );
   $form['advanced']['boost_ignore_flush'] = array(
     '#type'          => 'radios',
     '#title'         => t('Ignore cache flushing'),
