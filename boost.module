@@ -1617,6 +1617,11 @@ function boost_cache_set_node_relationships($relationships) {
     $data['page_type'] = isset($data['page_type']) ? $data['page_type'] : $router_item['page_type'];
     $data['page_id'] = isset($data['page_id']) ? $data['page_id'] : $router_item['page_id'];
 
+    // Skip if this is referencing its self.
+    if ($data['page_callback'] == $data['child_page_callback'] && $data['page_type'] == $data['child_page_type'] && $data['page_id'] == $data['child_page_id']) {
+      continue;
+    }
+
     // Create the primary key
     $hash = md5($data['base_dir'] . $data['page_callback'] . $data['page_type'] . $data['page_id'] . $data['child_page_callback'] . $data['child_page_type'] . $data['child_page_id']);
 
