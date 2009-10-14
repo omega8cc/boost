@@ -813,6 +813,9 @@ function boost_admin_generate_htaccess($server_name = '%{SERVER_NAME}', $documen
 
   // Generate the rules
   $string  = "  ### BOOST START ###\n";
+  if (BOOST_CACHE_HTML) {
+    $string .= "  AddDefaultCharset utf-8\n";
+  }
   if (!BOOST_DISABLE_CLEAN_URL && (BOOST_CACHE_HTML || BOOST_CACHE_XML || BOOST_CACHE_JSON)) {
     $files = '';
     if (BOOST_CACHE_HTML) {
