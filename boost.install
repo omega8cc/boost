@@ -503,6 +503,19 @@ function boost_schema() {
         'not null' => TRUE,
         'default' => ''
       ),
+      'hash_url' => array(
+        'description' => 'MD5 hash of url',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'timestamp' => array(
+        'description' => 'The Unix timestamp of late update to this field.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0
+      ),
     ),
     'primary key' => array('hash'),
   );
