@@ -609,6 +609,14 @@ function boost_admin_boost_performance_page() {
       '#value' => t('Reset Crawler & Cron Semaphore'),
       '#submit' => array('boost_reset_crawler_submit'),
     );
+    if (BOOST_CRAWL_ON_CRON) {
+      $form['crawler']['boost_crawler_eta'] = array(
+        '#type'          => 'textfield',
+        '#title'         => t('Estimated Time to crawl site - highly inaccurate'),
+        '#default_value' => format_interval(boost_count_db(2) * boost_average_time()),
+        '#disabled'      => TRUE,
+      );
+    }
   }
 
   // Apache .htaccess settings generation
