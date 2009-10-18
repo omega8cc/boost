@@ -433,7 +433,7 @@ function boost_nodeapi(&$node, $op, $teaser = NULL, $page = NULL) {
  * Shutdown function, gets called at the very end of node creation.
  *
  * Node is now created, thus views has access to the new node. Searches all
- * views for newly created node. Expires those nodes from the cache.
+ * cached views for newly created node. Expires the outdated views from the cache.
  */
 function _boost_view_insert() {
   $result = db_query("SELECT * FROM {boost_cache} WHERE base_dir = '%s' AND page_callback = 'view' AND expire > 0 AND expire <> 434966400", BOOST_FILE_PATH);
