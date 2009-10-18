@@ -383,6 +383,12 @@ function boost_admin_boost_performance_page() {
     '#default_value' => BOOST_ONLY_ASCII_PATH,
     '#description'   => t('Only allowing ACSII characters is a safe way to cache pages. It severely limits i18n support so this can be turned off. Fair warning, disabling this may cause "page not found" errors depending on your url structure (spaces are bad, ect...). If you follow RFC 3986 you should be ok.'),
   );
+  $form['advanced']['boost_flush_all_multisite'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Flush all sites caches in this database (singe db, multisite).'),
+    '#default_value' => BOOST_FLUSH_ALL_MULTISITE,
+    '#description'   => t('This will flush/expire all cached files stored in this database, instead of only being specific to this site. Useful for i18n sites. You need to setup a separate cron call for each database (in your multisite install) either way though. This covers shared database usage; or place the boost tables into the a shared database, to have this setting work in a multiple database environment.'),
+  );
   $form['advanced']['boost_asynchronous_output'] = array(
     '#type'          => 'checkbox',
     '#title'         => t('Asynchronous Operation: output HTML, close connection, then store static file.'),
