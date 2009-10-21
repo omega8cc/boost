@@ -1037,7 +1037,7 @@ function _boost_ob_handler() {
   // 200 then remove that entry from the cache.
   if (!empty($buffer)) {
     $status = boost_get_http_status();
-    $types = implode(', ', boost_get_content_type());
+    $types = boost_get_content_type();
     if (stristr($types, 'text/javascript')) {
       if ($status == 200 & $GLOBALS['_boost_cache_this']) {
         if (BOOST_ASYNCHRONOUS_OUTPUT) {
@@ -1104,7 +1104,7 @@ function boost_get_content_type() {
   foreach ($headers as $header) {
     $types[] = array_shift(explode('; charset=', array_shift(explode('\n', $header))));
   }
-  return $types;
+  return array_pop(array_filter($types));
 }
 
 /**
