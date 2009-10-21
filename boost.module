@@ -2808,7 +2808,7 @@ function boost_crawler_run($expire = -1) {
   $total_threads = (isset($_GET['total']) && is_numeric($_GET['total'])) ? $_GET['total'] : NULL;
   $expire = ($expire == -1 && isset($_GET['expire']) && is_numeric($_GET['expire'])) ? $_GET['expire'] : $expire;
   $self = BOOST_CRAWLER_SELF;
-  $GLOBALS['_boost_max_execution_time'] =  ini_get('max_execution_time');;
+  $GLOBALS['_boost_max_execution_time'] =  ini_get('max_execution_time');
   $GLOBALS['_boost_output_buffering'] = ini_get('output_buffering');
 
   if ($_GET['q'] == 'boost-crawler') {
