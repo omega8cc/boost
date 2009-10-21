@@ -30,7 +30,7 @@ function boost_rules_action_clear_page($page, $settings) {
   if (boost_is_cached($path)) {
     boost_cache_expire_derivative($page);
     if (BOOST_VERBOSE >= 5) {
-      watchdog('boost', 'Rules flushed !page from static page cache.', array('!page', $page));
+      watchdog('boost', 'Rules flushed !page from static page cache.', array('!page' => $page));
     }
   }
 }
