@@ -3081,8 +3081,10 @@ function boost_crawler_run($expire = -1) {
 function boost_async_opp($output, $wait = TRUE, $content_type = "text/html", $length = 0) {
   $length = ($length == 0) ? (strlen($output)-1) : $length;
   // Prime php for background operations
-  while (ob_get_level()) {
+  $loop = 0;
+  while (ob_get_level() && $loop < 25) {
     ob_end_clean();
+    $loop++;
   }
   header("Connection: close");
   ignore_user_abort();
