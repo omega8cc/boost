@@ -501,6 +501,15 @@ function boost_admin_boost_performance_page() {
       5 => t('5 Record all errors to the db log (watchdog)'),
     ),
   );
+  if (ini_get('safe_mode')) {
+    $form['advanced']['boost_ignore_safe_warning'] = array(
+      '#type'          => 'checkbox',
+      '#title'         => t('Disable warnings about php safe mode'),
+      '#default_value' => BOOST_IGNORE_SAFE_WARNING,
+      '#description'   => t('Disable the warning on the status page about running boost in safe mode.'),
+    );
+  }
+
 
   // Crawler
   $form['crawler'] = array(

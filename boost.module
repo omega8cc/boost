@@ -76,6 +76,8 @@ define('BOOST_PERMISSIONS_FILE',     variable_get('boost_permissions_file', ''))
 define('BOOST_PERMISSIONS_DIR',      variable_get('boost_permissions_dir', ''));
 define('BOOST_EXPIRE_NO_FLUSH',      variable_get('boost_expire_no_flush', FALSE));
 define('BOOST_VERBOSE',              variable_get('boost_verbose', 5));
+define('BOOST_IGNORE_SAFE_WARNING',  variable_get('boost_ignore_safe_warning', FALSE));
+
 
 // Crawler Settings
 define('BOOST_CRAWL_ON_CRON',        variable_get('boost_crawl_on_cron', FALSE));
