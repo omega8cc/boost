@@ -28,7 +28,7 @@ function boost_rules_action_info() {
  */
 function boost_rules_action_clear_page($page, $settings) {
   if (boost_is_cached($path)) {
-    boost_cache_expire_derivative($page);
+    boost_cache_expire_derivative(array($page));
     if (BOOST_VERBOSE >= 5) {
       watchdog('boost', 'Rules flushed !page from static page cache.', array('!page' => $page));
     }
