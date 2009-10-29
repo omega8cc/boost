@@ -1363,7 +1363,7 @@ function boost_cache_expire_derivative($paths, $both = FALSE) {
     $expire[] = $path;
 
     // Special front page feed handling
-    if (BOOST_CACHE_XML && ($path = '' || $path = '<front>')) {
+    if (BOOST_CACHE_XML && ($path == '' || $path == '<front>')) {
       $expire[] = 'rss.xml';
     }
 
