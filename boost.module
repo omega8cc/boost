@@ -879,7 +879,7 @@ function boost_block_db_settings_form() {
   // create form
   $form['boost_db_settings']['lifetime'] = array(
     '#type' => 'select',
-    '#title' => t('Minimum cache lifetime'),
+    '#title' => t('Maximum cache lifetime'),
     '#default_value' => $info['lifetime'],
     '#options' => $period,
     '#description' => t('Default: %default', array('%default' => format_interval(BOOST_CACHE_LIFETIME))),
