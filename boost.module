@@ -1247,6 +1247,7 @@ function boost_is_cacheable($path) {
       || preg_match('!^admin!', $normal_path)
       || preg_match('!comment/reply$!', $normal_path)
       || preg_match('!^node/add!', $normal_path)
+      || preg_match('!^openid!', $normal_path)
       || strpos($GLOBALS['_boost_query'], '/')
       || strpos($GLOBALS['_boost_query'], '\\')
       || strpos($full, '..') !== FALSE
