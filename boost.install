@@ -66,7 +66,9 @@ function boost_requirements($phase) {
   $t = get_t();
   switch ($phase) {
     case 'runtime':
-      boost_tree_directory(BOOST_ROOT_CACHE_DIR);
+      if (!BOOST_IGNORE_SUBDIR_LIMIT) {
+        boost_tree_directory(BOOST_ROOT_CACHE_DIR);
+      }
       $cache_directories = array();
       $cache_directories[] = BOOST_ROOT_CACHE_DIR;
       $cache_directories[] = BOOST_FILE_PATH;
