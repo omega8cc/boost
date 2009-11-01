@@ -1714,6 +1714,7 @@ function boost_cache_expire_all() {
     else {
       boost_cache_expire_all_db();
     }
+    return TRUE;
   }
   return FALSE;
 }
