@@ -73,10 +73,17 @@ function boost_requirements($phase) {
       $cache_directories[] = BOOST_ROOT_CACHE_DIR;
       $cache_directories[] = BOOST_FILE_PATH;
       $cache_directories[] = BOOST_PERM_FILE_PATH;
+      foreach (_boost_copy_file_get_domains(BOOST_PERM_FILE_PATH) as $dir) {
+        file_put_contents($dir . '/' . variable_get('boost_root_file', '.boost'), $dir);
+      }
       if (BOOST_GZIP) {
         $cache_directories[] = BOOST_GZIP_FILE_PATH;
         $cache_directories[] = BOOST_PERM_GZIP_FILE_PATH;
+        foreach (_boost_copy_file_get_domains(BOOST_PERM_GZIP_FILE_PATH) as $dir) {
+          file_put_contents($dir . '/' . variable_get('boost_root_file', '.boost'), $dir);
+        }
       }
+
       $cache_directories = array_unique($cache_directories);
       $htaccess = stristr($_SERVER["SERVER_SOFTWARE"], 'apache') ? file_get_contents('.htaccess') : FALSE;
       if (BOOST_CRAWL_ON_CRON) {
