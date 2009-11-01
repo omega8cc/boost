@@ -172,9 +172,12 @@ function boost_init() {
   $path = implode($base_path, $path);
   $path = explode('?', $path);
   $path = array_shift($path);
-  if ($path != '' && $_REQUEST['q'] == '') {
+  if ($path != '' && $_REQUEST['q'] == '' && !stristr($path, '.php') && isset($_SERVER['REDIRECT_STATUS']) && $_SERVER['REDIRECT_STATUS'] == 404) {
     $GLOBALS['conf']['cache'] = CACHE_DISABLED;
     $GLOBALS['_boost_cache_this'] = FALSE;
+    if (BOOST_VERBOSE >= 7) {
+      watchdog('boost', '404 recieved from server via redirect, going to send a 404. Info: !output', array('!output' => boost_print_r($_SERVER, TRUE, TRUE)));
+    }
     drupal_not_found();
     return;
   }
