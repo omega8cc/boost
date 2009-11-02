@@ -189,7 +189,7 @@ function boost_requirements($phase) {
           'severity'    => REQUIREMENT_WARNING,
           'value'       => $t('Boost Disabled'),
         );
-       }
+      }
       if (ini_get('safe_mode') && !BOOST_IGNORE_SAFE_WARNING) {
         $requirements['boost_safemode'] = array(
           'title'       => $t('Boost'),
@@ -374,7 +374,7 @@ if (!function_exists("scandir")) {
     while (FALSE !== ($filename = readdir($dh))) {
       $files[] = $filename;
     }
-    return($files);
+    return $files;
   }
 }
 

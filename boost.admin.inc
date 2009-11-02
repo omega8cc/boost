@@ -1154,7 +1154,6 @@ function boost_clear_cache_submit() {
 function boost_clear_cache_parallel($dir) {
   $dirs = _boost_copy_file_get_domains($dir);
   foreach ($dirs as $directory) {
-    watchdog('boost', $directory);
     _boost_rmdir_rf($directory, TRUE, TRUE);
   }
 }
