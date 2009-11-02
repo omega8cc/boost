@@ -413,6 +413,17 @@ function boost_admin_boost_performance_page() {
     '#default_value' => BOOST_FLUSH_NODE_TERMS,
     '#description'   => t('Works with view\'s taxonomy/term/% path as well as core.'),
   );
+  $form['advanced']['boost_flush_menu_items'] = array(
+    '#type'          => 'radios',
+    '#title'         => t('Clear all cached pages in a menu on an insert/update/delete opperation'),
+    '#default_value' => BOOST_FLUSH_MENU_ITEMS,
+    '#description'   => t('This can flush a lot of pages depending on your menu structure.'),
+    '#options'       => array(
+      0 => t('Disabled'),
+      1 => t('Only Flush Menu Parrents, Siblings & Children'),
+      2 => t('Flushes Entire Menu Tree'),
+    ),
+  );
   $form['advanced']['boost_flush_views'] = array(
     '#type'          => 'checkbox',
     '#title'         => t('Clear all cached views pages associated with a node on update/delete'),
