@@ -6,18 +6,20 @@
  * Place in webroot, for faster stats if needed.
  */
 
-if (!isset($_GET['js'])) {
-  // stats not called via JS, send image out & close connection.
-  boost_stats_async_image();
-}
-
 // Exit script if nothing was passed to it.
 if (   !isset($_GET['nid'])
     && !isset($_GET['title'])
     && !isset($_GET['qq'])
     && !isset($_GET['referer'])
     ) {
+  boost_stats_full_boot();
+  drupal_not_found();
   exit;
+}
+
+if (!isset($_GET['js'])) {
+  // stats not called via JS, send image out & close connection.
+  boost_stats_async_image();
 }
 
 // connect to db & set variables.
@@ -41,8 +43,7 @@ if (isset($_GET['js'])) {
 
     // Send JSON Back
     if (!empty($json)) {
-      header('Content-Type: text/javascript; charset=utf-8');
-      echo json_encode($json);
+      drupal_json($json);
     }
   }
   // Send HTML back
