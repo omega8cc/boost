@@ -2242,8 +2242,12 @@ function boost_remove_db($files) {
     }
     $hashes[] = "'" .$file['hash'] ."'";
   }
-  db_query("DELETE FROM {boost_cache} WHERE hash IN (%s)", implode(', ', $hashes));
+  if ($hashes) {
+    $hashes = implode(', ', $hashes);
+    db_query("DELETE FROM {boost_cache} WHERE hash IN ($hashes)");
+  }
 }
+
 
 /**
  * Puts boost info into database.
