@@ -38,7 +38,7 @@ define('BOOST_CACHEABILITY_PAGES',   variable_get('boost_cacheability_pages', ''
 
 // Dir & File Structure
 define('BOOST_ROOT_CACHE_DIR',       variable_get('boost_root_cache_dir', 'cache'));
-define('BOOST_MULTISITE_SINGLE_DB',  variable_get('boost_multisite_single_db', FALSE));
+define('BOOST_MULTISITE_SINGLE_DB',  variable_get('boost_multisite_single_db', TRUE));
 define('BOOST_NORMAL_DIR',           variable_get('boost_normal_dir', 'normal'));
 define('BOOST_GZIP_DIR',             variable_get('boost_gzip_dir', 'normal'));
 define('BOOST_PERM_NORMAL_DIR',      variable_get('boost_perm_normal_dir', 'perm'));
