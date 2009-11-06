@@ -87,6 +87,7 @@ function boost_stats_init() {
 
   // Connect to DB.
   include_once './includes/bootstrap.inc';
+  include_once './includes/common.inc';
   drupal_bootstrap(DRUPAL_BOOTSTRAP_DATABASE);
 
   // Set variables passed via GET.
