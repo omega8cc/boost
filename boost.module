@@ -1681,7 +1681,7 @@ function boost_cache_expire_by_db($paths) {
     }
     // Expire all files that match up
     if ($data) {
-      boost_set_base_dir_in_array(&$data);
+      boost_set_base_dir_in_array($data);
       $counter += boost_cache_expire_router($data);
     }
     if ($filenames) {
