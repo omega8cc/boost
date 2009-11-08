@@ -2903,7 +2903,7 @@ function _boost_index_exists(&$ret, $table, $index) {
   if (db_table_exists($table)) {
     $result = db_query('SHOW INDEX FROM {%s}', $table);
     while ($name = db_fetch_array($result)) {
-      if ($name['Key_name'] == $index) {
+      if ($name['Column_name'] == $index) {
         return TRUE;
       }
     }
