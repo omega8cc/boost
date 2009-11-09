@@ -625,6 +625,12 @@ function boost_admin_boost_performance_page() {
     '#description'   => !BOOST_CRAWL_ON_CRON ? t('Enable the crawler first to enable this checkbox.') : t('Preemptively cache all urls found in the Drupal url_alias table. This will crawl that page even if it is not expired. Enable & run cron to get the boost cache loaded.'),
     '#disabled' => !BOOST_CRAWL_ON_CRON
   );
+  $form['crawler']['boost_crawl_db_import_size'] = array(
+    '#type'          => 'textfield',
+    '#title'         => t('Number of URLs to grab at a time when loading up the crawler table'),
+    '#default_value' => BOOST_CRAWL_DB_IMPORT_SIZE,
+    '#description'   => t('You might need to adjust this (shrink) if you get mysql errors when starting the crawler. Increase if your trying load up the crawler with a lot of URLs, as this can make the operation be faster.'),
+  );
   $form['crawler']['boost_crawler_throttle'] = array(
     '#type'          => 'textfield',
     '#title'         => t('Crawler Throttle'),
