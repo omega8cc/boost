@@ -2069,6 +2069,14 @@ function boost_get_all_filenames($filename, $base_dir = NULL) {
   $chars = '*:<>|?#,';
   if (preg_match("/[" . $chars . "]/", $end)) {
     $end = urlencode($end);
+    // '=' sign should not be encoded
+    $end = str_replace('%3D', '=', $end);
+    // '&' should not be encoded
+    $end = str_replace('%26', '&', $end);
+    // '#' should not be encoded
+    $end = str_replace('%23', '#', $end);
+    // '?' is not an issue because the first ? is converted to a _ with the default settings.
+    // If not using the default then this could be an issue. Will deal with it when that happens.
     $paths[] = $end;
     $names[] = implode('/', $paths);
   }
