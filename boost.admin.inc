@@ -996,7 +996,7 @@ function boost_admin_generate_htaccess($server_name = '%{SERVER_NAME}', $documen
       $files .= "$html$gz|";
     }
     $files = trim($files, '|');
-    $string .= "  <FilesMatch \"($files)\">\n";
+    $string .= "  <FilesMatch \"($files)$\">\n";
     $string .= "    ForceType text/html\n";
     $string .= "  </FilesMatch>\n";
   }
@@ -1037,7 +1037,7 @@ function boost_admin_generate_htaccess($server_name = '%{SERVER_NAME}', $documen
       $files .= "$css$gz|";
     }
     $files = trim($files, '|');
-    $string .= "  <FilesMatch \"($files)\">\n";
+    $string .= "  <FilesMatch \"($files)$\">\n";
     $string .= "    ForceType text/css\n";
     $string .= "  </FilesMatch>\n";
   }
