@@ -4044,7 +4044,7 @@ function boost_crawler_run($expire = -1) {
  *  string - Content type header.
  */
 function boost_async_opp($output, $wait = TRUE, $content_type = "text/html", $length = 0) {
-  $length = ($length == 0) ? (strlen($output)-1) : $length;
+  $length = ($length == 0) ? (mb_strlen($output, '8bit')-1) : $length;
   // Prime php for background operations
   $loop = 0;
   while (ob_get_level() && $loop < 25) {
