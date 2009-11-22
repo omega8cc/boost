@@ -226,7 +226,7 @@ function boost_requirements($phase) {
       if ($robots && !stristr($robots, 'Disallow: /boost_stats.php')) {
         $requirements['boost_robots'] = array(
           'title'       => $t('Boost'),
-          'description' => $t('Your robots.txt file does not contain "Disallow: /boost_stats.php". This is needed inorder to prevent the output of this from accidentally getting indexed by search engines.'),
+          'description' => $t('Your robots.txt file does not contain "Disallow: /boost_stats.php". This is needed in order to prevent the output of this from accidentally getting indexed by search engines.'),
           'severity'    => REQUIREMENT_WARNING,
           'value'       => $t('"Disallow: /boost_stats.php" entry missing in robots.txt'),
         );
