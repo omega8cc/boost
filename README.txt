@@ -85,7 +85,7 @@
     Token		http://drupal.org/project/token
 
   Optional if cron configuration is not available on your server.
-    Poormanscron -dev	http://drupal.org/project/poormanscron
+    Poormanscron 1.1 or 2.0	http://drupal.org/project/poormanscron
 
   If enabled [x] Clear all cached pages referenced via CCK with a node...
     The node referrer module is recommended.
@@ -141,6 +141,15 @@
 
   6. Goto: [Administer > Site configuration > Performance]
      Check and set the Drupal cache settings as desired.
+
+  7. Prepare robots.txt file for search engines.
+     Add "Disallow: /boost_stats.php" to the robots.txt file as shown below.
+
+     # Files
+     Disallow: /boost_stats.php
+     Disallow: /CHANGELOG.txt
+     .....
+     .....
 
 
  SYSTEM CHECK AND VERIFY FUNCTIONS
