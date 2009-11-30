@@ -170,7 +170,7 @@ function boost_init() {
     boost_set_cookie($uid, BOOST_TIME - 86400);
   }
   // Remove Boost cookie if set to -1
-  elseif (isset($_COOKIE[BOOST_COOKIE]) && $_COOKIE[BOOST_COOKIE] == -1) {
+  elseif (isset($_COOKIE[BOOST_COOKIE]) && $_COOKIE[BOOST_COOKIE] == '-1') {
     boost_set_cookie($uid, BOOST_TIME - 86400);
   }
   // Set Boost cookie if it doesn't exists and user is logged in
