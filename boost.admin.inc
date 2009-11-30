@@ -401,6 +401,12 @@ function boost_admin_boost_performance_page() {
     '#default_value' => BOOST_FLUSH_DIR,
     '#description'   => t('Disable this if you have to set settings for each dir/subdir, due to the way your server operates (permissions, etc...).'),
   );
+  $form['advanced']['boost_flush_front'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Clear the front page cache when promoted'),
+    '#default_value' => BOOST_FLUSH_FRONT,
+    '#description'   => t('Clear the front page cache when a node that is promoted to the fron page is also changed.'),
+  );
   $form['advanced']['boost_flush_cck_references'] = array(
     '#type'          => 'checkbox',
     '#title'         => t('Clear all cached pages referenced via CCK with a node on insert/update/delete'),
