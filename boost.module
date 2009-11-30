@@ -2610,7 +2610,6 @@ function boost_has_site_changed($set_max = FALSE) {
   _boost_index_exists($ret, 'files', 'timestamp');
   _boost_index_exists($ret, 'comments', 'timestamp');
   _boost_index_exists($ret, 'node', 'changed');
-  _boost_index_exists($ret, 'files', 'timestamp');
   _boost_index_exists($ret, 'node_comment_statistics', 'last_comment_timestamp');
   _boost_index_exists($ret, 'votingapi_vote', 'timestamp');
 
