@@ -167,14 +167,6 @@ function boost_views_pre_view(&$view) {
 }
 
 /**
- * Implementation of hook_views_pre_render().
- *
- * Hack due to this issue: http://drupal.org/node/619852
- */
-function boost_views_pre_view(&$view) {
-}
-
-/**
  * Implementation of hook_init(). Performs page setup tasks if page not cached.
  */
 function boost_init() {
