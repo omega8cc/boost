@@ -167,6 +167,14 @@ function boost_views_pre_view(&$view) {
 }
 
 /**
+ * Implementation of hook_views_pre_render().
+ *
+ * Hack due to this issue: http://drupal.org/node/619852
+ */
+function boost_views_pre_view(&$view) {
+}
+
+/**
  * Implementation of hook_init(). Performs page setup tasks if page not cached.
  */
 function boost_init() {
@@ -1342,14 +1350,6 @@ function _boost_ob_handler() {
         $filename = boost_file_path($GLOBALS['_boost_path'], TRUE, BOOST_JSON_EXTENSION);
       }
     }
-    elseif (stristr($types, 'application/pdf')) {
-      if ($status == 200 && $GLOBALS['_boost_cache_this']) {
-        boost_cache_set($GLOBALS['_boost_path'], $decompressed_buffer, '.pdf');
-      }
-      elseif ($status == 404 || $status == 403) {
-        $filename = boost_file_path($GLOBALS['_boost_path'], TRUE, '.pdf');
-      }
-    }
     elseif (stristr($types, 'application/rss') || stristr($types, 'text/xml') || stristr($types, 'application/rss+xml')) {
       if ($status == 200 && $GLOBALS['_boost_cache_this']) {
         if (BOOST_ASYNCHRONOUS_OUTPUT) {
@@ -2220,9 +2220,6 @@ function boost_cache_set($path, $data, $extension = BOOST_FILE_EXTENSION) {
         $comment = $comment_start . str_replace(array('%cached_at', '%expires_at'), array($cached_at, $expires_at), BOOST_BANNER) . $comment_end;
         $data = rtrim($data) . "\n" . $comment;
       }
-      break;
-    case '.pdf':
-      $expire = ($expire == -2) ? BOOST_CACHE_XML_LIFETIME : $expire;
       break;
   }
 
