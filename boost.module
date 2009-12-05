@@ -3336,6 +3336,10 @@ function _boost_get_menu_router() {
     $router_item['page_callback'] = 'view';
     $router_item['page_type'] = array_shift($router_item['page_arguments']);
     $router_item['page_id'] = array_shift($router_item['page_arguments']);
+    // See http://drupal.org/node/651798 for the reason why this if is needed
+    if (is_array($router_item['page_id'])) {
+      $router_item['page_id'] = array_shift($router_item['page_id']);
+    }
     return $router_item;
   }
 
