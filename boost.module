@@ -2718,10 +2718,9 @@ function boost_get_time($table, $column) {
  */
 function boost_cache_write($filename, $buffer) {
   $filenames = boost_get_all_filenames($filename);
-  $compressed_buffer = gzencode($buffer, 9);
   foreach ($filenames as $key => $values) {
     if ($key == 'gzip') {
-      $data = $compressed_buffer;
+      $data = gzencode($buffer, 9);
     }
     else {
       $data = $buffer;
