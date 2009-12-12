@@ -216,9 +216,7 @@ function boost_init() {
   $query = array();
   foreach ($_GET as $key => $val) {
     if ($key != 'q' && $key != 'destination') {
-      if (!empty($val)) {
-        $query[$key] = $val;
-      }
+      $query[$key] = $val;
     }
   }
   $GLOBALS['_boost_query'] .= str_replace('&amp;', '&', urldecode(http_build_query($query)));
