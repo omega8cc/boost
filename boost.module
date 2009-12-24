@@ -2330,9 +2330,9 @@ function boost_cache_set_node_relationships($relationships) {
       }
     }
     foreach ($data as $key => $value) {
-      if (!is_string($value) || !is_numeric($value)) {
+      if (is_object($value) || is_array($value)) {
         if (BOOST_VERBOSE >= 5) {
-          watchdog('boost', 'boost_cache_set_node_relationships() <br />!key was has a value of !value; should be a string or int.', array('!key' => $key, '!value' => $value));
+          watchdog('boost', 'boost_cache_set_node_relationships() <br />"!key" has a value of "!value"; should be a string or int.', array('!key' => $key, '!value' => $value));
         }
         continue;
       }
