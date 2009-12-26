@@ -3437,7 +3437,7 @@ function _boost_get_menu_router() {
  *   The top-level directory that will be recursively created.
  * @param $recursive
  *   Operate in a recursive manner.
- * @param $recursive
+ * @param $depth
  *   How deep the recursion is.
  */
 function _boost_mkdir_p($pathname, $recursive = TRUE, $depth = 0) {
