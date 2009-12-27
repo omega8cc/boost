@@ -816,7 +816,7 @@ function boost_admin_boost_performance_page_validate($form, &$form_state) {
   $boost_previously = variable_get('boost_enabled', '');
   extract($form_state['values'], EXTR_SKIP | EXTR_REFS);
   if (BOOST_MULTISITE_SINGLE_DB) {
-    $boost_file_path = boost_cache_directory(NULL, FALSE);
+    $boost_file_path = boost_cache_directory(NULL, FALSE, $boost_root_cache_dir, $boost_normal_dir);
   }
 
   // Boost enabled/disabled logic
