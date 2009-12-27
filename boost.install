@@ -1434,5 +1434,7 @@ function boost_update_6123() {
  * Update 6124 - Add missing page_type index to boost_cache_relationships table
  */
 function boost_update_6124() {
+  $ret = array();
   db_add_index($ret, 'boost_cache_relationships', 'page_type', array('page_id'));
+  return $ret;
 }
