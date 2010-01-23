@@ -198,6 +198,12 @@ function boost_admin_boost_performance_page() {
     '#default_value' => BOOST_HALT_ON_MESSAGES,
     '#description'   => t('Selected - Do not cache the page if there are Drupal messages. Not Selected - Cache pages even if it might contain a Drupal message.'),
   );
+  $form['cacheability']['boost_cache_url_alais_src'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Do not cache if there is an alias for this URL.'),
+    '#default_value' => variable_get('boost_cache_url_alais_src', FALSE),
+    '#description'   => t('Enableing this will prevent Boost from cacheing node/8 if node/8 is also mapped to a path like /about-us. If using Global Redirect enableing this is a good idea.'),
+  );
   $form['cacheability']['boost_cacheability_option'] = array(
     '#type'          => 'radios',
     '#title'         => t('Statically cache specific pages'),
@@ -214,7 +220,7 @@ function boost_admin_boost_performance_page() {
   // Cache expiration settings
   $form['expiration'] = array(
     '#type'          => 'fieldset',
-    '#title'         => t('Boost cache expiration settings'),
+    '#title'         => t('Boost cache expiration/flush settings'),
   );
   $form['expiration']['boost_expire_cron'] = array(
     '#type'          => 'radios',

@@ -1529,6 +1529,11 @@ function boost_is_cacheable($path) {
     return FALSE;
   }
 
+  // Don't cache if path is in the source
+  if (variable_get('boost_cache_url_alais_src', FALSE) && (int)db_result(db_query("SELECT count(*) FROM url_alias WHERE src = '%s'", $path)) > 0) {
+    return FALSE;
+  }
+
   // Invoke hook_boost_is_cacheable($path)
   foreach (module_implements('boost_is_cacheable') as $module) {
     if (($result = module_invoke($module, 'boost_is_cacheable', $path)) != NULL) {
