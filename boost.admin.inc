@@ -97,6 +97,7 @@ function boost_admin_boost_performance_page() {
     '#default_value' => variable_get('page_compression', TRUE),
     '#options' => array(t('Disabled'), t('Enabled')),
     '#description' => t("By default, Drupal compresses the pages it caches in order to save bandwidth and improve download times. This option should be disabled when using a webserver that performs compression."),
+    '#disabled' => !function_exists('gzencode'),
   );
   $form['boost']['boost_cache_lifetime'] = array(
     '#type' => 'select',
