@@ -805,9 +805,14 @@ function boost_get_menu_structure($menu, $found = TRUE, $needle = '', $first = T
   $structure = array_unique($structure);
   $found_global = $found;
   if ($first) {
-    $menu_out = array_unique($menu_out);
-    sort($menu_out);
-    return $menu_out;
+    if (isset($menu_out) && is_array($menu_out)) {
+      $menu_out = array_unique($menu_out);
+      sort($menu_out);
+      return $menu_out;
+    }
+    else {
+      return array();
+    }
   }
   else {
     return $structure;
