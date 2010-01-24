@@ -131,7 +131,7 @@ function boost_requirements($phase) {
           'value'       => $t('Cache path'),
         );
       }
-      if ($htaccess && !boost_chk_htaccess_doc($htaccess)) {
+      if ($htaccess && !BOOST_IGNORE_HTACCESS_WARNING && !boost_chk_htaccess_doc($htaccess)) {
         $requirements['boost_htaccess'] = array(
           'title'       => $t('Boost'),
           'description' => $t('.htaccess file does not contain or match the boost specific rewrite rules, or the rewrite rules have changed, due to new settings, and they need to be updated. Get the rules: <a href="@url">Boost Apache .htaccess settings generation</a>.', array('@url' => url('admin/settings/performance/boost-rules'))),

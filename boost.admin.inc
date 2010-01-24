@@ -805,6 +805,12 @@ function boost_admin_boost_performance_page() {
     '#default_value' => variable_get('boost_apache_rfc2616', TRUE),
     '#description'   => t('Bypass the boost cache when the headers contain a "no-cache" cache-control directive (ctrl-F5 in browser). Disable this to make boost always serve pages from the cache. Good time to disable this is right before your site goes into maintance mode.'),
   );
+  $form['htaccess']['boost_ignore_htaccess_warning'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Ignore .htaccess warning'),
+    '#default_value' => variable_get('boost_ignore_htaccess_warning', FALSE),
+    '#description'   => t('Do not warn about missing or modified boost rules in the .htaccess file on the <a href="!link">status report page</a>. Enable this if you have a good reason to modify the boost rules in .htaccss.', array('!link' => url('admin/reports/status'))),
+  );
 
   // Clear database button
   $form['clear'] = array(
