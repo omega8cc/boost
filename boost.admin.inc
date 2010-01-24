@@ -215,6 +215,7 @@ function boost_admin_boost_performance_page() {
     '#title'         => t('Pages'),
     '#default_value' => BOOST_CACHEABILITY_PAGES,
     '#description'   => $description,
+    '#wysiwyg'       => FALSE,
   );
 
   // Cache expiration settings
