@@ -152,8 +152,12 @@ function boost_help($path, $arg) {
 function boost_views_pre_render(&$view) {
   if (!is_null($view) && $GLOBALS['_boost_cache_this'] && !BOOST_NO_DATABASE) {
     foreach ($view->result as $item) {
-      $node = node_load($item->nid);
-      $GLOBALS['_boost_relationships'][] = array('child_page_callback' => 'node', 'child_page_type' => $node->type, 'child_page_id' => $item->nid);
+      if (is_numeric($item->nid)) {
+        $node = node_load($item->nid);
+        if (isset($node->type)) {
+          $GLOBALS['_boost_relationships'][] = array('child_page_callback' => 'node', 'child_page_type' => $node->type, 'child_page_id' => $item->nid);
+        }
+      }
     }
   }
 }
@@ -3829,6 +3833,7 @@ function boost_backtrace($args = TRUE) {
     if ($args && array_key_exists('args', $entry)) {
       $output .= "Args: " . implode(", ", $entry['args']) . "\n";
     }
+    $output .= '<br />';
   }
   return $output;
 }
