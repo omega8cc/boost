@@ -296,7 +296,13 @@ function boost_exit($destination = NULL) {
     }
   }
   // Set watchdog error if headers already sent
-  if (BOOST_ASYNCHRONOUS_OUTPUT && $GLOBALS['_boost_cache_this'] && headers_sent($filename, $linenum) && !boost_headers_contain('Location: ') && BOOST_VERBOSE >= 7) {
+  if (   BOOST_ASYNCHRONOUS_OUTPUT
+      && isset($GLOBALS['_boost_cache_this'])
+      && $GLOBALS['_boost_cache_this']
+      && headers_sent($filename, $linenum)
+      && !boost_headers_contain('Location: ')
+      && BOOST_VERBOSE >= 7
+      ) {
     watchdog('boost', 'boost_exit() Debug: Headers already sent in @filename on line @linenum. Asynchronous Operation will not be used.', array('@filename' => $filename, '@linenum' => $linenum));
   }
 }
