@@ -3849,6 +3849,21 @@ function boost_backtrace($args = TRUE) {
   return $output;
 }
 
+/**
+ * Get the lenth of a string in bytes
+ *
+ * @param $string
+ *   get string length
+ */
+function boost_strlen($string) {
+  if (function_exists('mb_strlen')) {
+    return mb_strlen($string, '8bit');
+  }
+  else {
+    return strlen($string);
+  }
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // PHP 4.x compatibility
 
@@ -4215,7 +4230,7 @@ function boost_async_opp($output, $wait = TRUE, $content_type = "text/html; char
   // Calculate Content Lenght
   if ($length == 0) {
     $output .= "\n";
-    $length = (mb_strlen($output, '8bit')-1);
+    $length = (boost_strlen($output)-1);
   }
   // Prime php for background operations
   $loop = 0;
