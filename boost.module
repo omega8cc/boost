@@ -1576,7 +1576,7 @@ function boost_is_cacheable($path) {
 
   // Invoke hook_boost_is_cacheable($path)
   foreach (module_implements('boost_is_cacheable') as $module) {
-    if (($result = module_invoke($module, 'boost_is_cacheable', $path)) != NULL) {
+    if (($result = module_invoke($module, 'boost_is_cacheable', $path)) !== NULL) {
       if (!$result) {
         return FALSE;
       }
