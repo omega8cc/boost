@@ -1596,6 +1596,7 @@ function boost_is_cacheable($path) {
   //  the user login/registration/password pages
   //  any admin pages
   //  comment reply pages
+  //  any shopping cart pages
   //  node add page
   //  URL variables that contain / or \
   //  if incoming URL contains '..' or null bytes
@@ -1604,6 +1605,7 @@ function boost_is_cacheable($path) {
       || preg_match('!^user/(login|register|password)!', $normal_path)
       || preg_match('!^admin!', $normal_path)
       || preg_match('!comment/reply$!', $normal_path)
+      || preg_match('!^cart!', $normal_path)
       || preg_match('!^node/add!', $normal_path)
       || preg_match('!^openid!', $normal_path)
       || strpos($GLOBALS['_boost_query'], '/')
