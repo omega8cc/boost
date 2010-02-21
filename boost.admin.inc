@@ -203,7 +203,7 @@ function boost_admin_boost_performance_page() {
     '#type'          => 'checkbox',
     '#title'         => t('Do not cache if there is an alias for this URL.'),
     '#default_value' => variable_get('boost_cache_url_alais_src', FALSE),
-    '#description'   => t('Enableing this will prevent Boost from cacheing node/8 if node/8 is also mapped to a path like /about-us. If using Global Redirect enableing this is a good idea.'),
+    '#description'   => t('Enabling this will prevent Boost from caching node/8 if node/8 is also mapped to a path like /about-us. If using Global Redirect enabling this is a good idea.'),
   );
   $form['cacheability']['boost_cacheability_option'] = array(
     '#type'          => 'radios',
