@@ -1488,3 +1488,19 @@ function boost_update_6126() {
     return array(array('success' => TRUE, 'query' => t('boost-gzip-cookie-test.html.gz did not need to be reset')));
   }
 }
+
+/**
+ * Update 6127 - Fix spelling error in variable name
+ */
+function boost_update_6127() {
+  if (variable_get('boost_cache_url_alias_src', -10) == -10) {
+    $value = variable_get('boost_cache_url_alais_src', FALSE);
+    variable_del('boost_cache_url_alais_src');
+    variable_set('boost_cache_url_alias_src', $value);
+    return array(array('success' => TRUE, 'query' => t('boost_cache_url_alais_src renamed to boost_cache_url_alias_src')));
+  }
+  else {
+    variable_del('boost_cache_url_alais_src');
+    return array(array('success' => TRUE, 'query' => t('boost_cache_url_alais_src removed; boost_cache_url_alias_src already set')));
+  }
+}
