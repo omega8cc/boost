@@ -1189,7 +1189,7 @@ function boost_block($op = 'list', $delta = 0, $edit = array()) {
               || !module_exists('statistics')
               )) {
             $block = array();
-            $block['subject'] = 'Popular content';
+            $block['subject'] = t('Popular content');
             $block['content'] = '<div id="boost-stats"></div>' . boost_stats_generate($filename);
           }
           elseif (!variable_get('boost_block_show_stats', FALSE)) {
