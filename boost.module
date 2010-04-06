@@ -3707,7 +3707,7 @@ function _boost_rmdir_rf($dirname, $flush = TRUE, $first = TRUE, $nuke = FALSE, 
   $now = _boost_microtime_float();
   $total_time = $now - $timer;
   if ($total_time > 59) {
-    $total_time = $now;
+    $timer = $now;
     //Ping Database to keep connection alive
     db_query("SHOW PROCESSLIST");
   }
