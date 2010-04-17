@@ -1275,7 +1275,7 @@ function boost_update_robots_txt($enable, $verbose = TRUE) {
                            t('Unable to write to robots.txt'));
       }
     }
-    else if (!$enable && stristr($text, $payload)) {
+    elseif (!$enable && stristr($text, $payload)) {
       // Boost disabled: Remove payload from file
       $text = preg_replace('|^[^D]*Disallow:[ ]*/boost_stats.php[^\n]*[\n]|im', "", $text);
       $result = file_put_contents($filename, $text);
