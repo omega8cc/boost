@@ -502,7 +502,9 @@ function boost_set_base_dir_in_array(&$data) {
  * Implementation of hook_nodeapi(). Acts on nodes defined by other modules.
  */
 function boost_nodeapi(&$node, $op, $teaser = NULL, $page = NULL) {
-  if (!BOOST_ENABLED) return;
+  if (!BOOST_ENABLED || !isset($node->nid)) {
+    return;
+  }
   $data[] = array('page_callback' => 'node', 'page_id' => $node->nid);
   boost_set_base_dir_in_array($data);
 
