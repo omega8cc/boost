@@ -677,7 +677,10 @@ function boost_get_base_urls(&$node) {
   // Get list of URL's if using domain access
   $base_urls = array();
   if (module_exists('domain') && isset($node->domains)) {
-    foreach ($node->domains as $domain_id) {
+    foreach ($node->domains as $key => $domain_id) {
+      if ($key != $domain_id) {
+        continue;
+      }
       $domain = domain_lookup($domain_id);
       if ($domain['valid'] == 1) {
         if (isset($domain['path'])) {
