@@ -865,6 +865,12 @@ function boost_admin_boost_performance_page() {
     '#default_value' => variable_get('boost_ssl_bypass', TRUE),
     '#description'   => t('Ticking this is recommended if you use the securepages module.'),
   );
+  $form['htaccess']['boost_force_utf8'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Add "AddDefaultCharset utf-8" to the htaccess rules'),
+    '#default_value' => variable_get('boost_force_utf8', TRUE),
+    '#description'   => t('Depending on your i18n settings you might want this disabled or enabled.'),
+  );
   $form['htaccess']['boost_ignore_htaccess_warning'] = array(
     '#type'          => 'checkbox',
     '#title'         => t('Ignore .htaccess warning'),
@@ -1078,7 +1084,9 @@ function boost_admin_generate_htaccess($server_name = '%{SERVER_NAME}', $documen
   // Generate the rules
   $string  = "  ### BOOST START ###\n";
   if (BOOST_CACHE_HTML) {
-    $string .= "  AddDefaultCharset utf-8\n";
+    if (variable_get('boost_force_utf8', TRUE)) {
+      $string .= "  AddDefaultCharset utf-8\n";
+    }
   }
     switch (variable_get('boost_apache_etag', 0)) {
       case 0:
