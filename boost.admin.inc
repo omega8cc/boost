@@ -530,7 +530,7 @@ function boost_admin_boost_performance_page() {
     '#default_value' => variable_get('boost_insert_node_on_creation', FALSE),
     '#description'   => t('Useful for the crawler, insert a "not cached" entry into the db on node creation; fully supports the domain access module.'),
   );
-  $form['advanced']['boost_store_url_percent'] = array(
+  $form['advanced']['boost_store_url_percent_enc'] = array(
     '#type'          => 'checkbox',
     '#title'         => t('Store the URL in the database as a percent encoded string.'),
     '#default_value' => variable_get('boost_store_url_percent_enc', FALSE),
