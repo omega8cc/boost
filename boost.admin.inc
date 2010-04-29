@@ -530,6 +530,12 @@ function boost_admin_boost_performance_page() {
     '#default_value' => variable_get('boost_insert_node_on_creation', FALSE),
     '#description'   => t('Useful for the crawler, insert a "not cached" entry into the db on node creation; fully supports the domain access module.'),
   );
+  $form['advanced']['boost_store_url_percent'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Store the URL in the database as a percent encoded string.'),
+    '#default_value' => variable_get('boost_store_url_percent_enc', FALSE),
+    '#description'   => t('Convert any characters in the URI that can be percent encoded. See <a href="@link">RFC 3986 Section 2</a> for more info. Runs this code on the URL: urldecode(rawurlencode($url))', array('@link' => 'http://tools.ietf.org/html/rfc3986#section-2')),
+  );
   $form['advanced']['boost_permissions_file'] = array(
     '#type'          => 'textfield',
     '#title'         => t('Files: Enter in a 4 digit number (octal) that will be used by !link. Example 0664', array('!link' => l(t('chmod()'), 'http://php.net/chmod'))),
