@@ -707,7 +707,7 @@ function boost_get_base_urls(&$node) {
       $domains[$domain_id] = $domain_id;
     }
     // Get domains from database
-    foreach (boost_get_domains(&$node) as $domain_id) {
+    foreach (boost_get_domains($node) as $domain_id) {
       $domains[$domain_id] = $domain_id;
     }
     // Get aliases and set base url
