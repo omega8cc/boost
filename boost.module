@@ -934,8 +934,10 @@ function boost_expire_node($node, $nid = 0) {
     // Get new terms from node object
     if (!empty($node->taxonomy)) {
       foreach ($node->taxonomy as $vocab) {
-        foreach ($vocab as $term) {
-          $tids[$term] = $term;
+        if (is_array($vocab)) {
+          foreach ($vocab as $term) {
+            $tids[$term] = $term;
+          }
         }
       }
     }
