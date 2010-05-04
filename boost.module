@@ -223,7 +223,7 @@ function boost_views_pre_render(&$view) {
     foreach ($view->result as $item) {
       if (is_numeric($item->nid)) {
 
-        $node = boost_node_get_basics($nid);
+        $node = boost_node_get_basics($item->nid);
         if (isset($node->type)) {
           $info = array(
             'child_page_callback' => 'node',
@@ -3808,7 +3808,7 @@ function _boost_get_menu_router() {
 
   // Handle nodes
   if ($args[0] == 'node' && is_numeric($args[1])) {
-    $node = boost_node_get_basics($nid);;
+    $node = boost_node_get_basics($args[1]);;
     $router_item['page_callback'] = 'node';
     $router_item['page_id'] = $args[1];
     if ($node) {
