@@ -3805,6 +3805,10 @@ function _boost_get_menu_router() {
 
   // Get all args
   $args = arg();
+  // Prevent array warnings
+  $args[0] = empty($args[0]) ? '' : $args[0];
+  $args[1] = empty($args[1]) ? '' : $args[1];
+  $args[2] = empty($args[2]) ? '' : $args[2];
 
   // Handle nodes
   if ($args[0] == 'node' && is_numeric($args[1])) {
