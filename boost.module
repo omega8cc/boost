@@ -658,6 +658,11 @@ function boost_nodeapi(&$node, $op, $teaser = NULL, $page = NULL) {
  * table.
  */
 function _boost_cache_insert() {
+  static $processed = FALSE;
+  if ($processed) {
+    return;
+  }
+
   global $_boost;
   if (empty($_boost['new_nodes'])) {
     return FALSE;
@@ -700,6 +705,7 @@ function _boost_cache_insert() {
       boost_put_db($filename, $expire, $lifetime, $push, $router_item, $timer, $timer_average, $extension, $url, $file_path);
     }
   }
+  $processed = TRUE;
 }
 
 /**
@@ -775,6 +781,11 @@ function boost_get_base_urls(&$node) {
  * cached views for newly created node. Expires the outdated views from the cache.
  */
 function _boost_view_insert() {
+  static $processed = FALSE;
+  if ($processed) {
+    return;
+  }
+
   global $_boost;
   if (empty($_boost['new_nodes'])) {
     return FALSE;
@@ -891,6 +902,7 @@ function _boost_view_insert() {
       watchdog('boost', 'Debug: _boost_view_insert() <br />!views Views Searched; !hits of them contain the new node and where thus flushed. As a result of this !flushed pages where expired from the boost cache.', array('!views' => $number_views, '!hits' => $number_hits, '!flushed' => $flushed));
     }
   }
+  $processed = TRUE;
 }
 
 /**
