@@ -1908,6 +1908,7 @@ function boost_is_cacheable($path) {
       || strpos($full, '..') !== FALSE
       || strpos($full, "\0") !== FALSE
       || count(explode('/', $path)) > BOOST_MAX_PATH_DEPTH
+      || !empty($_GET['destination'])
     ) {
     return FALSE;
   }
