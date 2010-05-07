@@ -1813,14 +1813,13 @@ function _boost_ob_handler() {
       $filename = boost_file_path($GLOBALS['_boost_path'], TRUE, BOOST_FILE_EXTENSION);
     }
 
-    // Remove dead items from the file cache
+    // Remove dead items from the cache (file & db)
     if ($filename) {
       $files = array(array('filename' => $filename));
       boost_cache_kill($files, TRUE);
+      boost_remove_db($files);
     }
   }
-
-
 }
 
 /**
