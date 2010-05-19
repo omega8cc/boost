@@ -1862,6 +1862,10 @@ function _boost_ob_handler() {
 
     // Get Redirect from DB for current path; Old URL.
     $old_path_system = $GLOBALS['_boost_path'];
+    if ($new_path_system === $old_path_system) {
+      // drupal goto was a false redirect, do nothing in short.
+      $old_path_system .= '?';
+    }
     if (module_exists('path_redirect')) {
       $path_redirects = boost_path_redirect_load(array('source' => $GLOBALS['_boost_path']));
       if (isset($path_redirects)) {
