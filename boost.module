@@ -1847,7 +1847,7 @@ function _boost_ob_handler() {
     $types = array_pop($types);
 
     // Get Location path from headers; New URL
-    $new_path_system = '';
+    $new_path_system = '?';
     foreach (headers_list() as $value) {
       $url = explode('Location: ', $value);
       if (!isset($url[1])) {
