@@ -812,6 +812,7 @@ function boost_admin_boost_performance_page() {
   $options = array('%{DOCUMENT_ROOT}' => '%{DOCUMENT_ROOT}', $document_root => $document_root); // initial options
   $rejects = array('SCRIPT_FILENAME', 'DOCUMENT_ROOT'); // values to ignore
   $output = boost_array_find($document_root, $_SERVER, $rejects); //search for values that match getcwd
+  $description_extra = '';
   if (!empty($output)) {
     foreach ($output as $key => $value) {
       $temp = '%{ENV:' . $key . '}';
@@ -824,11 +825,11 @@ function boost_admin_boost_performance_page() {
   if ($_SERVER['DOCUMENT_ROOT'] == $document_root) {
     $best = '%{DOCUMENT_ROOT}';
   }
-  $description = t('Value of %best is recommended for this server.', array('%best' => $best)) . ' ';
-  if (!isset($best)) {
+  elseif (!isset($best)) {
     $best = $document_root;
-    $description .= t('Please open an boost issue on Drupal.org, since apache and php are not configured correctly.');
+    $description_extra = t('Please open an boost issue on Drupal.org, since apache and php are not configured correctly.');
   }
+  $description = t('Value of %best is recommended for this server.', array('%best' => $best)) . ' ' . $description_extra;
   $form['htaccess']['boost_document_root'] = array(
     '#type'          => 'radios',
     '#title'         => t('Document Root'),
