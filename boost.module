@@ -4040,6 +4040,10 @@ function _boost_get_menu_router() {
   }
   // Load the menu item, page is not one of the defaults (nid, tid, uid).
   $router_item = menu_get_item();
+  if (!isset($router_item['page_id'])) {
+    $router_item['page_id'] = '';
+  }
+
   // Handle views
   if ($router_item['page_callback'] == 'views_page') {
     $router_item['page_callback'] = 'view';
