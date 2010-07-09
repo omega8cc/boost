@@ -492,6 +492,12 @@ function boost_admin_boost_performance_page() {
     '#maxlength'     => 255,
     '#description'   => t('The name of a PHP function used to pre-process the contents of each page before writing them out to static files. The function is called with the contents of the page passed as a string argument, and its return value is used as the data written out to the disk.'),
   );
+  $form['advanced']['boost_exit_in_hook_exit'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Exit() inside of boost_exit'),
+    '#default_value' => BOOST_EXIT_IN_HOOK_EXIT,
+    '#description'   => t('If using ubercart disable this setting.'),
+  );
   $form['advanced']['boost_aggressive_cookie'] = array(
     '#type'          => 'checkbox',
     '#title'         => t('Aggressive setting of the boost cookie'),
