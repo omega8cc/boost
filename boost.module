@@ -863,6 +863,9 @@ function _boost_view_insert($debug = FALSE, $nid = FALSE) {
     foreach ($views as $boost) {
       unset($view);
       $view = views_get_view($boost['page_type'], TRUE);
+      if (!is_object($view)) {
+        continue;
+      }
       $view->set_display($boost['page_id']);
       // Filter to just this nid
       $view->add_item($boost['page_id'], 'filter', 'node', 'nid', $options);
