@@ -1363,6 +1363,8 @@ function boost_block($op = 'list', $delta = 0, $edit = array()) {
           'cache'  => BLOCK_NO_CACHE,
         ),
       );
+      break;
+
     case 'configure':
       if ($delta == 'stats') {
         $form['boost_block_show_stats'] = array(
@@ -1379,12 +1381,14 @@ function boost_block($op = 'list', $delta = 0, $edit = array()) {
         return $form;
       }
       break;
+
     case 'save':
       if ($delta == 'stats') {
         variable_set('boost_block_show_stats', $edit['boost_block_show_stats']);
         variable_set('boost_block_cache_stats_block', $edit['boost_block_cache_stats_block']);
       }
       break;
+
     case 'view':
       $block = array();
       switch ($delta) {
