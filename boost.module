@@ -2454,7 +2454,7 @@ function boost_cache_flush_by_filename($filenames, $force_flush = FALSE) {
     foreach ($filenames as $filename) {
       $files[] = array('filename' => $filename);
     }
-    $counter = boost_cache_kill($files);
+    $counter = boost_cache_kill($files, $force_flush);
     if (BOOST_VERBOSE >= 9 && isset($_boost['verbose_option_selected']['boost_cache_flush_filename'])) {
       watchdog('boost', 'Debug: boost_cache_flush_by_filename() <br />Following files where flushed: <br />!list', array('!list' => implode('<br />', $filenames)));
     }
