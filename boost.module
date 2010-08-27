@@ -2156,14 +2156,13 @@ function boost_get_content_type() {
  * returning by examining the HTTP headers that have been output so far.
  */
 function boost_get_http_status() {
-  $headers = explode("\n", drupal_get_headers());
-  preg_match('!^.*\s+(\d+)!', array_pop($headers), $matches);
-  if (isset($matches[1])) {
-    return $matches[1];
+  foreach (explode("\n", drupal_get_headers()) as $header) {
+    preg_match('!^HTTP\/.*?\s+(\d+)!', $header, $matches);
+    if (isset($matches[1])) {
+      return (int) $matches[1];
+    }
   }
-  else {
-    return 200;
-  }
+  return 200;
 }
 
 function boost_headers_contain($text) {
