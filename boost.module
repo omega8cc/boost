@@ -633,7 +633,7 @@ function boost_cron() {
   global $_boost;
 
   // Check for new views on cron
-  if (BOOST_VIEWS_LIST_BEHAVIOR == 0) {
+  if (module_exists('views') && BOOST_VIEWS_LIST_BEHAVIOR == 0) {
     $defaults = boost_views_generate_default_list();
     variable_set('boost_views_list_default', $defaults);
   }
@@ -1186,7 +1186,7 @@ function boost_expire_node($node, $nid = 0, $debug = FALSE) {
       }
     }
     // See if the taxonony/term/% path is a view containing domain access restrictions
-    if (module_exists('domain')) {
+    if (module_exists('domain') && module_exists('views')) {
       $list = boost_views_get_valid_list();
       foreach ($list as $hash => $enabled) {
         $info = explode(' - ', $hash);
