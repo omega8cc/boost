@@ -1303,7 +1303,7 @@ function boost_admin_generate_htaccess($server_name = '%{HTTP_HOST}', $document_
   if (BOOST_AGGRESSIVE_GZIP) {
     $string .= "\n";
     $string .= "  # Gzip Cookie Test\n";
-    $string .= "  RewriteRule boost-gzip-cookie-test\.html  $cache_dir$permanent_dir_gzip" . "boost-gzip-cookie-test\.html\.gz [L,T=text/html]\n";
+    $string .= "  RewriteRule ^(.*)boost-gzip-cookie-test\.html  $1$cache_dir$permanent_dir_gzip" . "boost-gzip-cookie-test\.html\.gz [L,T=text/html]\n";
   }
   if (BOOST_CACHE_CSS || BOOST_CACHE_JS) {
     if (BOOST_GZIP) {
