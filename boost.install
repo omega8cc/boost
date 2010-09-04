@@ -350,7 +350,7 @@ function boost_chk_htaccess_doc($htaccess) {
     }
   }
   if (BOOST_GZIP && BOOST_AGGRESSIVE_GZIP) {
-    if (!strstr($htaccess, "RewriteRule boost-gzip-cookie-test\.")) {
+    if (!strstr($htaccess, "RewriteRule ^(.*)boost-gzip-cookie-test\.")) {
       return FALSE;
     }
     $rules = 1;
