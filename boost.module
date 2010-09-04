@@ -2220,7 +2220,7 @@ function boost_is_cacheable($path) {
   if (   $normal_path == 'user'
       || preg_match('!^user/(login|register|password|reset)!', $normal_path)
       || preg_match('!^admin!', $normal_path)
-      || preg_match('!comment/reply$!', $normal_path)
+      || preg_match('!^comment/reply!', $normal_path)
       || preg_match('!boost_stats.php$!', $normal_path)
       || preg_match('!^cart!', $normal_path)
       || preg_match('!^node/add!', $normal_path)

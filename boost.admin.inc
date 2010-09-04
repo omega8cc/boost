@@ -976,31 +976,34 @@ function boost_admin_boost_performance_page() {
  * submit boost_admin_boost_performance_page form submissions.
  */
 function boost_admin_boost_performance_page_submit($form, &$form_state) {
-  $op = isset($form_state['values']['op']) ? $form_state['values']['op'] : '';
-  $key = 'boost_views_list_custom';
+  // Skip if views not enabled
+  if (module_exists('views')) {
+    $key = 'boost_views_list_custom';
+    $op = isset($form_state['values']['op']) ? $form_state['values']['op'] : '';
 
-  if ($op == t('Reset to defaults')) {
-    variable_del($key);
-  }
-  else {
-    $defaults = boost_views_generate_default_list();
-    $new = $form_state['values'][$key];
-    $disable = array_diff($defaults, $new);
-    $enable = array_diff($new, $defaults);
-    $values = $enable;
-    foreach ($disable as $hash => $value) {
-      $values[$hash] = $new[$hash];
-    }
-    unset($values['line-break']);
-
-    if ($values) {
-      variable_set($key, $values);
-    }
-    else {
+    if ($op == t('Reset to defaults')) {
       variable_del($key);
     }
+    else {
+      $defaults = boost_views_generate_default_list();
+      $new = $form_state['values'][$key];
+      $disable = array_diff($defaults, $new);
+      $enable = array_diff($new, $defaults);
+      $values = $enable;
+      foreach ($disable as $hash => $value) {
+        $values[$hash] = $new[$hash];
+      }
+      unset($values['line-break']);
+
+      if ($values) {
+        variable_set($key, $values);
+      }
+      else {
+        variable_del($key);
+      }
+    }
+    unset($form_state['values'][$key]);
   }
-  unset($form_state['values'][$key]);
 }
 
 /**
