@@ -31,7 +31,7 @@
   </FilesMatch>
 
   # Gzip Cookie Test
-  RewriteRule ^(.*)boost-gzip-cookie-test\.html  $1cache/perm/boost-gzip-cookie-test\.html\.gz [L,T=text/html,E=no-gzip:1]
+  RewriteRule ^(.*)boost-gzip-cookie-test\.html cache/perm/boost-gzip-cookie-test\.html\.gz [L,T=text/html,E=no-gzip:1]
 
   # GZIP - Cached css & js files
   RewriteCond %{HTTP_COOKIE} !(boost-gzip)
