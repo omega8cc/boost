@@ -421,6 +421,14 @@ function boost_init() {
   $parts['host'] = strtolower($parts['host']);
   $base_url = boost_glue_url($parts);
 
+  // Make sure this is the correct domain
+  // Only works if $base_url is set in settings.php
+  if (strcmp($parts['host'], strtolower($_SERVER['HTTP_HOST'])) != 0) {
+    $GLOBALS['conf']['cache'] = CACHE_DISABLED;
+    $GLOBALS['_boost_cache_this'] = FALSE;
+    return;
+  }
+
   // Check if Drupal is started from index.php - could cause problems with other
   // contrib modules like ad module.
   if (strpos($_SERVER['SCRIPT_FILENAME'], 'index.php') !== FALSE) {
