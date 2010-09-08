@@ -1424,8 +1424,9 @@ function boost_update_robots_txt($enable, $verbose = TRUE) {
       $result = file_put_contents($filename, $text . "\n" . $payload . "\n");
       if ($verbose) {
         drupal_set_message($result ?
-                           t('robots.txt patched for usage with boost') :
-                           t('Unable to write to robots.txt'));
+          t('robots.txt patched for usage with boost') :
+          t('Unable to write to robots.txt')
+        );
       }
     }
     elseif (!$enable && stristr($text, $payload)) {
