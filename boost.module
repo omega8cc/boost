@@ -3524,19 +3524,19 @@ function boost_put_settings_db($lifetime, $push, $router_item, $scope) {
     case 0:
       db_query("UPDATE {boost_cache_settings} SET lifetime = %d, push = %d WHERE page_callback = '%s' AND page_type = '%s' AND base_dir = '%s' AND page_id = '%s'", $lifetime, $push, $router_item['page_callback'], $router_item['page_type'], BOOST_FILE_PATH, $router_item['page_id']);
       if (!db_affected_rows()) {
-        @db_query("INSERT INTO {boost_cache_settings} (csid, lifetime, push, page_callback, page_type, base_dir, page_id) VALUES (NULL, %d, %d, '%s', '%s', '%s', '%s')", $lifetime, $push, $router_item['page_callback'], $router_item['page_type'], BOOST_FILE_PATH, $router_item['page_id']);
+        @db_query("INSERT INTO {boost_cache_settings} (lifetime, push, page_callback, page_type, base_dir, page_id) VALUES (%d, %d, '%s', '%s', '%s', '%s')", $lifetime, $push, $router_item['page_callback'], $router_item['page_type'], BOOST_FILE_PATH, $router_item['page_id']);
       }
       break;
     case 1:
       db_query("UPDATE {boost_cache_settings} SET lifetime = %d, push = %d WHERE page_callback = '%s' AND page_type = '%s' AND base_dir = '%s' AND page_id = '0'", $lifetime, $push, $router_item['page_callback'], $router_item['page_type'], BOOST_FILE_PATH);
       if (!db_affected_rows()) {
-        @db_query("INSERT INTO {boost_cache_settings} (csid, lifetime, push, page_callback, page_type, base_dir, page_id) VALUES (NULL, %d, %d, '%s', '%s', '%s', '%s')", $lifetime, $push, $router_item['page_callback'], $router_item['page_type'], BOOST_FILE_PATH, 0);
+        @db_query("INSERT INTO {boost_cache_settings} (lifetime, push, page_callback, page_type, base_dir, page_id) VALUES (%d, %d, '%s', '%s', '%s', '%s')", $lifetime, $push, $router_item['page_callback'], $router_item['page_type'], BOOST_FILE_PATH, 0);
       }
       break;
     case 2:
       db_query("UPDATE {boost_cache_settings} SET lifetime = %d, push = %d WHERE page_callback = '%s' AND page_type = '0' AND base_dir = '%s' AND page_id = '0'", $lifetime, $push, $router_item['page_callback'], BOOST_FILE_PATH);
       if (!db_affected_rows()) {
-        @db_query("INSERT INTO {boost_cache_settings} (csid, lifetime, push, page_callback, page_type, base_dir, page_id) VALUES (NULL, %d, %d, '%s', '%s', '%s', '%s')", $lifetime, $push, $router_item['page_callback'], '0', BOOST_FILE_PATH, 0);
+        @db_query("INSERT INTO {boost_cache_settings} (lifetime, push, page_callback, page_type, base_dir, page_id) VALUES (%d, %d, '%s', '%s', '%s', '%s')", $lifetime, $push, $router_item['page_callback'], '0', BOOST_FILE_PATH, 0);
       }
       break;
   }
