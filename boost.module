@@ -4401,12 +4401,18 @@ function _boost_get_menu_router($path = NULL, $get_array = NULL, $reset = FALSE)
 
   // Get extra arguments
   $menu_args = arg(NULL, $router_item['path']);
+  $diff = array();
   foreach ($args as $key => $value) {
     if (!empty($value) && $value !== $menu_args[$key] && $menu_args[$key] !== '%') {
       $diff[] = $value;
     }
   }
-  $router_item['extra_arguments'] = implode('/', $diff);
+  if (!empty($diff)) {
+    $router_item['extra_arguments'] = implode('/', $diff);
+  }
+  else {
+    $router_item['extra_arguments'] = '';
+  }
   $router_item['query'] = $query;
   $router_item['page_number'] = $page;
 
