@@ -5544,10 +5544,10 @@ function boost_crawler_prune_table($expire) {
     return TRUE;
   }
   if ($expire && BOOST_LOOPBACK_BYPASS) {
-    db_query("DELETE cr FROM {boost_crawler} cr INNER JOIN {boost_cache} AS ca ON cr.hash=ca.hash_url WHERE ca.expire BETWEEN 1 AND 434966399 OR ca.expire > %d", BOOST_TIME);
+    db_query("DELETE cr FROM {boost_crawler} cr USING {boost_cache} AS ca WHERE cr.hash=ca.hash_url AND ca.expire BETWEEN 1 AND 434966399 OR ca.expire > %d", BOOST_TIME);
   }
   else {
-    db_query("DELETE cr FROM {boost_crawler} cr INNER JOIN {boost_cache} AS ca ON cr.hash=ca.hash_url WHERE ca.expire BETWEEN 1 AND 434966399 OR ca.expire > 434966400");
+    db_query("DELETE cr FROM {boost_crawler} cr USING {boost_cache} AS ca WHERE cr.hash=ca.hash_url AND ca.expire BETWEEN 1 AND 434966399 OR ca.expire > 434966400");
   }
   variable_set('boost_crawl_prune_table', TRUE);
   return FALSE;
