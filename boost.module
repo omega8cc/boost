@@ -3759,7 +3759,7 @@ function boost_cache_write($filename, $buffer) {
       $data = $buffer;
     }
     foreach ($values as $filename) {
-      if (!empty(BOOST_SET_FILE_ENCODING)) {
+      if (BOOST_SET_FILE_ENCODING != '') {
         $filename = iconv("UTF-8", BOOST_SET_FILE_ENCODING, $filename);
       }
       if (!_boost_mkdir_p(dirname($filename))) {
