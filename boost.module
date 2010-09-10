@@ -4519,7 +4519,10 @@ function _boost_get_menu_router($path = NULL, $get_array = NULL, $reset = FALSE)
   $router_item['page_type'] = '';
   $router_item['page_id'] = '';
   // Load the menu item
-  $router_item += menu_get_item($path);
+  $item = menu_get_item($path);
+  if (is_array($item)) {
+    $router_item += $item;
+  }
 
   // Get all args
   $args = arg($path);
