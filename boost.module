@@ -2546,6 +2546,12 @@ function boost_cache_expire_derivative($paths, $both = FALSE, $force_flush = FAL
     // Given path
     $expire[] = $path;
 
+    // Add the empty front page path if this is the alias
+    if ($path == variable_get('site_frontpage', 'node')) {
+      $expire[] = '';
+      $expire[] = 'rss.xml';
+    }
+
     // Special front page feed handling
     if (BOOST_CACHE_XML && ($path == '' || $path == '<front>')) {
       $expire[] = 'rss.xml';
