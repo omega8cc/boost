@@ -3277,9 +3277,7 @@ function boost_gzip_test_ready() {
   }
 }
 
-var boost_xhr = $.ajax({
-  url: Drupal.settings.basePath + "boost-gzip-cookie-test.html",
-});
+var boost_xhr = $.ajax({url: Drupal.settings.basePath + "boost-gzip-cookie-test.html"});
 boost_gzip_test_ready();
 </script>' . "\n"));
     }
