@@ -5568,7 +5568,7 @@ function boost_crawler_add_alias_to_table() {
   $loop_counter = 0;
 
   // Don't crawl user pages if anonymous can't access them
-  $hit_users = db_result(db_query("SELECT * FROM {permission} INNER JOIN {role} USING (rid) WHERE (name = 'anonymous user' OR rid = 1) AND perm LIKE '%%access user profiles%%'"));
+  $hit_users = db_result(db_query("SELECT * FROM {permission} AS p INNER JOIN {role} AS r USING (rid) WHERE (r.name = 'anonymous user' OR r.rid = 1) AND p.perm LIKE '%%access user profiles%%'"));
   if (!$hit_users) {
     $extra = "AND ua.src NOT LIKE 'user/%%'";
   }
