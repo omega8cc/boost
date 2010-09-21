@@ -112,7 +112,7 @@ function boost_requirements($phase) {
       else {
         $robots = FALSE;
       }
-
+      boost_htaccess_cache_dir_put();
       foreach ($cache_directories as $cache_directory) {
         if (_boost_mkdir_p($cache_directory)) {
           $root_file = file_put_contents($cache_directory . '/' . variable_get('boost_root_file', '.boost'), $cache_directory);
