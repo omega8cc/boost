@@ -4604,7 +4604,7 @@ function _boost_get_menu_router($path = NULL, $get_array = NULL, $reset = FALSE)
   $router_item['page_number'] = $page;
 
   // Make sure page arguments is set and is an array
-  // Needed if views handles 404s
+  // Needed if view throws a 403
   if (!is_array($router_item['page_arguments'])) {
     $router_item['page_arguments'] = array($router_item['page_arguments']);
   }
