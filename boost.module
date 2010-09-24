@@ -1244,12 +1244,12 @@ function _boost_view_insert($debug = FALSE, $nid = FALSE) {
                 foreach ($rows as $id => $row) {
                   $table = $row['table'];
                   $field = $row['field'];
-                  $data = views_fetch_data($table);
-                  if (empty($data)) {
+                  $views_data = views_fetch_data($table);
+                  if (empty($views_data)) {
                     $broken = TRUE;
                     break 2;
                   }
-                  if (!isset($data[$field][$type])) {
+                  if (!isset($views_data[$field][$type])) {
                     $broken = TRUE;
                     break 2;
                   }
