@@ -825,6 +825,28 @@ function boost_cron() {
     }
   }
 
+  // Remove old domains if they are "inactive"
+  if (module_exists('domain')) {
+    $domains = domain_domains();
+    $old_domains = array();
+    foreach ($domains as $key => $value) {
+      if ($value['valid'] == 0) {
+        $old_domains[] = boost_cache_directory($value['subdomain'], FALSE);
+      }
+    }
+    if (!empty($old_domains)) {
+      $result = boost_db_multi_select_in('boost_cache', 'base_dir', "'%s'", $old_domains);
+      $files = array();
+      while ($row = db_fetch_array($result)) {
+        $files[] = array('filename' => $row['filename'], 'hash' => $row['hash']);
+      }
+      if (!empty($files)) {
+        boost_cache_kill($files, TRUE);
+        boost_remove_db($files);
+      }
+    }
+  }
+
   // Check for new views on cron
   if (module_exists('views') && BOOST_VIEWS_LIST_BEHAVIOR == 0) {
     $defaults = boost_views_generate_default_list();
