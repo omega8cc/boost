@@ -4801,6 +4801,12 @@ function _boost_get_menu_router($path = NULL, $get_array = NULL, $reset = FALSE)
     $router_item['page_arguments'] = array($router_item['page_arguments']);
   }
 
+  // Make sure function for menu callback is loaded.
+  // See menu_execute_active_handler()
+  if ($router_item['file']) {
+    require_once($router_item['file']);
+  }
+
   // Invoke hook_boost_menu_router($router_item)
   $modules = module_implements('boost_menu_router');
   // Make boosts built in hook the last one.
