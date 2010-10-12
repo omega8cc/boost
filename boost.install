@@ -259,7 +259,7 @@ function boost_requirements($phase) {
         if (!in_array('mod_headers', $modules)) {
           $requirements['boost_apache_headers'] = array(
             'title'       => $t('Boost'),
-            'description' => $t('The Apache module "mod_headers" is not available.  You must enable <a href="!link">mod_headers</a> for Apache.', array('!link' => 'http://httpd.apache.org/docs/trunk/mod/mod_headers.html')),
+            'description' => $t('The Apache module "mod_headers" is not available. Enable <a href="!link">mod_headers</a> for Apache if at all possible.', array('!link' => 'http://httpd.apache.org/docs/trunk/mod/mod_headers.html')),
             'severity'    => REQUIREMENT_WARNING,
             'value'       => $t('Apache module "mod_headers" is not installed.'),
           );
