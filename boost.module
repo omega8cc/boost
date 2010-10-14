@@ -1325,9 +1325,16 @@ function _boost_view_insert($debug = FALSE, $nid = FALSE) {
           }
         }
         // Free memory
-        $view->destroy();
+        if (isset($view) && is_object($view) && method_exists($view, 'destroy')) {
+          $view->destroy();
+        }
         unset($view);
       }
+      // Free memory
+      if (isset($view) && is_object($view) && method_exists($view, 'destroy')) {
+        $view->destroy();
+      }
+      unset($view);
       if ($domain_filter) {
         domain_reset_domain(TRUE);
       }
