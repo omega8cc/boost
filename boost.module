@@ -4026,6 +4026,7 @@ function boost_cache_write($filename, $buffer) {
         }
       }
       $tempfile = $filename . getmypid();
+      $oldfile = $tempfile . 'old';
       if (@file_put_contents($tempfile, $data) === FALSE) {
         if (BOOST_VERBOSE >= 3) {
           watchdog('boost', 'Unable to write temp file: %file<br /> Group ID: %gid<br /> User ID: %uid<br /> Current script owner: %user<br />', array('%file' => $tempfile, '%gid' => getmygid(), '%uid' => getmyuid(), '%user' => get_current_user()), WATCHDOG_WARNING);
@@ -4038,19 +4039,22 @@ function boost_cache_write($filename, $buffer) {
         }
         // Erase old file
         if (BOOST_OVERWRITE_FILE) {
-          @rename($filename, $tempfile . 'old');
+          // Keep old file around just in case rename fails
+          @rename($filename, $oldfile);
         }
         // Put temp file in its final location
         if (@rename($tempfile, $filename) === FALSE) {
+          // If rename failed then remove new file and put old file back
           @unlink($tempfile);
-          @rename($tempfile . 'old', $filename);
+          @rename($oldfile, $filename);
           if (BOOST_VERBOSE >= 5) {
             watchdog('boost', 'Unable to rename file: %temp  to  %file<br /> Group ID: %gid<br /> User ID: %uid<br /> Current script owner: %user<br />', array('%temp' => $tempfile, '%file' => $filename, '%gid' => getmygid(), '%uid' => getmyuid(), '%user' => get_current_user()), WATCHDOG_WARNING);
           }
           return FALSE;
         }
         elseif (BOOST_OVERWRITE_FILE) {
-          @unlink($tempfile . 'boost');
+          // Rename is sucessful; remove old file
+          @unlink($oldfile);
         }
       }
     }
