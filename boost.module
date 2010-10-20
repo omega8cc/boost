@@ -4718,10 +4718,10 @@ function boost_boost_menu_router($router_item) {
 
   // Try populating with the query string
   if (empty($router_item['page_type'])) {
-    $router_item['page_type'] = $query;
+    $router_item['page_type'] = $router_item['query'];
   }
   elseif (empty($router_item['page_id'])) {
-    $router_item['page_id'] = $query;
+    $router_item['page_id'] = $router_item['query'];
   }
 
   return $router_item;
