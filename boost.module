@@ -1327,12 +1327,16 @@ function _boost_view_insert($debug = FALSE, $nid = FALSE) {
         // Free memory
         if (isset($view) && is_object($view) && method_exists($view, 'destroy')) {
           $view->destroy();
+          // Fix views bug http://drupal.org/node/988680
+          unset($view->old_view);
         }
         unset($view);
       }
       // Free memory
       if (isset($view) && is_object($view) && method_exists($view, 'destroy')) {
         $view->destroy();
+        // Fix views bug http://drupal.org/node/988680
+        unset($view->old_view);
       }
       unset($view);
       if ($domain_filter) {
