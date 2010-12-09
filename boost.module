@@ -656,6 +656,45 @@ function boost_exit($destination = NULL) {
     boost_redirect_handler($destination);
   }
 
+  // 404, 403 dection and removal from the boost cache.
+  // Only run if user is anonymous.
+  if (empty($user->uid)) {
+    $status = boost_get_http_status();
+    if ($status == 404 || $status == 403) {
+      // Bail out of caching
+      $GLOBALS['_boost_cache_this'] = FALSE;
+
+      // Get content type
+      $types = boost_get_content_type();
+      $types = array_pop($types);
+
+      // Match extension
+      if (stristr($types, 'text/javascript')) {
+        $extension = BOOST_JSON_EXTENSION;
+      }
+      elseif (   stristr($types, 'application/rss')
+              || stristr($types, 'text/xml')
+              || stristr($types, 'application/rss+xml')
+                ) {
+        $extension = BOOST_JSON_EXTENSION;
+      }
+      elseif (stristr($types, 'text/html') && BOOST_CACHE_HTML) {
+        $extension = BOOST_FILE_EXTENSION;
+      }
+
+      // Get filename
+      if (!empty($extension)) {
+        $filename = boost_file_path($GLOBALS['_boost_path'], TRUE, $extension);
+        // Remove dead item from the cache (file & db);
+        if ($filename) {
+          $files = array(array('filename' => $filename));
+          boost_cache_kill($files, TRUE);
+          boost_remove_db($files);
+        }
+      }
+    }
+  }
+
   // Check that hook_exit() was invoked by drupal_goto() for a POST request:
   // Check that we're dealing with an anonymous visitor. and that some
   // session messages have actually been set during this page request:
@@ -2288,57 +2327,41 @@ function _boost_ob_handler() {
   }
 
   // Check the currently set content type and the HTTP response code. only cache
-  // 'text/*' pages that were output with a 200 OK status. If it didn't get a
-  // 200 then remove that entry from the cache.
+  // 'text/*' pages that were output with a 200 status number.
   if (!empty($decompressed_buffer)) {
     $status = boost_get_http_status();
     $types = boost_get_content_type();
     if (BOOST_VERBOSE >= 7 && isset($_boost['verbose_option_selected']['boost_ob_handler_info'])) {
       watchdog('boost', 'Debug: _boost_ob_handler() <br />HTTP Info: !status - !types <br />Path: !path <br />Content Container: !callback <br />Content Type: !type <br />ID: !id <br />Cache This: !cache.', array('!status' => $status, '!types' => implode(', ', $types), '!path' => boost_file_path($GLOBALS['_boost_path']), '!callback' => $router_item['page_callback'], '!type' => $router_item['page_type'], '!id' => $router_item['page_id'], '!cache' => $GLOBALS['_boost_cache_this'] ? 'TRUE' : 'FALSE'));
     }
+
+    // Bail out if we can not cache
+    if ($status != 200 || $GLOBALS['_boost_cache_this'] == FALSE) {
+      return;
+    }
+
+    // Check for corret types and cache accordingly
     $types = array_pop($types);
     if (stristr($types, 'text/javascript') && BOOST_CACHE_JSON) {
-      if ($status == 200 & $GLOBALS['_boost_cache_this']) {
-        if (BOOST_ASYNCHRONOUS_OUTPUT && !headers_sent()) {
-          boost_async_opp($buffer, FALSE, 'text/javascript; charset=utf-8');
-        }
-        boost_cache_set($GLOBALS['_boost_path'], $decompressed_buffer, BOOST_JSON_EXTENSION);
+      if (BOOST_ASYNCHRONOUS_OUTPUT && !headers_sent()) {
+        boost_async_opp($buffer, FALSE, 'text/javascript; charset=utf-8');
       }
-      elseif ($status == 404 || $status == 403) {
-        $filename = boost_file_path($GLOBALS['_boost_path'], TRUE, BOOST_JSON_EXTENSION);
-      }
+      boost_cache_set($GLOBALS['_boost_path'], $decompressed_buffer, BOOST_JSON_EXTENSION);
     }
     elseif ((stristr($types, 'application/rss') || stristr($types, 'text/xml') || stristr($types, 'application/rss+xml')) && BOOST_CACHE_XML) {
-      if ($status == 200 && $GLOBALS['_boost_cache_this']) {
-        if (BOOST_ASYNCHRONOUS_OUTPUT && !headers_sent()) {
-          boost_async_opp($buffer, FALSE, 'text/xml; charset=utf-8');
-        }
-        boost_cache_set($GLOBALS['_boost_path'], $decompressed_buffer, BOOST_XML_EXTENSION);
+      if (BOOST_ASYNCHRONOUS_OUTPUT && !headers_sent()) {
+        boost_async_opp($buffer, FALSE, 'text/xml; charset=utf-8');
       }
-      elseif ($status == 404 || $status == 403) {
-        $filename = boost_file_path($GLOBALS['_boost_path'], TRUE, BOOST_XML_EXTENSION);
-      }
+      boost_cache_set($GLOBALS['_boost_path'], $decompressed_buffer, BOOST_XML_EXTENSION);
     }
     elseif (stristr($types, 'text/html') && BOOST_CACHE_HTML) {
-      if ($status == 200 && $GLOBALS['_boost_cache_this']) {
-        if (BOOST_ASYNCHRONOUS_OUTPUT && !headers_sent()) {
-          boost_async_opp($buffer, FALSE, 'text/html; charset=utf-8');
-        }
-        boost_cache_set($GLOBALS['_boost_path'], $decompressed_buffer, BOOST_FILE_EXTENSION);
-        boost_cache_css_js_files($decompressed_buffer);
+      if (BOOST_ASYNCHRONOUS_OUTPUT && !headers_sent()) {
+        boost_async_opp($buffer, FALSE, 'text/html; charset=utf-8');
       }
-      elseif ($status == 404 || $status == 403) {
-        // Kill cache entry if it exists
-        $filename = boost_file_path($GLOBALS['_boost_path'], TRUE, BOOST_FILE_EXTENSION);
-      }
+      boost_cache_set($GLOBALS['_boost_path'], $decompressed_buffer, BOOST_FILE_EXTENSION);
+      // html output requires special handling of the aggregated js/css files.
+      boost_cache_css_js_files($decompressed_buffer);
     }
-  }
-
-  // Remove dead items from the cache (file & db); 404 & 403
-  if (!empty($filename)) {
-    $files = array(array('filename' => $filename));
-    boost_cache_kill($files, TRUE);
-    //boost_remove_db($files);
   }
 }
 
