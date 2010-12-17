@@ -1256,6 +1256,14 @@ function _boost_view_insert($debug = FALSE, $nid = FALSE) {
         continue;
       }
 
+      // Make sure the view is a valid display
+      if (empty($view->display[$boost['page_id']])) {
+        continue;
+      }
+
+      // Set view display
+      $view->set_display($boost['page_id']);
+
       $domains = array();
       $domain_filter = FALSE;
       if (module_exists('domain')) {
@@ -1285,6 +1293,11 @@ function _boost_view_insert($debug = FALSE, $nid = FALSE) {
           unset($view);
           $view = views_get_view($boost['page_type'], TRUE);
           if (!is_object($view)) {
+            continue;
+          }
+
+          // Make sure the view is a valid display
+          if (empty($view->display[$boost['page_id']])) {
             continue;
           }
         }
