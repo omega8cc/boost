@@ -1554,7 +1554,8 @@ function boost_expire_node($node, $nid = 0, $debug = FALSE) {
     foreach ($tids as $tid) {
       if (is_numeric($tid)) {
         if (BOOST_NO_DATABASE) {
-          $paths['term' . $tid] = 'taxonomy/term/' . $tid;
+          $term = taxonomy_get_term($tid);
+          $paths['term' . $tid] = taxonomy_term_path($term);
         }
         else {
           foreach ($base_dirs as $base_dir) {
