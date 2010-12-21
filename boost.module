@@ -2463,6 +2463,7 @@ function boost_is_cacheable($path) {
   //  filefield upload progress page
   //  URL variables that contain / or \
   //  if incoming URL contains '..' or null bytes or ://
+  //  if url contains #
   // Limit the maximum directory nesting depth of the path
   // Do not cache if destination is set
   if (   $normal_path == 'user'
@@ -2476,9 +2477,12 @@ function boost_is_cacheable($path) {
       || preg_match('!^filefield/progress/!', $normal_path)
       || strpos($GLOBALS['_boost_query'], '/')
       || strpos($GLOBALS['_boost_query'], "\\")
-      || strpos($full, '..') !== FALSE
-      || strpos($full, "\0") !== FALSE
-      || strpos($decoded, "://") !== FALSE
+      || strpos($full, '..')      !== FALSE
+      || strpos($full, "\0")      !== FALSE
+      || strpos($decoded, '://')  !== FALSE
+      || strpos($decoded, '#')    !== FALSE
+      || strpos($decoded, '..')   !== FALSE
+      || strpos($decoded, "\0")   !== FALSE
       || count(explode('/', $path)) > BOOST_MAX_PATH_DEPTH
       || !empty($_GET['destination'])
     ) {
