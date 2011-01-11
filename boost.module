@@ -1146,7 +1146,8 @@ function boost_get_base_urls(&$node, $reset = FALSE) {
         }
         if (is_array($domain['aliases'])) {
           foreach ($domain['aliases'] as $alias) {
-            if ($alias['redirect'] != 1) {
+            $alias['pattern'] = trim($alias['pattern']);
+            if ($alias['redirect'] != 1 && !empty($alias['pattern'])) {
               $temp_domain = array('scheme' => $domain['scheme'], 'subdomain' => $alias['pattern']);
               $base_urls[$domain_id][] = domain_get_path($temp_domain);
             }
