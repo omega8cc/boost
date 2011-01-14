@@ -10,13 +10,13 @@
 // Core API hooks
 
 /**
- * Implementation of hook_enable().
+ * Implements hook_enable().
  */
 function boost_enable() {
 }
 
 /**
- * Implementation of hook_disable().
+ * Implements hook_disable().
  */
 function boost_disable() {
   // Make sure that the static page cache is wiped when the module is disabled:
@@ -25,13 +25,13 @@ function boost_disable() {
 }
 
 /**
- * Implementation of hook_install().
+ * Implements hook_install().
  */
 function boost_install() {
 }
 
 /**
- * Implementation of hook_uninstall().
+ * Implements hook_uninstall().
  */
 function boost_uninstall() {
   // Clear variables
@@ -43,7 +43,7 @@ function boost_uninstall() {
 }
 
 /**
- * Implementation of hook_requirements().
+ * Implements hook_requirements().
  */
 function boost_requirements($phase) {
 }
