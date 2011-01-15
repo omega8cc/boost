@@ -1,6 +1,6 @@
 ; $Id$
 name = Boost
-description = Caches text as static files
+description = Caches generated output as a static file to be served directly from the webserver.
 package = Performance and scalability
 core = 7.x
 files[] = boost.module
