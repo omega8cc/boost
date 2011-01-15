@@ -126,24 +126,11 @@ function boost_admin_htaccess_settings() {
     '#default_value' => variable_get('boost_ssl_bypass', BOOST_SSL_BYPASS),
     '#description'   => t('Ticking this is recommended if you use the securepages module.'),
   );
-
-  $enabled_file_extensions = array();
-  $types = boost_get_storage_types();
-  foreach ($types as $title => $content_types) {
-    foreach ($content_types as $type => $values) {
-      if ($values['enabled']) {
-        $enabled_file_extensions[$values['extension']]['gzip'] = $values['gzip'];
-        if (empty($enabled_file_extensions[$values['extension']]['content_type'])) {
-          $enabled_file_extensions[$values['extension']]['content_type'] = $type;
-        }
-      }
-    }
-  }
   $form['htaccess']['boost_force_utf8'] = array(
     '#type'          => 'checkbox',
     '#title'         => t('Add "AddDefaultCharset utf-8" to the htaccess rules'),
     '#default_value' => variable_get('boost_force_utf8', BOOST_FORCE_UTF8),
-    '#description'   => t('Depending on your i18n settings you might want this disabled or enabled.') . boost_print_r($enabled_file_extensions),
+    '#description'   => t('Depending on your i18n settings you might want this disabled or enabled.'),
   );
 //   $form['htaccess']['boost_ignore_htaccess_warning'] = array(
 //     '#type'          => 'checkbox',
