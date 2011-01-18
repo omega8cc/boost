@@ -2401,10 +2401,12 @@ function boost_get_content_type() {
  * returning by examining the HTTP headers that have been output so far.
  */
 function boost_get_http_status() {
-  foreach (explode("\n", drupal_get_headers()) as $header) {
-    preg_match('!^HTTP\/.*?\s+(\d+)!', $header, $matches);
-    if (isset($matches[1])) {
-      return (int) $matches[1];
+  if (function_exists('drupal_get_headers')) {
+    foreach (explode("\n", drupal_get_headers()) as $header) {
+      preg_match('!^HTTP\/.*?\s+(\d+)!', $header, $matches);
+      if (isset($matches[1])) {
+        return (int) $matches[1];
+      }
     }
   }
   return 200;
