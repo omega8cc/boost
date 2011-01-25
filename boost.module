@@ -190,7 +190,7 @@ function boost_exit($destination = NULL) {
     // Attach extension to filename.
     $_boost['filename'] .= '.' . $_boost['matched_header_info']['extension'];
     // Write to file.
-    boost_write_file($_boost['directory'], $_boost['filename'], &$data);
+    boost_write_file($_boost['directory'], $_boost['filename'], $data);
   }
 }
 
