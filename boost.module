@@ -777,6 +777,12 @@ function boost_menu() {
     'access arguments' => array('access content'),
     'file path' => drupal_get_path('module', 'boost'),
   );
+  $items['boost_views.php'] = array(
+    'page callback' => 'boost_views_async',
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('access content'),
+    'file path' => drupal_get_path('module', 'boost'),
+  );
   return $items;
 }
 
@@ -1163,6 +1169,39 @@ function boost_get_base_urls(&$node, $reset = FALSE) {
 }
 
 /**
+ * Run views looking for new nodes.
+ */
+function boost_views_async() {
+
+  // Exit if no nodes
+  if (empty($_GET['new_nodes']) || !is_array($_GET['new_nodes'])) {
+    return;
+  }
+
+  // Exit if key does not match.
+  if (!empty($_GET['key'])) {
+    $key = variable_get('boost_crawler_key', FALSE);
+    if ($key == $_GET['key']) {
+      // Break connection so processing is async. Return key.
+      boost_async_opp($_GET['key']);
+    }
+    else {
+      return;
+    }
+  }
+  else {
+    return;
+  }
+
+  // Get list of nodes to process.
+  global $_boost;
+  $_boost['new_nodes'] = $_GET['new_nodes'];
+
+  // Process list.
+  _boost_views_runit();
+}
+
+/**
  * Shutdown function, gets called at the very end of node creation.
  *
  * Node is now created, thus views has access to the new node. Searches all
@@ -1174,13 +1213,69 @@ function _boost_view_insert($debug = FALSE, $nid = FALSE) {
     return;
   }
 
-  global $_boost, $base_url;
+  global $_boost, $base_url, $base_path;
   if (empty($_boost['new_nodes']) && $nid == FALSE) {
     return FALSE;
   }
-  elseif (empty($_boost['new_nodes'])) {
+
+  if (empty($nid)) {
+    // async
+    foreach ($_boost['new_nodes'] as $key => $value) {
+      if (!is_numeric($value)) {
+        unset($_boost['new_nodes']['$key']);
+      }
+    }
+    if (empty($_boost['new_nodes'])) {
+      return;
+    }
+
+    // URL key.
+    $key = variable_get('boost_crawler_key', FALSE);
+    if ($key == FALSE) {
+      variable_set('boost_crawler_key', mt_rand());
+      $key = variable_get('boost_crawler_key', FALSE);
+    }
+
+    // Query string.
+    $query = array(
+      'new_nodes' => $_boost['new_nodes'],
+      'rand' => mt_rand(),
+      'key' => $key,
+    );
+    $query_string = str_replace('&amp;', '&', urldecode(http_build_query($query)));
+
+    // Setup request URL and headers.
+    $url = 'http://' . $_SERVER['SERVER_ADDR'] . $base_path . 'boost_views.php?' . $query_string;
+    $headers['Host'] = $_SERVER['HTTP_HOST'];
+
+    // Generate imagecache presets async.
+    $socket_timeout = ini_set('default_socket_timeout', 2);
+    $results = drupal_http_request($url, $headers);
+    ini_set('default_socket_timeout', $socket_timeout);
+
+    // Check response.
+    $key_back = trim($results->data);
+    $key_back = (int)$key_back;
+
+    // async worked; return here.
+    if ($key_back == $key) {
+      $processed = TRUE;
+      return;
+    }
+    // If async failed; block here and generate images and caches.
+    else {
+      watchdog('boost', 'Asynchronous views failed. Using Synchronous mode.');
+    }
+  }
+  else {
     $_boost['new_nodes'][] = $nid;
   }
+  _boost_views_runit();
+}
+
+function _boost_views_runit() {
+  global $_boost, $base_url, $base_path;
+
   // Ensure we're in the correct working directory, since some web servers (e.g. Apache) mess this up here.
   chdir(dirname($_SERVER['SCRIPT_FILENAME']));
 
@@ -1223,7 +1318,7 @@ function _boost_view_insert($debug = FALSE, $nid = FALSE) {
   // Loop through each node
   foreach ($_boost['new_nodes'] as $nid) {
     $node = boost_node_get_basics($nid);
-    if (!$node) {
+    if (!$node || !is_numeric($node->nid)) {
       continue;
     }
     // Get terms for future usage (/taxonomy/term/% view)
@@ -1235,7 +1330,7 @@ function _boost_view_insert($debug = FALSE, $nid = FALSE) {
     $options = array(
         'operator' => '=',
         'value' => array(
-          'value' => $nid,
+          'value' => $node->nid,
         ),
         'group' => '0',
         'exposed' => FALSE,
@@ -1397,6 +1492,7 @@ function _boost_view_insert($debug = FALSE, $nid = FALSE) {
       }
     }
   }
+
   if (!$debug) {
     if ($data) {
       $flushed = boost_cache_expire_router($data);
@@ -1417,6 +1513,7 @@ function _boost_view_insert($debug = FALSE, $nid = FALSE) {
   else {
     return array('in-view' => $data, 'in-cache' => boost_cache_expire_router($data, FALSE, FALSE, TRUE));
   }
+
 }
 
 /**
@@ -5651,6 +5748,10 @@ function boost_crawler_run($expire = -1) {
  *  string - Content type header.
  */
 function boost_async_opp($output, $wait = TRUE, $content_type = "text/html; charset=utf-8", $length = 0) {
+  if (headers_sent()) {
+    return FALSE;
+  }
+
   // Calculate Content Length
   if ($length == 0) {
     $output .= "\n";
@@ -5683,6 +5784,7 @@ function boost_async_opp($output, $wait = TRUE, $content_type = "text/html; char
 
   // text returned and connection closed.
   // Do background processing. Time taken after should not effect page load times.
+  return TRUE;
 }
 
 /**
