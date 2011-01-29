@@ -4613,11 +4613,13 @@ function _boost_change_extension($old, $new) {
  *   filename
  */
 function _boost_kill_file_extension($filename) {
+  $basename = basename($filename);
+  $basename = substr($basename, 0, strrpos($basename, '.'));
   if (count(explode('/', $filename)) > 1 ) {
-    return dirname($filename) . '/' . array_shift(explode('.', basename($filename)));
+    return dirname($filename) . '/' . $basename;
   }
   else {
-    return array_shift(explode('.', basename($filename)));
+    return $basename;
   }
 }
 
