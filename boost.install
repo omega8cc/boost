@@ -504,7 +504,7 @@ function boost_schema() {
       'page_id' => array(
         'description' => 'The ID of the page.',
         'type' => 'varchar',
-        'length' => 64,
+        'length' => 255,
         'not null' => TRUE,
         'default' => ''
       ),
@@ -588,7 +588,7 @@ function boost_schema() {
       'page_id' => array(
         'description' => 'The ID of the page.',
         'type' => 'varchar',
-        'length' => 64,
+        'length' => 255,
         'not null' => TRUE,
         'default' => ''
       ),
@@ -684,7 +684,7 @@ function boost_schema() {
       'page_id' => array(
         'description' => 'The ID of the parent page.',
         'type' => 'varchar',
-        'length' => 64,
+        'length' => 255,
         'not null' => TRUE,
         'default' => ''
       ),
@@ -705,7 +705,7 @@ function boost_schema() {
       'child_page_id' => array(
         'description' => 'The ID of the child page.',
         'type' => 'varchar',
-        'length' => 64,
+        'length' => 255,
         'not null' => TRUE,
         'default' => ''
       ),
@@ -1514,4 +1514,53 @@ function boost_update_6127() {
     variable_del('boost_cache_url_alais_src');
     return array(array('success' => TRUE, 'query' => t('boost_cache_url_alais_src removed; boost_cache_url_alias_src already set')));
   }
+}
+
+/**
+ * Update 6128 increase page_id from 64 to 255.
+ */
+function boost_update_6128() {
+  $ret = array();
+
+  db_drop_index($ret, 'boost_cache', 'page_id');
+  db_change_field($ret, 'boost_cache', 'page_id', 'page_id', array(
+        'description' => 'The ID of the page.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ));
+  db_add_index($ret, 'boost_cache', 'page_id', array('page_id'));
+
+  db_drop_index($ret, 'boost_cache_settings', 'page_id');
+  db_change_field($ret, 'boost_cache_settings', 'page_id', 'page_id', array(
+        'description' => 'The ID of the page.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ));
+  db_add_index($ret, 'boost_cache_settings', 'page_id', array('page_id'));
+
+  db_drop_index($ret, 'boost_cache_relationships', 'page_id');
+  db_change_field($ret, 'boost_cache_relationships', 'page_id', 'page_id', array(
+        'description' => 'The ID of the parent page.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ));
+  db_add_index($ret, 'boost_cache_relationships', 'page_id', array('page_id'));
+
+  db_drop_index($ret, 'boost_cache_relationships', 'child_page_id');
+  db_change_field($ret, 'boost_cache_relationships', 'child_page_id', 'child_page_id', array(
+        'description' => 'The ID of the child page.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ));
+  db_add_index($ret, 'boost_cache_relationships', 'child_page_id', array('child_page_id'));
+
+  return $ret;
 }
