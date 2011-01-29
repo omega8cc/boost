@@ -83,7 +83,7 @@ function boost_admin_boost_performance_page() {
   $form['boost']['boost_enabled'] = array(
     '#type'          => 'radios',
     '#title'         => t('Boost - Static page cache'),
-    '#default_value' => BOOST_ENABLED,
+    '#default_value' => variable_get('boost_enabled', CACHE_NORMAL),
     '#options'       => array(
       CACHE_DISABLED => t('Disabled'),
       CACHE_NORMAL => t('Enabled'),
@@ -1080,10 +1080,10 @@ function boost_admin_htaccess_page_submit($form, &$form_state) {
 
   // Act on settings
   if (!empty($boost_autoupdate_robots_txt)) {
-    boost_update_robots_txt(BOOST_ENABLED);
+    boost_update_robots_txt(variable_get('boost_enabled', CACHE_NORMAL));
   }
   if (!empty($boost_autoupdate_htaccess)) {
-    boost_update_htaccess(BOOST_ENABLED);
+    boost_update_htaccess(variable_get('boost_enabled', CACHE_NORMAL));
   }
 }
 

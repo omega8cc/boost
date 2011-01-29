@@ -204,7 +204,7 @@ function boost_requirements($phase) {
           'value'       => $t('Boost crawler did not get a 200 response; @number returned instead. @error', array('@number' => $crawler_code, '@error' => $crawler_error)),
         );
       }
-      if (!BOOST_ENABLED) {
+      if (!variable_get('boost_enabled', CACHE_NORMAL)) {
         $requirements['boost_is_enabled'] = array(
           'title'       => $t('Boost'),
           'description' => $t('Boost is disabled. <a href="@performance">Enable</a> it.', array('@performance' => url('admin/settings/performance/boost'))),

@@ -518,7 +518,7 @@ function boost_init() {
       || variable_get('site_offline', 0)
       || ($_SERVER['REQUEST_METHOD'] != 'GET' && $_SERVER['REQUEST_METHOD'] != 'HEAD')
       || $_SERVER['SERVER_SOFTWARE'] === 'PHP CLI'
-      || !BOOST_ENABLED
+      || !variable_get('boost_enabled', CACHE_NORMAL)
       || !boost_is_cacheable($GLOBALS['_boost_path'])
       ) {
     $GLOBALS['_boost_cache_this'] = FALSE;
@@ -527,7 +527,7 @@ function boost_init() {
 
   // We only generate cached pages for anonymous visitors.
   if (empty($user->uid)) {
-    if (BOOST_ENABLED != CACHE_AGGRESSIVE) {
+    if (variable_get('boost_enabled', CACHE_NORMAL) != CACHE_AGGRESSIVE) {
       $GLOBALS['conf']['cache'] = CACHE_DISABLED;
     }
     $GLOBALS['_boost_cache_this'] = TRUE;
@@ -847,7 +847,7 @@ function boost_form_alter(&$form, $form_state, $form_id) {
  * Implementation of hook_cron(). Performs periodic actions.
  */
 function boost_cron() {
-  if (!BOOST_ENABLED) {
+  if (!variable_get('boost_enabled', CACHE_NORMAL)) {
     return;
   }
   global $_boost;
@@ -941,7 +941,7 @@ function boost_flush_caches() {
  * Implementation of hook_comment(). Acts on comment modification.
  */
 function boost_comment($comment, $op) {
-  if (!BOOST_ENABLED) return;
+  if (!variable_get('boost_enabled', CACHE_NORMAL)) return;
 
   if (is_array($comment)) {
     $comment = (object)$comment;
@@ -986,7 +986,7 @@ function boost_set_base_dir_in_array(&$data) {
  */
 function boost_nodeapi(&$node, $op, $teaser = NULL, $page = NULL) {
   global $_boost;
-  if (!BOOST_ENABLED || !isset($node->nid)) {
+  if (!variable_get('boost_enabled', CACHE_NORMAL) || !isset($node->nid)) {
     return;
   }
   $data[] = array('page_callback' => 'node', 'page_id' => $node->nid);
@@ -1529,7 +1529,7 @@ function _boost_views_runit() {
  *  array of votes
  */
 function boost_votingapi_insert($votes) {
-  if (!BOOST_ENABLED) return;
+  if (!variable_get('boost_enabled', CACHE_NORMAL)) return;
 
   foreach ($votes as $vote) {
     $node = node_load($vote['content_id'], NULL, TRUE);
@@ -1544,7 +1544,7 @@ function boost_votingapi_insert($votes) {
  *  array of votes
  */
 function boost_votingapi_delete($votes) {
-  if (!BOOST_ENABLED) return;
+  if (!variable_get('boost_enabled', CACHE_NORMAL)) return;
 
   foreach ($votes as $vote) {
     $node = node_load($vote['content_id'], NULL, TRUE);
@@ -1876,7 +1876,7 @@ function boost_taxonomy_node_get_tids($nid) {
  * Implementation of hook_taxonomy(). Acts on taxonomy changes.
  */
 function boost_taxonomy($op, $type, $term = NULL) {
-  if (!BOOST_ENABLED) return;
+  if (!variable_get('boost_enabled', CACHE_NORMAL)) return;
 
   switch ($op) {
     case 'insert':
@@ -1906,7 +1906,7 @@ function boost_user($op, &$edit, &$account, $category = NULL) {
       boost_set_cookie(-1);
       break;
     case 'delete':
-      if (!BOOST_ENABLED) {
+      if (!variable_get('boost_enabled', CACHE_NORMAL)) {
         return;
       }
       // Expire the relevant user page from the static page cache to prevent serving stale content:
@@ -2085,7 +2085,7 @@ function boost_block($op = 'list', $delta = 0, $edit = array()) {
               || variable_get('site_offline', 0)
               || ($_SERVER['REQUEST_METHOD'] != 'GET' && $_SERVER['REQUEST_METHOD'] != 'HEAD')
               || $_SERVER['SERVER_SOFTWARE'] === 'PHP CLI'
-              || !BOOST_ENABLED
+              || !variable_get('boost_enabled', CACHE_NORMAL)
               || isset($_GET['nocache'])
               || !boost_is_cacheable($GLOBALS['_boost_path'])
               || !empty($user->uid)
@@ -4089,7 +4089,7 @@ function boost_has_site_changed($set_max = FALSE) {
   $last_comment_timestamp = boost_get_time('node_comment_statistics', 'last_comment_timestamp');
 
   $max = max($node_revisions, $files, $comments, $node, $last_comment_timestamp, $voteapi_vote);
-  if ($max != BOOST_MAX_TIMESTAMP) {
+  if ($max != variable_get('boost_max_timestamp', BOOST_TIME)) {
     if ($set_max) {
       variable_set('boost_max_timestamp', (int)$max);
     }
