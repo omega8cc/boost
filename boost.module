@@ -3497,8 +3497,8 @@ function boost_get_all_filenames($filename, $base_dir = NULL) {
     // Generate urlencoded filename, if name contains decoded characters
     $paths = explode('/', $filename);
     $end = array_pop($paths);
-    //$end = str_replace('[', '%5B', $end);
-    //$end = str_replace(']', '%5D', $end);
+    $end = str_replace('[', '%5B', $end);
+    $end = str_replace(']', '%5D', $end);
     $end = str_replace(',', '%2C', $end);
     $end = str_replace(' ', '%20', $end);
     $paths[] = $end;
