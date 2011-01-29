@@ -4754,7 +4754,10 @@ function _boost_copy_file_get_domains($dest) {
   $domains[] = str_replace('//', '', variable_get('parallel_domain_css', ''));
   $domains[] = str_replace('//', '', variable_get('parallel_domain_img', ''));
   $domains[] = str_replace('//', '', variable_get('parallel_domain_js', ''));
-  $domains = array_unique(array_filter($domains));
+  if (module_exists('cdn') && function_exists('cdn_get_domains')) {
+    $domains = array_merge($domains, cdn_get_domains());
+  }
+  $domains = array_unique($domains);
 
   foreach ($domains as $domain) {
     $destinations[] = str_replace($parts['host'], $domain, $dest);
