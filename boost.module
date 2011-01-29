@@ -490,7 +490,7 @@ function boost_init() {
   }
 
   // Remove anchor tags from url.
-  if (stristr('#', $GLOBALS['_boost_path'])) {
+  if (stristr($GLOBALS['_boost_path'], '#')) {
     $GLOBALS['_boost_path'] = array_shift(explode('#', $GLOBALS['_boost_path']));
   }
 
