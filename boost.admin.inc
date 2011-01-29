@@ -585,6 +585,12 @@ function boost_admin_boost_performance_page() {
     '#default_value' => BOOST_OVERWRITE_FILE,
     '#description'   => t('This is useful if crawling a site before it goes live.'),
   );
+  $form['advanced']['boost_pager_clean'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Save ?page=1 as /page/1'),
+    '#default_value' => BOOST_PAGER_CLEAN,
+    '#description'   => t('See http://drupal.org/node/897970'),
+  );
   $form['advanced']['boost_disable_clean_url'] = array(
     '#type'          => 'checkbox',
     '#title'         => t('Turn off clean url\'s for logged in users'),
