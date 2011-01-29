@@ -3689,11 +3689,20 @@ function boost_cache_set_node_relationships($relationships) {
   }
   $hash_url = md5($url);
   $router_item = _boost_get_menu_router();
-  if (!is_array($relationships)) {
+  if (!is_array($relationships) || empty($relationships)) {
     return FALSE;
   }
 
+
+  // Grab all entries related to this url
+  $old_data = array();
+  $results = db_query("SELECT hash, timestamp FROM {boost_cache_relationships} WHERE hash_url = '%s'", $hash_url);
+  while ($row = db_fetch_array($results)) {
+    $old_data[$row['hash']] = $row['timestamp'];
+  }
+
   $counter = 0;
+  $new_data = array();
   foreach ($relationships as $data) {
     // If one of the required items is not set, skip this entry
     if (!isset($data['child_page_callback']) || !isset($data['child_page_type']) || !isset($data['child_page_id'])) {
@@ -3732,29 +3741,58 @@ function boost_cache_set_node_relationships($relationships) {
     }
 
     // Create the primary key
-    $hash = md5($data['base_dir'] . $data['page_callback'] . $data['page_type'] . $data['page_id'] . $data['child_page_callback'] . $data['child_page_type'] . $data['child_page_id']);
+    $data['hash'] = md5($data['base_dir'] . $data['page_callback'] . $data['page_type'] . $data['page_id'] . $data['child_page_callback'] . $data['child_page_type'] . $data['child_page_id']);
+    $new_data[] = $data;
+  }
 
-    // Insert data into database
-    db_query("UPDATE {boost_cache_relationships} SET base_dir = '%s', page_callback = '%s', page_type = '%s', page_id = '%s', child_page_callback = '%s', child_page_type = '%s', child_page_id = '%s', hash_url = '%s', timestamp = '%d' WHERE hash = '%s'", $data['base_dir'], $data['page_callback'], $data['page_type'], $data['page_id'], $data['child_page_callback'], $data['child_page_type'], $data['child_page_id'], $hash_url, BOOST_TIME, $hash);
-    if (!db_affected_rows()) {
-      @db_query("INSERT INTO {boost_cache_relationships} (hash, base_dir, page_callback, page_type, page_id, child_page_callback, child_page_type, child_page_id, hash_url, timestamp) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d)", $hash, $data['base_dir'], $data['page_callback'], $data['page_type'], $data['page_id'], $data['child_page_callback'], $data['child_page_type'], $data['child_page_id'], $hash_url, BOOST_TIME);
+  // Count number of entries
+  $update_required = FALSE;
+  if (count($new_data) !== count($old_data)) {
+    $update_required = TRUE;
+  }
+
+  // See if new and old data is not the same
+  if (!$update_required) {
+    foreach ($new_data as $data) {
+      if (empty($old_data[$data['hash']])) {
+        $update_required = TRUE;
+        break;
+      }
     }
-    $counter++;
   }
 
-
-
-  $removed = boost_cache_prune_node_relationship($hash_url);
-  if (BOOST_VERBOSE >= 7 && isset($_boost['verbose_option_selected']['boost_cache_set_node_relationships'])) {
-    watchdog('boost', 'Debug: boost_cache_set_node_relationships() <br />!num of !total given entries to the boost_cache_relationships table added or updated; !removed entries removed due to them being outdated. !dump',
-      array(
-        '!num' => $counter,
-        '!total' => count($GLOBALS['_boost_relationships']),
-        '!removed' => $removed,
-        '!dump' => str_replace('    ', '&nbsp;&nbsp;&nbsp;&nbsp;', nl2br(htmlentities(print_r($relationships, TRUE)))),
-      )
-    );
+  if ($update_required) {
+    foreach ($new_data as $data) {
+      // Insert data into database
+      db_query("UPDATE {boost_cache_relationships}
+      SET base_dir = '%s',
+      page_callback = '%s',
+      page_type = '%s',
+      page_id = '%s',
+      child_page_callback = '%s',
+      child_page_type = '%s',
+      child_page_id = '%s',
+      hash_url = '%s',
+      timestamp = '%d'
+      WHERE hash = '%s'", $data['base_dir'], $data['page_callback'], $data['page_type'], $data['page_id'], $data['child_page_callback'], $data['child_page_type'], $data['child_page_id'], $hash_url, BOOST_TIME, $data['hash']);
+      if (!db_affected_rows()) {
+        @db_query("INSERT INTO {boost_cache_relationships} (hash, base_dir, page_callback, page_type, page_id, child_page_callback, child_page_type, child_page_id, hash_url, timestamp) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d)", $data['hash'], $data['base_dir'], $data['page_callback'], $data['page_type'], $data['page_id'], $data['child_page_callback'], $data['child_page_type'], $data['child_page_id'], $hash_url, BOOST_TIME);
+      }
+      $counter++;
+    }
+    $removed = boost_cache_prune_node_relationship($hash_url);
+    if (BOOST_VERBOSE >= 7 && isset($_boost['verbose_option_selected']['boost_cache_set_node_relationships'])) {
+      watchdog('boost', 'Debug: boost_cache_set_node_relationships() <br />!num of !total given entries to the boost_cache_relationships table added or updated; !removed entries removed due to them being outdated. !dump',
+        array(
+          '!num' => $counter,
+          '!total' => count($GLOBALS['_boost_relationships']),
+          '!removed' => $removed,
+          '!dump' => str_replace('    ', '&nbsp;&nbsp;&nbsp;&nbsp;', nl2br(htmlentities(print_r($relationships, TRUE)))),
+        )
+      );
+    }
   }
+
   unset($GLOBALS['_boost_relationships']);
   return TRUE;
 }
