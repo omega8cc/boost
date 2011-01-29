@@ -488,6 +488,12 @@ function boost_init() {
   else {
     $GLOBALS['_boost_path'] = $_REQUEST['q'];
   }
+
+  // Remove anchor tags from url.
+  if (stristr('#', $GLOBALS['_boost_path'])) {
+    $GLOBALS['_boost_path'] = array_shift(explode('#', $GLOBALS['_boost_path']));
+  }
+
   // Make the proper filename for our query
   $GLOBALS['_boost_query'] = BOOST_CHAR;
   $query = array();
@@ -561,6 +567,9 @@ function boost_redirect_handler($destination) {
   $current_path_system = $_GET['q'];
   $new_path = ltrim($new_parts['path'], $base_path);
   $new_path_system = drupal_get_normal_path($new_path);
+  if (empty($new_path)) {
+    $new_path_system = variable_get('site_frontpage', 'node');
+  }
 
   // Build alt source url
   $alt_parts = $current_parts;
@@ -1251,7 +1260,11 @@ function _boost_view_insert($debug = FALSE, $nid = FALSE) {
     $query_string = str_replace('&amp;', '&', urldecode(http_build_query($query)));
 
     // Setup request URL and headers.
-    $url = 'http://' . $_SERVER['SERVER_ADDR'] . $base_path . 'boost_views.php?' . $query_string;
+    $ip = variable_get('boost_server_addr', FALSE);
+    if (empty($ip)) {
+      $ip = $_SERVER['SERVER_ADDR'];
+    }
+    $url = 'http://' . $ip . $base_path . 'boost_views.php?' . $query_string;
     $headers['Host'] = $_SERVER['HTTP_HOST'];
 
     // Generate imagecache presets async.
@@ -2516,12 +2529,19 @@ function boost_get_http_status() {
 }
 
 function boost_headers_contain($text) {
-  if (function_exists('headers_list')) {
-    return stristr(implode(' ', headers_list()), $text);;
+  if (function_exists(headers_list)) {
+    $list = headers_list();
+    if (empty($list)) {
+      return FALSE;
+    }
+    foreach ($list as $header) {
+      $info = stristr($header, $text);
+      if ($info !== FALSE) {
+        return $info;
+      }
+    }
   }
-  else {
-    return FALSE;
-  }
+  return FALSE;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -3251,6 +3271,9 @@ function boost_cache_expire_router($router_items, $force_flush = FALSE, $remove_
     }
 
     while ($info = db_fetch_array($result)) {
+      if (stristr($info['filename'], '#')) {
+        continue;
+      }
       $files[$info['hash']] = $info;
       if (BOOST_VERBOSE >= 9 && isset($_boost['verbose_option_selected']['boost_cache_expire_router'])) {
         $list[] = $info['filename'];
@@ -3289,6 +3312,8 @@ function boost_cache_expire_router($router_items, $force_flush = FALSE, $remove_
  */
 function boost_cache_kill_url($urls, $force_flush = TRUE) {
   global $base_path;
+  $files = array();
+
   foreach ($urls as $value) {
     $decoded = urldecode($value);
     if ($decoded != $value) {
@@ -3305,7 +3330,6 @@ function boost_cache_kill_url($urls, $force_flush = TRUE) {
   $hashes = array_map('md5', $urls);
   $parts = array_map('parse_url', $urls);
 
-  $files = array();
   foreach ($parts as $part) {
     $files[]['filename'] = boost_file_path(ltrim($part['path'], $base_path), TRUE, BOOST_FILE_EXTENSION);
   }
