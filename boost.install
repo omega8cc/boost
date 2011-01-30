@@ -646,7 +646,7 @@ function boost_schema() {
       ),
     ),
     'primary key' => array('id'),
-    'unique keys' => array(
+    'indexes' => array(
       'hash' => array('hash'),
     ),
   );
@@ -1561,6 +1561,18 @@ function boost_update_6128() {
         'default' => ''
       ));
   db_add_index($ret, 'boost_cache_relationships', 'child_page_id', array('child_page_id'));
+
+  return $ret;
+}
+
+/**
+ * Update 6129 Remove unique key on hash in boost_crawler.
+ */
+function boost_update_6129() {
+  $ret = array();
+
+  db_drop_unique_key($ret, 'boost_crawler', 'hash');
+  db_add_index($ret, 'boost_crawler', 'hash', array('hash'));
 
   return $ret;
 }

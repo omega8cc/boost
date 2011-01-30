@@ -5706,7 +5706,7 @@ function boost_crawler_run($expire = -1) {
     _boost_variable_set('boost_crawler_position', $from + BOOST_CRAWLER_BATCH_SIZE);
     db_unlock_tables();
 
-    $results = db_query_range("SELECT * FROM {boost_crawler} ORDER BY id ASC", $from, BOOST_CRAWLER_BATCH_SIZE);
+    $results = db_query_range("SELECT * FROM {boost_crawler} GROUP BY hash ORDER BY id ASC", $from, BOOST_CRAWLER_BATCH_SIZE);
     $url = db_fetch_array($results);
     if (!$url) {
       // We Are Done
@@ -5958,10 +5958,10 @@ function boost_crawler_count($push_setting, $extension, $expire) {
  *  Has the site changed, if so get expire column
  */
 function boost_crawler_seed_tables($expire) {
-  if (   boost_crawler_add_alias_to_table()
-      && boost_crawler_add_to_table(BOOST_PUSH_HTML, BOOST_FILE_EXTENSION, $expire)
+  if (   boost_crawler_add_to_table(BOOST_PUSH_HTML, BOOST_FILE_EXTENSION, $expire)
       && boost_crawler_add_to_table(BOOST_PUSH_XML, BOOST_XML_EXTENSION, $expire)
       && boost_crawler_add_to_table(BOOST_PUSH_JSON, BOOST_JSON_EXTENSION, $expire)
+      && boost_crawler_add_alias_to_table()
       && boost_crawler_prune_table($expire)
       ) {
     // All URL's added to boost_crawler table; start hitting URL's
@@ -6099,7 +6099,7 @@ function boost_crawler_prune_table($expire) {
  * Get count of boost_crawler table.
  */
 function boost_crawler_total_count() {
-  return db_result(db_query("SELECT COUNT(*) FROM {boost_crawler}"));
+  return db_result(db_query("SELECT COUNT(*) FROM {boost_crawler} GROUP BY hash"));
 }
 
 /**
@@ -6110,10 +6110,10 @@ function boost_crawler_total_count() {
  */
 function boost_crawler_verify($expire) {
   if ($expire && BOOST_LOOPBACK_BYPASS) {
-    $list = db_query("SELECT bcrawler.url, bcrawler.hash FROM {boost_cache} bcache INNER JOIN {boost_crawler} bcrawler ON bcache.hash_url=bcrawler.hash WHERE bcache.expire BETWEEN 0 AND %d", BOOST_TIME);
+    $list = db_query("SELECT bcrawler.url, bcrawler.hash FROM {boost_cache} bcache INNER JOIN {boost_crawler} bcrawler ON bcache.hash_url=bcrawler.hash WHERE bcache.expire BETWEEN 0 AND %d GROUP BY bcrawler.hash", BOOST_TIME);
   }
   else {
-    $list = db_query("SELECT bcrawler.url, bcrawler.hash FROM {boost_cache} bcache INNER JOIN {boost_crawler} bcrawler ON bcache.hash_url=bcrawler.hash WHERE bcache.expire = 0");
+    $list = db_query("SELECT bcrawler.url, bcrawler.hash FROM {boost_cache} bcache INNER JOIN {boost_crawler} bcrawler ON bcache.hash_url=bcrawler.hash WHERE bcache.expire = 0 GROUP BY bcrawler.hash");
   }
   db_query('TRUNCATE {boost_crawler}');
   variable_set('boost_crawler_position', 0);
