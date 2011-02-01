@@ -578,6 +578,12 @@ function _boost_get_menu_router($parts) {
     $router_item['extra_arguments'] = '';
   }
 
+  // Make sure function for menu callback is loaded.
+  // See menu_execute_active_handler()
+  if ($router_item['include_file']) {
+    require_once DRUPAL_ROOT . '/' . $router_item['include_file'];
+  }
+
   $parts['menu_item'] = $router_item;
   // Invoke hook_boost_menu_router($router_item).
   $modules = boost_module_implements('boost_menu_router', 'boost');
