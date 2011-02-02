@@ -1213,7 +1213,7 @@ function boost_views_async() {
   $_boost['new_nodes'] = $_GET['new_nodes'];
 
   // Process list.
-  _boost_views_runit();
+  return _boost_views_runit();
 }
 
 /**
@@ -1222,77 +1222,75 @@ function boost_views_async() {
  * Node is now created, thus views has access to the new node. Searches all
  * cached views for newly created node. Expires the outdated views from the cache.
  */
-function _boost_view_insert($debug = FALSE, $nid = FALSE) {
+function _boost_view_insert() {
+  global $_boost, $base_url, $base_path;
   static $processed = FALSE;
+
+  // Only run once
   if ($processed) {
     return;
   }
 
-  global $_boost, $base_url, $base_path;
-  if (empty($_boost['new_nodes']) && $nid == FALSE) {
+  // Exit if no new nodes
+  if (empty($_boost['new_nodes'])) {
     return FALSE;
   }
 
-  if (empty($nid)) {
-    // async
-    foreach ($_boost['new_nodes'] as $key => $value) {
-      if (!is_numeric($value)) {
-        unset($_boost['new_nodes']['$key']);
-      }
+  // Make sure node is numeric
+  foreach ($_boost['new_nodes'] as $key => $value) {
+    if (!is_numeric($value) || !is_numeric($key)) {
+      unset($_boost['new_nodes'][$key]);
     }
-    if (empty($_boost['new_nodes'])) {
-      return;
-    }
+  }
+  if (empty($_boost['new_nodes'])) {
+    return;
+  }
 
-    // URL key.
+  // Prep for async
+  // URL key.
+  $key = variable_get('boost_crawler_key', FALSE);
+  if ($key == FALSE) {
+    variable_set('boost_crawler_key', mt_rand());
     $key = variable_get('boost_crawler_key', FALSE);
-    if ($key == FALSE) {
-      variable_set('boost_crawler_key', mt_rand());
-      $key = variable_get('boost_crawler_key', FALSE);
-    }
-
-    // Query string.
-    $query = array(
-      'new_nodes' => $_boost['new_nodes'],
-      'rand' => mt_rand(),
-      'key' => $key,
-    );
-    $query_string = str_replace('&amp;', '&', urldecode(http_build_query($query)));
-
-    // Setup request URL and headers.
-    $ip = variable_get('boost_server_addr', FALSE);
-    if (empty($ip)) {
-      $ip = $_SERVER['SERVER_ADDR'];
-    }
-    $url = 'http://' . $ip . $base_path . 'boost_views.php?' . $query_string;
-    $headers['Host'] = $_SERVER['HTTP_HOST'];
-
-    // Generate imagecache presets async.
-    $socket_timeout = ini_set('default_socket_timeout', 2);
-    $results = drupal_http_request($url, $headers);
-    ini_set('default_socket_timeout', $socket_timeout);
-
-    // Check response.
-    $key_back = trim($results->data);
-    $key_back = (int)$key_back;
-
-    // async worked; return here.
-    if ($key_back == $key) {
-      $processed = TRUE;
-      return;
-    }
-    // If async failed; block here and generate images and caches.
-    else {
-      watchdog('boost', 'Asynchronous views failed. Using Synchronous mode.');
-    }
   }
-  else {
-    $_boost['new_nodes'][] = $nid;
+
+  // Query string.
+  $query = array(
+    'new_nodes' => $_boost['new_nodes'],
+    'rand' => mt_rand(),
+    'key' => $key,
+  );
+  $query_string = str_replace('&amp;', '&', urldecode(http_build_query($query)));
+
+  // Setup request URL and headers.
+  $ip = variable_get('boost_server_addr', FALSE);
+  if (empty($ip)) {
+    $ip = $_SERVER['SERVER_ADDR'];
   }
-  _boost_views_runit();
+  $url = 'http://' . $ip . $base_path . 'boost_views.php?' . $query_string;
+  $headers['Host'] = $_SERVER['HTTP_HOST'];
+
+  // Send nodes to async processor
+  $socket_timeout = ini_set('default_socket_timeout', 2);
+  $results = drupal_http_request($url, $headers);
+  ini_set('default_socket_timeout', $socket_timeout);
+
+  // Check response.
+  $key_back = trim($results->data);
+  $key_back = (int)$key_back;
+
+  // If async failed; block here and generate images and caches.
+  if ($key_back != $key) {
+    watchdog('boost', 'Asynchronous views failed. Using Synchronous mode.');
+    _boost_views_runit();
+  }
+
+  // We have processed nodes
+  $processed = TRUE;
+  return;
 }
 
-function _boost_views_runit() {
+function _boost_views_runit($debug = FALSE, $nid = FALSE) {
   global $_boost, $base_url, $base_path;
 
   // Ensure we're in the correct working directory, since some web servers (e.g. Apache) mess this up here.
@@ -1334,8 +1332,20 @@ function _boost_views_runit() {
     $base_urls[0][] = $base_url . '/';
   }
 
+  // get list of nodes
+  $nodes = array();
+  if (!empty($nid)) {
+    $nodes[] = $nid;
+  }
+  elseif (!empty($_boost['new_nodes'])) {
+    $nodes = $_boost['new_nodes'];
+  }
+  if (empty($nodes)) {
+    return;
+  }
+
   // Loop through each node
-  foreach ($_boost['new_nodes'] as $nid) {
+  foreach ($nodes as $nid) {
     $node = boost_node_get_basics($nid);
     if (!$node || !is_numeric($node->nid)) {
       continue;
@@ -1518,7 +1528,7 @@ function _boost_views_runit() {
     }
     if (BOOST_VERBOSE >= 7 && isset($_boost['verbose_option_selected']['boost_view_insert'])) {
       watchdog('boost', 'Debug: _boost_view_insert() <br />%count Views Searched (%viewnames) %times times; %hits of them contain the new nodes (%nids) and where thus flushed. As a result of this %flushed pages where expired from the boost cache.<br /> !domains', array(
-        '%nids' => implode(', ', $_boost['new_nodes']),
+        '%nids' => implode(', ', $nodes),
         '%count' => count($views),
         '%times' => $number_views,
         '%hits' => $number_hits,
@@ -1532,7 +1542,6 @@ function _boost_views_runit() {
   else {
     return array('in-view' => $data, 'in-cache' => boost_cache_expire_router($data, FALSE, FALSE, TRUE));
   }
-
 }
 
 /**
@@ -2010,7 +2019,7 @@ function boost_block($op = 'list', $delta = 0, $edit = array()) {
               $node = node_load(arg(1));
               $data = boost_expire_node($node, $node->nid, TRUE);
               if (BOOST_FLUSH_VIEWS_INSERT && module_exists('views')) {
-                $data['view'] = _boost_view_insert(TRUE, $node->nid);
+                $data['view'] = _boost_views_runit(TRUE, $node->nid);
               }
               $output .= str_replace('    ', '&nbsp;&nbsp;&nbsp;&nbsp;', nl2br(htmlentities(print_r($data, TRUE))));
             }
