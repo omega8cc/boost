@@ -1277,7 +1277,7 @@ function _boost_view_insert() {
 
   // Check response.
   $key_back = trim($results->data);
-  $key_back = (int)$key_back;
+//   $key_back = (int)$key_back;
 
   // If async failed; block here and generate images and caches.
   if ($key_back != $key) {
