@@ -78,7 +78,7 @@ function boost_requirements($phase) {
       $requirements['boost'] = array(
         'title'       => $t('Boost'),
         'severity'    => REQUIREMENT_OK,
-        'value'       => $t('Boost installed correctly, should be working if properly <a href="@settings">configured</a>.', array('@settings' => url('admin/config/development/performance/boost'))),
+        'value'       => $t('Boost installed correctly, should be working if properly <a href="@settings">configured</a>.', array('@settings' => url('admin/config/system/boost'))),
       );
     }
   }

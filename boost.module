@@ -38,72 +38,89 @@ define('BOOST_NORMAL_DIR', 'normal');
 define('BOOST_CHAR', '_');
 
 /**
- * Default value for file permissions created by boost.
+ * Default value for ignoring cron cache flush requests.
  */
-define('BOOST_PERMISSIONS_FILE', '0664');
+define('BOOST_IGNORE_FLUSH', TRUE);
 
 /**
- * Default value for directory permissions created by boost.
+ * Default value for ignoring cron cache flush requests.
  */
-define('BOOST_PERMISSIONS_DIR', '0775');
+define('BOOST_EXPIRE_CRON', TRUE);
 
 /**
  * Implements hook_menu().
  */
 function boost_menu() {
-  $items['admin/config/development/performance/default'] = array(
-    'title' => 'Performance',
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-  );
+  $items = array();
+  $path = drupal_get_path('module', 'boost');
 
-  $items['admin/config/development/performance/boost/default'] = array(
-    'title' => 'Boost Settings',
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-  );
-  $items['admin/config/development/performance/boost'] = array(
-    'title' => 'Boost Settings',
+  $items['admin/config/system/boost'] = array(
+    'title' => 'Boost',
     'description' => 'Configuration for Boost.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('boost_admin_settings'),
     'access arguments' => array('administer site configuration'),
-    'type' => MENU_LOCAL_TASK,
+    'type' => MENU_NORMAL_ITEM,
     'file' => 'boost.admin.inc',
+    'file path' => $path,
   );
-  $items['admin/config/development/performance/boost/debug'] = array(
-    'title' => 'Boost Debug Settings',
+  $items['admin/config/system/boost/default'] = array(
+    'title' => 'Boost Settings',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+  $items['admin/config/system/boost/debug'] = array(
+    'title' => 'Debug',
     'description' => 'Debug configuration for Boost.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('boost_admin_debug_settings'),
     'access arguments' => array('administer site configuration'),
     'type' => MENU_LOCAL_TASK,
     'file' => 'boost.admin.debug.inc',
+    'file path' => $path,
   );
-  $items['admin/config/development/performance/boost/filesystem'] = array(
-    'title' => 'Boost File System Settings',
+  $items['admin/config/system/boost/filesystem'] = array(
+    'title' => 'File System',
     'description' => 'File system configuration for Boost.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('boost_admin_filesystem_settings'),
     'access arguments' => array('administer site configuration'),
     'type' => MENU_LOCAL_TASK,
     'file' => 'boost.admin.filesystem.inc',
+    'file path' => $path,
   );
-  $items['admin/config/development/performance/boost/htaccess-settings'] = array(
-    'title' => 'Boost .htaccess Settings',
+  $items['admin/config/system/boost/htaccess'] = array(
+    'title' => '.htaccess',
     'description' => '.htaccess configuration for Boost.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('boost_admin_htaccess_settings'),
     'access arguments' => array('administer site configuration'),
     'type' => MENU_LOCAL_TASK,
     'file' => 'boost.admin.htaccess.inc',
+    'file path' => $path,
   );
-  $items['admin/config/development/performance/boost/htaccess-generator'] = array(
-    'title' => 'Boost .htaccess generation',
+  $items['admin/config/system/boost/htaccess/default'] = array(
+    'title' => '.htaccess Settings',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+  $items['admin/config/system/boost/htaccess/generator'] = array(
+    'title' => '.htaccess Generation',
     'description' => '.htaccess generation for Boost.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('boost_admin_htaccess_generation'),
     'access arguments' => array('administer site configuration'),
     'type' => MENU_LOCAL_TASK,
     'file' => 'boost.admin.htaccess.inc',
+    'file path' => $path,
+  );
+  $items['admin/config/system/boost/expiration'] = array(
+    'title' => 'Cache Expiration',
+    'description' => 'Cache expiration configuration for Boost.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('boost_admin_expiration_settings'),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'boost.admin.expiration.inc',
+    'file path' => $path,
   );
 
   return $items;
@@ -200,24 +217,31 @@ function boost_exit($destination = NULL) {
 function boost_cron() {
   // Remove expired files from the cache.
   global $_boost;
-  if (isset($_boost['base_dir'])) {
-    _boost_rmdir($_boost['base_dir'], FALSE);
+  $_boost['cron'] = TRUE;
+  if (   isset($_boost['base_dir'])
+      && variable_get('boost_expire_cron', BOOST_EXPIRE_CRON)
+        ) {
+    $count = _boost_rmdir($_boost['base_dir'], FALSE);
+    watchdog('boost', 'Expired %count stale files from static page cache.', array('%count' => $count), WATCHDOG_NOTICE);
   }
 }
 
-/*
+/**
  * Implements hook_flush_caches(). Deletes all static files.
  */
 function boost_flush_caches() {
   // Remove all files from the cache
   global $_boost;
-  if (isset($_boost['base_dir'])) {
-    _boost_rmdir($_boost['base_dir'], TRUE);
+  if (   isset($_boost['base_dir'])
+      && (empty($_boost['cron']) || variable_get('boost_ignore_flush', BOOST_IGNORE_FLUSH) == FALSE)
+        ) {
+    $count = _boost_rmdir($_boost['base_dir'], TRUE);
+    watchdog('boost', 'Flushed all files (%count) from static page cache.', array('%count' => $count), WATCHDOG_NOTICE);
   }
   return;
 }
 
-/*
+/**
  * Implements hook_page_delivery_callback_alter().
  */
 function boost_page_delivery_callback_alter(&$callback, $set = FALSE) {
@@ -932,11 +956,24 @@ function boost_boost_storage_types() {
 /**
  * Recursive version of rmdir(); use with extreme caution.
  *
+ * Function also checks file age and only removes expired files.
+ *
  * @param $dir
  *   The top-level directory that will be recursively removed.
+ * @param $flush
+ *   Instead of removing expired cached files, remove all files.
  */
 function _boost_rmdir($dir, $flush = TRUE) {
   static $lifetimes = array();
+  static $counter = 0;
+  if (is_dir($dir) == FALSE) {
+    return FALSE;
+  }
+
+  if (!boost_in_cache_dir($dir)) {
+    return FALSE;
+  }
+
   // Map extensions to cache lifetimes
   if (empty($lifetimes)) {
     $types = boost_get_storage_types();
@@ -947,37 +984,39 @@ function _boost_rmdir($dir, $flush = TRUE) {
     }
   }
 
-  if (is_dir($dir)) {
-    $objects = scandir($dir);
-    foreach ($objects as $object) {
-      $empty_dir = TRUE;
-      if ($object != "." && $object != "..") {
-        $file = $dir . "/" . $object;
-        if (is_dir($file)) {
-          _boost_rmdir($file);
-        }
-        elseif ($flush) {
-          unlink($file);
-        }
-        else {
-          // Handle gzipped files eventually
-          // Need to support multi level cache expiration per content type
-          $ext = substr(strrchr($file, '.'), 1);
-          $age = boost_file_get_age($file);
-          if (isset($lifetimes[$ext]) && $age > $lifetimes[$ext]) {
-            unlink($file);
-          }
-          else {
-            $empty_dir = FALSE;
-          }
-        }
+  $objects = scandir($dir);
+  $empty_dir = TRUE;
+  foreach ($objects as $object) {
+    if ($object == "." || $object == "..") {
+      continue;
+    }
+
+    $file = $dir . "/" . $object;
+    if (is_dir($file)) {
+      _boost_rmdir($file, $flush);
+    }
+    elseif ($flush) {
+      unlink($file);
+      $counter++;
+    }
+    else {
+      // Need to handle gzipped files.
+      // Nice if  it supported multi level cache expiration per content type.
+      $ext = substr(strrchr($file, '.'), 1);
+      $age = boost_file_get_age($file);
+      if (isset($lifetimes[$ext]) && $age > $lifetimes[$ext]) {
+        unlink($file);
+        $counter++;
+      }
+      else {
+        $empty_dir = FALSE;
       }
     }
-    reset($objects);
-    if ($empty_dir) {
-      rmdir($dir);
-    }
   }
+  if ($empty_dir) {
+    rmdir($dir);
+  }
+  return $counter;
 }
 
 /**
@@ -1021,14 +1060,11 @@ function boost_write_file($directory, $filename, &$data) {
     }
     // Save data to a file.
     if (file_put_contents($filename, $data, LOCK_EX) === FALSE) {
-      watchdog('boost', 'Could not create the file %file on your system', array('%dir' => $filename), WATCHDOG_ERROR);
+      watchdog('boost', 'Could not create the file %file on your system', array('%file' => $filename), WATCHDOG_ERROR);
       return FALSE;
     }
     // chmod file so webserver can send it out.
-    $chmod_file = variable_get('boost_permissions_file', BOOST_PERMISSIONS_FILE);
-    if (is_numeric($chmod_file)) {
-      @chmod($filename, octdec($chmod_file));
-    }
+    drupal_chmod($filename);
   }
   return TRUE;
 }
@@ -1044,24 +1080,56 @@ function boost_mkdir($directory) {
 
   // Only do something if it's not a dir
   if (!is_dir($directory)) {
-    // Only operate in the cache dir.
-    if (strpos($directory, variable_get('boost_root_cache_dir', BOOST_ROOT_CACHE_DIR)) !== 0) {
-      watchdog('boost', 'Could not create the directory %dir on your system; it is outside the cache directory. Debug info below <br> %debug', array(
-        '%dir' => $directory,
-        '%debug' => boost_print_r($_boost),
-        ),
-      WATCHDOG_CRITICAL);
+    if (!boost_in_cache_dir($directory)) {
       return FALSE;
     }
 
     // Try to create the directory.
-    $chmod_dir = variable_get('boost_permissions_dir', BOOST_PERMISSIONS_DIR);
-    if (!mkdir($directory, octdec($chmod_dir), TRUE)) {
+    $mode = variable_get('file_chmod_directory', 0775);
+    if (!mkdir($directory, $mode, TRUE)) {
       watchdog('boost', 'Could not create the directory %dir on your system', array('%dir' => $directory), WATCHDOG_ERROR);
       return FALSE;
     }
+    drupal_chmod($directory);
   }
   return TRUE;
+}
+
+/**
+ * Verify that the operation is going to operate in the cache dir.
+ *
+ * @param $file
+ *  relative directory or file.
+ */
+function boost_in_cache_dir($file) {
+  global $_boost;
+
+  $good = TRUE;
+  $real_file = realpath($file);
+  $cache_dir = variable_get('boost_root_cache_dir', BOOST_ROOT_CACHE_DIR);
+  $real_cache_dir = realpath($cache_dir);
+
+  // Only operate in the cache dir.
+  // Check the real path.
+  if (   strpos($file, $cache_dir) !== 0
+      || ($real_file && $real_cache_dir && strpos($real_file, $real_cache_dir) !== 0)
+        ) {
+    $good = FALSE;
+  }
+
+  // Send error to watchdog.
+  if (!$good) {
+    watchdog('boost', 'An operation outside of the cache directory was attempted on your system. %file or %real_file is outside the cache directory %cache or %real_cache. Debug info below <br> !debug', array(
+      '%file'       => $file,
+      '%real_file'  => $real_file,
+      '%cache'      => $cache_dir,
+      '%real_cache' => $real_cache_dir,
+      '!debug'      => boost_print_r($_boost),
+      ),
+    WATCHDOG_CRITICAL);
+  }
+
+  return $good;
 }
 
 /**

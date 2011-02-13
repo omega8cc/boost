@@ -5,4 +5,4 @@ package = Performance and scalability
 core = 7.x
 files[] = boost.module
 files[] = boost.admin.inc
-configure = admin/config/development/performance/boost
+configure = admin/config/system/boost

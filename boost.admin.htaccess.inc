@@ -50,7 +50,7 @@ function boost_admin_htaccess_settings() {
   $form['htaccess'] = array(
     '#type'          => 'fieldset',
     '#title'         => t('Boost Apache .htaccess settings generation'),
-    '#description'   => t('<a href="!link">Explanation of .htaccess variables</a> <br /><br /> <strong>Be sure to save the configuration and then go to the <a href="!rules">htaccess rules generation page</a> and copy the rules.</strong>', array('!link' => url('http://www.askapache.com/htaccess/mod_rewrite-variables-cheatsheet.html'), '!rules' => url('admin/config/development/performance/boost/htaccess-generator'))),
+    '#description'   => t('<a href="!link">Explanation of .htaccess variables</a> <br /><br /> <strong>Be sure to save the configuration and then go to the <a href="!rules">htaccess rules generation page</a> and copy the rules.</strong>', array('!link' => url('http://www.askapache.com/htaccess/mod_rewrite-variables-cheatsheet.html'), '!rules' => url('admin/config/system/boost/htaccess/generator'))),
   );
   $form['htaccess']['boost_server_name_http_host'] = array(
     '#type'          => 'radios',
