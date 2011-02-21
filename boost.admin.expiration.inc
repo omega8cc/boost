@@ -27,5 +27,7 @@ function boost_admin_expiration_settings() {
     '#description' => t(''),
   );
 
+  // reset htaccess on submit;
+  $form['#submit'][] = 'boost_form_submit_handler';
   return system_settings_form($form);
 }

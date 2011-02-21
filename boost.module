@@ -48,6 +48,27 @@ define('BOOST_IGNORE_FLUSH', TRUE);
 define('BOOST_EXPIRE_CRON', TRUE);
 
 /**
+ * Default etag settings.
+ */
+define('BOOST_APACHE_ETAG', 3);
+
+/**
+ * Default header setttings.
+ */
+define('BOOST_APACHE_XHEADER', 1);
+
+/**
+ * Default setting for forcing all content to be the charset defined below.
+ */
+define('BOOST_ADD_DEFAULT_CHARSET', TRUE);
+
+/**
+ * Default for content charset.
+ */
+define('BOOST_CHARSET_TYPE', 'utf-8');
+
+
+/**
  * Implements hook_menu().
  */
 function boost_menu() {
@@ -207,7 +228,7 @@ function boost_exit($destination = NULL) {
     // Attach extension to filename.
     $_boost['filename'] .= '.' . $_boost['matched_header_info']['extension'];
     // Write to file.
-    boost_write_file($_boost['directory'], $_boost['filename'], $data);
+    boost_write_file($_boost['filename'], $data);
   }
 }
 
@@ -1043,29 +1064,47 @@ function boost_print_r($data) {
 }
 
 /**
- * Write to a file.
+ * Write to a file. Ensures write is atomic via rename operation.
  *
- * @param $directory
- *  relative directory.
  * @param $filename
  *  relative filename.
  * @param $data
  *  data to write to the file.
  */
-function boost_write_file($directory, $filename, &$data) {
-  if (!is_file($filename)) {
-    // Create directory if it doesn't exist.
-    if (!boost_mkdir($directory)) {
-      return FALSE;
-    }
-    // Save data to a file.
-    if (file_put_contents($filename, $data, LOCK_EX) === FALSE) {
-      watchdog('boost', 'Could not create the file %file on your system', array('%file' => $filename), WATCHDOG_ERROR);
-      return FALSE;
-    }
-    // chmod file so webserver can send it out.
-    drupal_chmod($filename);
+function boost_write_file($filename, &$data) {
+  // Create directory if it doesn't exist.
+  $directory = dirname($filename);
+  if (!boost_mkdir($directory)) {
+    return FALSE;
   }
+
+  // Save data to a temp file.
+  // file_unmanaged_save_data does not use rename.
+  $tempname = drupal_tempnam($directory, 'boost');
+  if (file_put_contents($tempname, $data) === FALSE) {
+    watchdog('boost', 'Could not create the file %file on your system', array('%file' => $tempname), WATCHDOG_ERROR);
+    @unlink($tempname);
+    return FALSE;
+  }
+
+  // Move temp file to real filename; windows can not do a rename replace.
+  if (@rename($tempname, $filename) === FALSE) {
+    $oldname = $tempname. 'old';
+    if (@rename($filename, $oldname) !== FALSE) {
+      if (@rename($tempname, $filename) === FALSE) {
+        watchdog('boost', 'Could not rename the file %file on your system', array('%file' => $filename), WATCHDOG_ERROR);
+        @unlink($tempname);
+        @rename($oldname, $filename);
+        return FALSE;
+      }
+      else {
+        @unlink($oldname);
+      }
+    }
+  }
+
+  // chmod file so webserver can send it out.
+  drupal_chmod($filename);
   return TRUE;
 }
 
@@ -1078,7 +1117,7 @@ function boost_write_file($directory, $filename, &$data) {
 function boost_mkdir($directory) {
   global $_boost;
 
-  // Only do something if it's not a dir
+  // Only do something if it's not a dir.
   if (!is_dir($directory)) {
     if (!boost_in_cache_dir($directory)) {
       return FALSE;
@@ -1175,4 +1214,116 @@ function boost_deliver_html_page($page_callback_result) {
   if (variable_get('boost_message_debug', BOOST_MESSAGE_DEBUG) && $_boost['args'][0] != 'admin') {
     watchdog('boost', boost_print_r($_boost), array(), WATCHDOG_DEBUG);
   }
+}
+
+/**
+ * Always run these functions after a form submit from boost.
+ */
+function boost_form_submit_handler() {
+  register_shutdown_function('boost_htaccess_cache_dir_put');
+}
+
+/**
+ * Overwrite old htaccess rules with new ones.
+ */
+function boost_htaccess_cache_dir_put() {
+  global $_boost;
+  boost_write_file($_boost['base_dir'] . '.htaccess', boost_htaccess_cache_dir_generate());
+}
+
+/**
+ * Generate htaccess rules for the cache directory.
+ */
+function boost_htaccess_cache_dir_generate() {
+  $char_type = variable_get('boost_charset_type', BOOST_CHARSET_TYPE);
+  $etag = variable_get('boost_apache_etag', BOOST_APACHE_ETAG);
+
+  // Go through every storage type getting data needed to build htaccess file.
+  $gzip = FALSE;
+  $data = array();
+  $files = array();
+  $types = boost_get_storage_types();
+  foreach ($types as $title => $content_types) {
+    foreach ($content_types as $type => $values) {
+      if ($values['enabled']) {
+        $forcetype = '\.' . $values['extension'];
+        if ($values['gzip']) {
+          $forcetype .= '(?:\.gz)?$';
+          $gzip = TRUE;
+        }
+        else {
+          $forcetype .= '$';
+        }
+        $files[$values['extension']] = $values['extension'];
+        $data[$values['extension']] = array(
+          'type' => $type,
+          'forcetype' => $forcetype,
+        );
+      }
+    }
+  }
+  if (empty($data) || empty($files)) {
+    return FALSE;
+  }
+
+  // Add in default charset
+  $string = '';
+  if (variable_get('boost_add_default_charset', BOOST_ADD_DEFAULT_CHARSET)) {
+    $string .= "AddDefaultCharset " . $char_type . "\n";
+  }
+
+  // Set FileETag
+  if ($etag == 1) {
+    $string .= "FileETag None\n";
+  }
+  elseif ($etag == 2) {
+    $string .= "FileETag All\n";
+  }
+  elseif ($etag == 3) {
+    $string .= "FileETag MTime Size\n";
+  }
+
+  // Set html expiration time to the past and put in boost header if desired.
+  $files = implode('|' , $files);
+  if ($gzip) {
+    $files .= '(?:\.gz)?';
+  }
+  $string .= "<FilesMatch \"\.($files)$\">\n";
+  $string .= "  <IfModule mod_expires.c>\n";
+  $string .= "    ExpiresDefault A0\n";
+  $string .= "  </IfModule>\n";
+  $string .= "  <IfModule mod_headers.c>\n";
+  $string .= "    Header set Expires \"Sun, 19 Nov 1978 05:00:00 GMT\"\n";
+  $string .= "    Header set Cache-Control \"no-store, no-cache, must-revalidate, post-check=0, pre-check=0\"\n";
+  if (variable_get('boost_apache_xheader', BOOST_APACHE_XHEADER) > 0) {
+    $string .= "    Header set X-Header \"Boost\"\n";
+  }
+  $string .= "  </IfModule>\n";
+  $string .= "</FilesMatch>\n";
+
+  // Set charset and content encoding.
+  $string .= "<IfModule mod_mime.c>\n";
+  foreach ($data as $extension => $values) {
+    $string .= "  AddCharset " . $char_type . " ." . $extension . "\n";
+  }
+  $string .= $gzip ? "  AddEncoding gzip .gz\n" : '';
+  $string .= "</IfModule>\n";
+
+  // Fix for versions of apache that do not respect the T='' RewriteRule
+  foreach ($data as $extension => $values) {
+    $forcetype = $values['forcetype'];
+    $type = $values['type'];
+    $string .= "<FilesMatch \"$forcetype\">\n";
+    $string .= "  ForceType " . $type . "\n";
+    $string .= "</FilesMatch>\n";
+  }
+
+  // Make sure files can not execute in the cache dir.
+  $string .= "\n";
+  $string .= "SetHandler Drupal_Security_Do_Not_Remove_See_SA_2006_006\n";
+  $string .= "Options None\n";
+  $string .= "Options +FollowSymLinks\n";
+  $string .= "\n";
+
+  return $string;
 }

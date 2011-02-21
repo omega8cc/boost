@@ -30,5 +30,7 @@ function boost_admin_filesystem_settings() {
     '#default_value' => variable_get('boost_char', BOOST_CHAR),
   );
 
+  // reset htaccess on submit;
+  $form['#submit'][] = 'boost_form_submit_handler';
   return system_settings_form($form);
 }

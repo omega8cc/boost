@@ -13,6 +13,7 @@
  * Implements hook_enable().
  */
 function boost_enable() {
+  boost_htaccess_cache_dir_put();
 }
 
 /**

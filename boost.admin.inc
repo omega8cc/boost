@@ -127,5 +127,7 @@ function boost_admin_settings() {
     $form['cache_types'][$title]['#collapsed'] = $collapsed;
   }
 
+  // reset htaccess on submit;
+  $form['#submit'][] = 'boost_form_submit_handler';
   return system_settings_form($form);
 }

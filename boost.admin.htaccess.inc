@@ -17,24 +17,10 @@ define('BOOST_SERVER_NAME_HTTP_HOST', '%{HTTP_HOST}');
 define('BOOST_DOCUMENT_ROOT', '%{DOCUMENT_ROOT}');
 
 /**
- * Default etag settings.
- */
-define('BOOST_APACHE_ETAG', 3);
-
-/**
- * Default header setttings
- */
-define('BOOST_APACHE_XHEADER', 1);
-
-/**
  * Default setting for SSL pages
  */
 define('BOOST_SSL_BYPASS', TRUE);
 
-/**
- * Default setting for forcing all content to be utf8
- */
-define('BOOST_FORCE_UTF8', TRUE);
 
 /**
  * Form builder; Configure boost settings.
@@ -126,19 +112,21 @@ function boost_admin_htaccess_settings() {
     '#default_value' => variable_get('boost_ssl_bypass', BOOST_SSL_BYPASS),
     '#description'   => t('Ticking this is recommended if you use the securepages module.'),
   );
-  $form['htaccess']['boost_force_utf8'] = array(
+  $form['htaccess']['boost_add_default_charset'] = array(
     '#type'          => 'checkbox',
+    '#title'         => t('Add "AddDefaultCharset X" to the htaccess rules'),
+    '#default_value' => variable_get('boost_add_default_charset', BOOST_ADD_DEFAULT_CHARSET),
+    '#description'   => t('Depending on your i18n settings you might want this disabled or enabled. X is set below'),
+  );
+  $form['htaccess']['boost_charset_type'] = array(
+    '#type'          => 'textfield',
     '#title'         => t('Add "AddDefaultCharset utf-8" to the htaccess rules'),
-    '#default_value' => variable_get('boost_force_utf8', BOOST_FORCE_UTF8),
+    '#default_value' => variable_get('boost_charset_type', BOOST_CHARSET_TYPE),
     '#description'   => t('Depending on your i18n settings you might want this disabled or enabled.'),
   );
-//   $form['htaccess']['boost_ignore_htaccess_warning'] = array(
-//     '#type'          => 'checkbox',
-//     '#title'         => t('Ignore .htaccess warning'),
-//     '#default_value' => variable_get('boost_ignore_htaccess_warning', FALSE),
-//     '#description'   => t('Do not warn about missing or modified boost rules in the .htaccess file on the <a href="!link">status report page</a>. Enable this if you have a good reason to modify the boost rules in .htaccess.', array('!link' => url('admin/reports/status'))),
-//   );
 
+  // reset htaccess on submit;
+  $form['#submit'][] = 'boost_form_submit_handler';
   return system_settings_form($form);
 }
 
@@ -162,8 +150,9 @@ function boost_admin_htaccess_generation() {
   # RewriteBase / </tt></pre> and above <pre><tt>  # Pass all requests not referring directly to files in the filesystem to
   # index.php. Clean URLs are handled in drupal_environment_initialize().</tt></pre><br />Note that the generated rules' settings can be configure at !link.", array('!link' => l('admin/config/development/performance/boost/htaccess-settings', 'admin/config/development/performance/boost/htaccess-settings'))),
   );
-//   $form['#submit'][] = 'boost_admin_htaccess_page_submit';
 
+  // reset htaccess on submit;
+  $form['#submit'][] = 'boost_form_submit_handler';
   return $form;
 }
 

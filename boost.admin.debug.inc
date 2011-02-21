@@ -21,5 +21,7 @@ function boost_admin_debug_settings() {
     '#description' => t('Only use for debugging purposes as this can fill up watchdog fairly quickly.'),
   );
 
+  // reset htaccess on submit;
+  $form['#submit'][] = 'boost_form_submit_handler';
   return system_settings_form($form);
 }
