@@ -1228,6 +1228,9 @@ function boost_form_submit_handler() {
  */
 function boost_htaccess_cache_dir_put() {
   global $_boost;
+  if (empty($_boost['base_dir'])) {
+    boost_init();
+  }
   boost_write_file($_boost['base_dir'] . '.htaccess', boost_htaccess_cache_dir_generate());
 }
 
