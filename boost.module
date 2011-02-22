@@ -670,6 +670,8 @@ function boost_exit($destination = NULL) {
 
   // Check for redirects
   if (!empty($destination) && $_SERVER['REQUEST_METHOD'] != 'POST' && empty($_GET['destination'])) {
+    // Make sure path functions are available.
+    drupal_bootstrap(DRUPAL_BOOTSTRAP_PATH);
     boost_redirect_handler($destination);
   }
 
