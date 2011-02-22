@@ -710,6 +710,80 @@ function boost_admin_boost_performance_page() {
     '#description'   => t('Go old school and don\'t use the database. Very extreme tweak & support for features in this mode is pretty much non existent.'),
   );
 
+  // Domain Access
+  $form['domain'] = array(
+    '#type'          => 'fieldset',
+    '#title'         => t('Domain-specific settings'),
+  );
+  $form['domain']['boost_domain_use_lists'] = array(
+    '#type'          => 'select',
+    '#title'         => t('Use domain whitelisting or blacklisting?'),
+    '#options'       => array(
+        BOOST_DOMAIN_NO_LISTS       => t('No'),
+        BOOST_DOMAIN_WHITELIST_ONLY => t('Whitelist only'),
+        BOOST_DOMAIN_BLACKLIST_ONLY => t('Blacklist only'),
+        BOOST_DOMAIN_BOTH_LISTS     => t('Whitelist and Blacklist'),
+      ),
+    '#default_value' => variable_get('boost_domain_use_lists', BOOST_DOMAIN_NO_LISTS),
+    '#description'   => t('These settings allow you to specify which domains will and won\'t be cached.  If you\'re not running a multi-domain site, don\'t worry about this.'),
+  );
+  $whitelist = variable_get('boost_domain_whitelist', array());
+  if (variable_get('boost_domain_whitelist_use_domain', FALSE) && function_exists('domain_domains')) {
+    $extra_domains = domain_domains();
+    foreach ($extra_domains as $ed_key => $ed_value) {
+      unset($whitelist[ $ed_value['subdomain'] ]);
+    }
+  }
+  $form['domain']['boost_domain_whitelist'] = array(
+    '#type'          => 'textarea',
+    '#title'         => t('Whitelist'),
+    '#default_value' => implode("\n", $whitelist),
+    '#description'   => t('Domains in this list will be considered for caching, if they don\'t apepar on the blacklist.  Note that if a domain does not appear in this list and is not matched by an entry on the wildcard whitelist, Boost will not cache pages on that domain.<br>List fully-qualified domain names here, one per line.  Example: foo.example.com'),
+    '#prefix'        => '<div id="boost-domain-whitelist">',
+  );
+  if (module_exists('domain')) {
+    $form['domain']['boost_domain_whitelist_use_domain'] = array(
+      '#type'          => 'checkbox',
+      '#default_value' => variable_get('boost_domain_whitelist_use_domain', FALSE),
+      '#title'         => t('Include all managed domains in the whitelist.'),
+      '#description'   => t('If this box is checked, all domains and domain aliases managed by the <a href="admin/build/domain/view">Domains</a> module will be whitelisted automatically.'),
+    );
+  }
+  $form['domain']['boost_domain_whitelist_wild'] = array(
+    '#type'          => 'textarea',
+    '#title'         => t('Whitelist (wildcards)'),
+    '#default_value' => implode("\n", variable_get('boost_domain_whitelist_wild', array())),
+    '#description'   => t('Domains that match entries in this list will be considered for caching unless they appear on the blacklist.<br>List fully-qualified domain names here, one per line, using "*" to represent wildcard values.  Example: *.quux.*.example.com'),
+    '#suffix'        => '</div>',
+  );
+  $form['domain']['boost_domain_blacklist'] = array(
+    '#type'          => 'textarea',
+    '#title'         => t('Blacklist'),
+    '#default_value' => implode("\n", variable_get('boost_domain_blacklist', array())),
+    '#description'   => t('Domains in this list will never be considered for caching, even if they appear on or are matched by an entry of the whitelist.<br>List fully-qualified domain names here, one per line.  Example: mail.example.com'),
+    '#prefix'        => '<div id="boost-domain-blacklist">',
+    '#suffix'        => '</div>',
+  );
+  $whitelist_js = "
+$(update_list_visibility);
+$(function(){ $('#edit-boost-domain-use-lists').change(function (){update_list_visibility();})});
+function update_list_visibility() {
+  var use_lists = $('#edit-boost-domain-use-lists').val();
+  var white_only = ".BOOST_DOMAIN_WHITELIST_ONLY.";
+  var black_only = ".BOOST_DOMAIN_BLACKLIST_ONLY.";
+  var both_lists = ".BOOST_DOMAIN_BOTH_LISTS.";
+  //show blacklist
+  use_lists == both_lists || use_lists == black_only
+    ? $('#boost-domain-blacklist').show()
+    : $('#boost-domain-blacklist').hide();
+
+  //show whitelist
+  use_lists == both_lists || use_lists == white_only
+    ? $('#boost-domain-whitelist').show()
+    : $('#boost-domain-whitelist').hide();
+}";
+  drupal_add_js($whitelist_js, 'inline');
+
   // Crawler
   $form['crawler'] = array(
     '#type'          => 'fieldset',
@@ -1017,6 +1091,35 @@ function boost_admin_boost_performance_page_submit($form, &$form_state) {
       }
     }
     unset($form_state['values'][$key]);
+
+    //split white/blacklists into arrays
+    $whitelist_values = explode("\n", $form_state['values']['boost_domain_whitelist']);
+    $whitelist_values = array_map('trim', $whitelist_values);
+    $whitelist = array_combine($whitelist_values, $whitelist_values);
+    if ($form_state['values']['boost_domain_whitelist_use_domain'] && function_exists('domain_domains')) {
+      $extra_domains = domain_domains();
+      foreach ($extra_domains as $key => $extra_domain) {
+        $whitelist[ $extra_domain['subdomain'] ] = $extra_domain['subdomain'];
+      }
+    }
+    asort($whitelist);
+    variable_set('boost_domain_whitelist', $whitelist);
+    unset($form_state['values']['boost_domain_whitelist']);
+
+    $whitelist_wild_values = explode("\n", $form_state['values']['boost_domain_whitelist_wild']);
+    $whitelist_wild_values = array_map('trim', $whitelist_wild_values);
+    $whitelist_wild = array_combine($whitelist_wild_values, $whitelist_wild_values);
+    asort($whitelist_wild);
+    variable_set('boost_domain_whitelist_wild', $whitelist_wild);
+    unset($form_state['values']['boost_domain_whitelist_wild']);
+
+    $blacklist_values = explode("\n", $form_state['values']['boost_domain_blacklist']);
+    $blacklist_values = array_map('trim', $blacklist_values);
+    $blacklist = array_combine($blacklist_values, $blacklist_values);
+    asort($blacklist);
+    variable_set('boost_domain_blacklist', $blacklist);
+    unset($form_state['values']['boost_domain_blacklist']);
+
   }
 }
 
@@ -1065,6 +1168,54 @@ function boost_admin_boost_performance_page_validate($form, &$form_state) {
   // Check that the preprocess function exists.
   if (!empty($boost_pre_process_function) && !is_callable($boost_pre_process_function)) {
     form_set_error('boost_pre_process_function', t('Pre-process function %function() does not exist.', array('%function' => $boost_pre_process_function)));
+  }
+
+  // Validate whitelist and blacklist elements.
+  $use_lists = $form_state['values']['boost_domain_use_lists'];
+  if (  $use_lists != BOOST_DOMAIN_NO_LISTS
+     && $use_lists != BOOST_DOMAIN_WHITELIST_ONLY
+     && $use_lists != BOOST_DOMAIN_BLACKLIST_ONLY
+     && $use_lists != BOOST_DOMAIN_BOTH_LISTS) {
+    form_set_error('boost_domain_use_lists', t('Invalid selection'));
+  }
+
+  if ($use_lists == BOOST_DOMAIN_WHITELIST_ONLY || $use_lists == BOOST_DOMAIN_BOTH_LISTS) {
+    $whitelist_values = explode("\n", $form_state['values']['boost_domain_whitelist']);
+    $whitelist_values = array_map('trim', $whitelist_values);
+    $whitelist = array_combine($whitelist_values, $whitelist_values);
+    foreach ($whitelist as $key => $value) {
+      $error_msg = domain_valid_domain($value);
+      if (!empty($error_msg)) {
+        $error_msg = str_replace(':', t(' in domain whitelist:'), $error_msg);
+        form_set_error('boost_domain_whitelist', $error_msg);
+      }
+    }
+
+    $whitelist_wild_values = explode("\n", $form_state['values']['boost_domain_whitelist_wild']);
+    $whitelist_wild_values = array_map('trim', $whitelist_wild_values);
+    $whitelist_wild = array_combine($whitelist_wild_values, $whitelist_wild_values);
+    foreach ($whitelist_wild as $key => $value) {
+      $value = str_replace('*', 'qwerqwrkasdwiopekasdn', $value);
+      $error_msg = domain_valid_domain($value);
+      if (!empty($error_msg)) {
+        $error_msg = str_replace(':', t(' in domain wildcard whitelist:'), $error_msg);
+        $error_msg = str_replace('qwerqwrkasdwiopekasdn', '*', $error_msg);
+        form_set_error('boost_domain_whitelist_wild', $error_msg);
+      }
+    }
+  }
+
+  if ($use_lists == BOOST_DOMAIN_BLACKLIST_ONLY || $use_lists == BOOST_DOMAIN_BOTH_LISTS) {
+    $blacklist_values = explode("\n", $form_state['values']['boost_domain_blacklist']);
+    $blacklist_values = array_map('trim', $blacklist_values);
+    $blacklist = array_combine($blacklist_values, $blacklist_values);
+    foreach ($blacklist as $key => $value) {
+      $error_msg = domain_valid_domain($value);
+      if (!empty($error_msg)) {
+        $error_msg = str_replace(':', t(' in domain blacklist:'), $error_msg);
+        form_set_error('boost_domain_blacklist', $error_msg);
+      }
+    }
   }
 }
 

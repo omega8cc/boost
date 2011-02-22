@@ -92,6 +92,12 @@ define('BOOST_IGNORE_SUBDIR_LIMIT',  variable_get('boost_ignore_subdir_limit', T
 define('BOOST_IGNORE_HTACCESS_WARNING',  variable_get('boost_ignore_htaccess_warning', FALSE));
 define('BOOST_NO_DATABASE',          variable_get('boost_no_database', FALSE));
 
+// Domain Whitelist/Blacklist Settings
+define('BOOST_DOMAIN_NO_LISTS',      0);
+define('BOOST_DOMAIN_WHITELIST_ONLY',1);
+define('BOOST_DOMAIN_BLACKLIST_ONLY',2);
+define('BOOST_DOMAIN_BOTH_LISTS',    3);
+
 // Crawler Settings
 define('BOOST_CRAWL_ON_CRON',        variable_get('boost_crawl_on_cron', FALSE));
 define('BOOST_LOOPBACK_BYPASS',      BOOST_CRAWL_ON_CRON ? variable_get('boost_loopback_bypass', FALSE) : FALSE);
@@ -539,6 +545,43 @@ function boost_init() {
     $GLOBALS['_boost_cache_this'] = TRUE;
     register_shutdown_function('_boost_ob_handler');
     ob_start();
+  }
+}
+
+/**
+ * Implementation of hook_domainupdate() - keeps domain whitelist variable
+ * current
+ */
+
+function boost_domainupdate($op, $domain, $form_state = array()) {
+  switch ($op) {
+    case 'create':
+      if (variable_get('boost_domain_whitelist_use_domain', FALSE)) {
+        $whitelist = variable_get('boost_domain_whitelist', array());
+        $whitelist[ $domain['subdomain'] ] = $domain['subdomain'];
+        asort($whitelist);
+        variable_set('boost_domain_whitelist', $whitelist);
+      }
+      break;
+
+    case 'update':
+      if (variable_get('boost_domain_whitelist_use_domain', FALSE)) {
+        $whitelist = variable_get('boost_domain_whitelist', array());
+        unset($whitelist[ $domain['subdomain'] ]);
+        $new_name = $form_state['values']['subdomain'];
+        $whitelist[ $new_name ] = $new_name;
+        asort($whitelist);
+        variable_set('boost_domain_whitelist', $whitelist);
+      }
+      break;
+
+    case 'delete':
+      if (variable_get('boost_domain_whitelist_use_domain', FALSE)) {
+        $whitelist = variable_get('boost_domain_whitelist', array());
+        unset($whitelist[ $domain['subdomain'] ]);
+        variable_set('boost_domain_whitelist', $whitelist);
+      }
+      break;
   }
 }
 
@@ -2638,6 +2681,76 @@ function boost_is_cacheable($path) {
   // Don't cache path if it can't be served by apache.
   if (BOOST_ONLY_ASCII_PATH) {
     if (preg_match('@[^/a-z0-9_\-&=,\.:]@i', $path)) {
+      return FALSE;
+    }
+  }
+
+  // Check if this domain has been whitelisted for caching.
+  $use_lists = variable_get('boost_domain_use_lists', BOOST_DOMAIN_NO_LISTS);
+  if (   $use_lists == BOOST_DOMAIN_WHITELIST_ONLY
+      || $use_lists == BOOST_DOMAIN_BOTH_LISTS) {
+    $is_whitelisted = FALSE;
+    $whitelist      = variable_get('boost_domain_whitelist', array());
+    $current_domain = $_SERVER['HTTP_HOST'];
+
+    /* It'd be possible (and involve less code overall) to use domain_lookup()
+     * here instead of stuffing everything into the "boost_domain_whitelist"
+     * variable, but this method will avoid the extra db query and hooks that
+     * calling domain_lookup can cause during page load.
+     */
+    $is_whitelisted = isset($whitelist[$current_domain]);
+
+    if (!$is_whitelisted) {
+      // Loop through the list of wildcards, trying to match the current domain.
+      $whitelist_wild = variable_get('boost_domain_whitelist_wild', array());
+      $current_domain_array = explode('.', $current_domain); // www.bar.com -> array('www','bar','com')
+      foreach ($whitelist_wild as $wildcard) {
+        $wildcard_array = explode('.', $wildcard); // *.quux.qz -> array('*','quux','qz')
+
+        // If the arrays aren't the same size, don't bother matching their contents.
+        $wc_count = count($wildcard_array);
+        if (count($current_domain_array) != $wc_count) {
+          continue;
+        }
+
+        for ($i = 0; $i < $wc_count; $i++) {
+          /* If the current element isn't * and doesn't match the pattern, skip
+           * to the next wildcard. */
+          if (   $wildcard_array[$i] != '*'
+              && $wildcard_array[$i] != $current_domain_array[$i]) {
+            break;
+          }
+          /* If the loop hasn't terminated by now, all elements of the current
+           * wildcard array were checked.  Mark this domain as whitelisted and
+           * don't check any other whitelist elements.
+           */
+          if ($i == $wc_count-1) {
+            $is_whitelisted = TRUE;
+            break 2;
+          }
+        }
+      }
+    }
+
+    if (   !$is_whitelisted
+        && variable_get('boost_domain_whitelist_use_domain', FALSE)
+        && function_exists('domain_alias_lookup')) {
+      /* Either I call domain_alias_lookup (and deal with the cost), I ignore
+       * its wildcard capabilities and stuff all aliases into
+       * boost_domain_whitelist, or I implement something subtly incompabile. */
+      $is_whitelisted = -1 != domain_alias_lookup($current_domain);
+    }
+
+    if (!$is_whitelisted) {
+      return FALSE;
+    }
+  }
+
+  // Check if this domain has been blacklisted for caching.
+  if (   $use_lists == BOOST_DOMAIN_BLACKLIST_ONLY
+      || $use_lists == BOOST_DOMAIN_BOTH_LISTS) {
+    $blacklist = variable_get('boost_domain_blacklist', array());
+    if (isset($blacklist[$current_domain])) {
       return FALSE;
     }
   }
