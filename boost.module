@@ -1298,13 +1298,15 @@ function boost_htaccess_cache_dir_generate() {
   }
   $string .= "<FilesMatch \"\.($files)$\">\n";
   $string .= "  <IfModule mod_expires.c>\n";
-  $string .= "    ExpiresDefault A0\n";
+  $string .= "    ExpiresDefault A5\n";
   $string .= "  </IfModule>\n";
   $string .= "  <IfModule mod_headers.c>\n";
   $string .= "    Header set Expires \"Sun, 19 Nov 1978 05:00:00 GMT\"\n";
+  $string .= "    Header unset Last-Modified\n";
+  $string .= "    Header append Vary Accept-Encoding\n";
   $string .= "    Header set Cache-Control \"no-store, no-cache, must-revalidate, post-check=0, pre-check=0\"\n";
   if (variable_get('boost_apache_xheader', BOOST_APACHE_XHEADER) > 0) {
-    $string .= "    Header set X-Header \"Boost\"\n";
+    $string .= "    Header set X-Cached-By \"Boost\"\n";
   }
   $string .= "  </IfModule>\n";
   $string .= "</FilesMatch>\n";
