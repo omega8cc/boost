@@ -625,7 +625,7 @@ function _boost_get_menu_router($parts) {
 
   // Make sure function for menu callback is loaded.
   // See menu_execute_active_handler()
-  if ($router_item['include_file']) {
+  if (!empty($router_item['include_file'])) {
     require_once DRUPAL_ROOT . '/' . $router_item['include_file'];
   }
 
@@ -1227,9 +1227,11 @@ function boost_form_submit_handler() {
  * Overwrite old htaccess rules with new ones.
  */
 function boost_htaccess_cache_dir_put() {
-  global $_boost;
+  global $_boost, $base_path, $base_root;
   if (empty($_boost['base_dir'])) {
-    boost_init();
+    $url = $base_root . request_uri();
+    $parts = parse_url($url);
+    $_boost['base_dir'] = boost_get_normal_cache_dir() . '/' . $parts['host'] . $base_path;
   }
   boost_write_file($_boost['base_dir'] . '.htaccess', boost_htaccess_cache_dir_generate());
 }
