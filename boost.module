@@ -1011,7 +1011,11 @@ function _boost_rmdir($dir, $flush = TRUE) {
   $objects = scandir($dir);
   $empty_dir = TRUE;
   foreach ($objects as $object) {
-    if ($object == "." || $object == ".." || $object == ".htaccess") {
+    if ($object == "." || $object == "..") {
+      continue;
+    }
+    if ($object == ".htaccess") {
+      $empty_dir = FALSE;
       continue;
     }
 
