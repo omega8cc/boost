@@ -1003,12 +1003,15 @@ function _boost_rmdir($dir, $flush = TRUE) {
         $lifetimes[$values['extension']] = $values['lifetime_max'];
       }
     }
+
+    // Be sure to recreate the htaccess file just in case.
+    boost_form_submit_handler();
   }
 
   $objects = scandir($dir);
   $empty_dir = TRUE;
   foreach ($objects as $object) {
-    if ($object == "." || $object == "..") {
+    if ($object == "." || $object == ".." || $object == ".htaccess") {
       continue;
     }
 
