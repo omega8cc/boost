@@ -1,4 +1,3 @@
-// $Id$
 
  BOOST MODULE FOR DRUPAL 6.x
  ---------------------------

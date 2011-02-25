@@ -1,4 +1,3 @@
-; $Id$
 name = Boost
 description = Caches text (html, ajax, xml) outputted by Drupal as static files for performance and scalability purposes.
 recommends[] = nodereferrer
