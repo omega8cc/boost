@@ -319,7 +319,9 @@ function boost_transform_url($url = NULL, $b_path = NULL) {
     $parts['args'] = $args;
 
     // Get content type.
-    $parts = _boost_get_menu_router($parts);
+    if (!empty($parts['normal_path'])) {
+      $parts = _boost_get_menu_router($parts);
+    }
     // See if url is cacheable.
     $parts = boost_is_cacheable($parts);
     $items[$hash] = $parts;
