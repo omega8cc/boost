@@ -160,7 +160,7 @@ function boost_init() {
       || $_SERVER['SERVER_SOFTWARE'] === 'PHP CLI'
       || ($_SERVER['REQUEST_METHOD'] != 'GET' && $_SERVER['REQUEST_METHOD'] != 'HEAD')
       || isset($_GET['nocache'])
-      || empty($_boost['menu_item'])
+      || empty($_boost['menu_item']['status'])
       || $_boost['menu_item']['status'] != 200
       || variable_get('site_offline', 0)
   ) {
