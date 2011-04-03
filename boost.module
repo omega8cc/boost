@@ -157,9 +157,10 @@ function boost_init() {
   $_boost = boost_transform_url();
   // Make sure the page is/should be cached according to our current configuration.
   if (   strpos($_SERVER['SCRIPT_FILENAME'], 'index.php') === FALSE
-      || ($_SERVER['REQUEST_METHOD'] != 'GET' && $_SERVER['REQUEST_METHOD'] != 'HEAD')
       || $_SERVER['SERVER_SOFTWARE'] === 'PHP CLI'
+      || ($_SERVER['REQUEST_METHOD'] != 'GET' && $_SERVER['REQUEST_METHOD'] != 'HEAD')
       || isset($_GET['nocache'])
+      || empty($_boost['menu_item'])
       || $_boost['menu_item']['status'] != 200
       || variable_get('site_offline', 0)
   ) {
