@@ -1262,7 +1262,7 @@ function boost_htaccess_cache_dir_generate() {
       if ($values['enabled']) {
         $forcetype = '\.' . $values['extension'];
         if ($values['gzip']) {
-          $forcetype .= '(?:\.gz)?$';
+          $forcetype .= '(\.gz)?$';
           $gzip = TRUE;
         }
         else {
@@ -1300,7 +1300,7 @@ function boost_htaccess_cache_dir_generate() {
   // Set html expiration time to the past and put in boost header if desired.
   $files = implode('|' , $files);
   if ($gzip) {
-    $files .= '(?:\.gz)?';
+    $files .= '(\.gz)?';
   }
   $string .= "<FilesMatch \"\.($files)$\">\n";
   $string .= "  <IfModule mod_expires.c>\n";
