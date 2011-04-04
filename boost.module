@@ -1298,11 +1298,11 @@ function boost_htaccess_cache_dir_generate() {
   }
 
   // Set html expiration time to the past and put in boost header if desired.
-  $files = implode('|' , $files);
+  $files = '(' . implode('|' , $files) . ')';
   if ($gzip) {
     $files .= '(\.gz)?';
   }
-  $string .= "<FilesMatch \"\.($files)$\">\n";
+  $string .= "<FilesMatch \"\.$files$\">\n";
   $string .= "  <IfModule mod_expires.c>\n";
   $string .= "    ExpiresDefault A5\n";
   $string .= "  </IfModule>\n";
