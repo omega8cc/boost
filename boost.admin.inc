@@ -745,7 +745,7 @@ function boost_admin_boost_performance_page() {
       '#type'          => 'checkbox',
       '#default_value' => variable_get('boost_domain_whitelist_use_domain', FALSE),
       '#title'         => t('Include all managed domains in the whitelist.'),
-      '#description'   => t('If this box is checked, all domains and domain aliases managed by the <a href="admin/build/domain/view">Domains</a> module will be whitelisted automatically.'),
+      '#description'   => t('If this box is checked, all domains and domain aliases managed by the <a href="admin/build/domain/view">Domain Access</a> module will be whitelisted automatically.'),
     );
   }
   $form['domain']['boost_domain_whitelist_wild'] = array(
@@ -1182,24 +1182,28 @@ function boost_admin_boost_performance_page_validate($form, &$form_state) {
     $whitelist_values = explode("\n", $form_state['values']['boost_domain_whitelist']);
     $whitelist_values = array_map('trim', $whitelist_values);
     $whitelist = array_combine($whitelist_values, $whitelist_values);
-    foreach ($whitelist as $key => $value) {
-      $error_msg = domain_valid_domain($value);
-      if (!empty($error_msg)) {
-        $error_msg = str_replace(':', t(' in domain whitelist:'), $error_msg);
-        form_set_error('boost_domain_whitelist', $error_msg);
+    if ($form_state['values']['boost_domain_whitelist']) {
+      foreach ($whitelist as $key => $value) {
+        $error_msg = domain_valid_domain($value);
+        if (!empty($error_msg)) {
+          $error_msg = str_replace(':', t(' in domain whitelist:'), $error_msg);
+          form_set_error('boost_domain_whitelist', $error_msg);
+        }
       }
     }
 
     $whitelist_wild_values = explode("\n", $form_state['values']['boost_domain_whitelist_wild']);
     $whitelist_wild_values = array_map('trim', $whitelist_wild_values);
     $whitelist_wild = array_combine($whitelist_wild_values, $whitelist_wild_values);
-    foreach ($whitelist_wild as $key => $value) {
-      $value = str_replace('*', 'qwerqwrkasdwiopekasdn', $value);
-      $error_msg = domain_valid_domain($value);
-      if (!empty($error_msg)) {
-        $error_msg = str_replace(':', t(' in domain wildcard whitelist:'), $error_msg);
-        $error_msg = str_replace('qwerqwrkasdwiopekasdn', '*', $error_msg);
-        form_set_error('boost_domain_whitelist_wild', $error_msg);
+    if ($form_state['values']['boost_domain_whitelist_wild']) {
+      foreach ($whitelist_wild as $key => $value) {
+        $value = str_replace('*', 'qwerqwrkasdwiopekasdn', $value);
+        $error_msg = domain_valid_domain($value);
+        if (!empty($error_msg)) {
+          $error_msg = str_replace(':', t(' in domain wildcard whitelist:'), $error_msg);
+          $error_msg = str_replace('qwerqwrkasdwiopekasdn', '*', $error_msg);
+          form_set_error('boost_domain_whitelist_wild', $error_msg);
+        }
       }
     }
   }
@@ -1208,11 +1212,13 @@ function boost_admin_boost_performance_page_validate($form, &$form_state) {
     $blacklist_values = explode("\n", $form_state['values']['boost_domain_blacklist']);
     $blacklist_values = array_map('trim', $blacklist_values);
     $blacklist = array_combine($blacklist_values, $blacklist_values);
-    foreach ($blacklist as $key => $value) {
-      $error_msg = domain_valid_domain($value);
-      if (!empty($error_msg)) {
-        $error_msg = str_replace(':', t(' in domain blacklist:'), $error_msg);
-        form_set_error('boost_domain_blacklist', $error_msg);
+    if ($form_state['values']['boost_domain_blacklist']) {
+      foreach ($blacklist as $key => $value) {
+        $error_msg = domain_valid_domain($value);
+        if (!empty($error_msg)) {
+          $error_msg = str_replace(':', t(' in domain blacklist:'), $error_msg);
+          form_set_error('boost_domain_blacklist', $error_msg);
+        }
       }
     }
   }

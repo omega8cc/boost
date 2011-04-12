@@ -423,6 +423,24 @@ function boost_views_pre_view(&$view) {
 }
 
 /**
+* Send out a fast 404 and exit.
+*/
+function boost_fast404() {
+  global $base_path;
+  if (!headers_sent()) {
+    header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
+  }
+  print '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">' . "\n";
+  print '<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">';
+  print '<head><title>' . t('404 Not Found') . '</title></head>';
+  print '<body><h1>' . t('Not Found') . '</h1>';
+  print '<p>' . t('The requested URL was not found on this server.') . '</p>';
+  print '<p><a href="' . $base_path . '">' . t('Home') . '</a></p>';
+  print '</body></html>';
+  exit();
+}
+
+/**
  * Implementation of hook_init(). Performs page setup tasks if page not cached.
  */
 function boost_init() {
@@ -481,8 +499,7 @@ function boost_init() {
     if (BOOST_VERBOSE >= 7 && isset($_boost['verbose_option_selected']['boost_init_404'])) {
       watchdog('boost', '404 received from server via redirect, going to send a 404. Info: !output', array('!output' => boost_print_r($_SERVER, TRUE, TRUE)));
     }
-    drupal_not_found();
-    return;
+    boost_fast404();
   }
 
   //set variables
@@ -619,6 +636,16 @@ function boost_redirect_handler($destination) {
   $alt_src = boost_glue_url($alt_parts);
   $urls = array($alt_src, $source);
 
+  $debug = array(
+    'destination' => $destination,
+    'source' => $source,
+    'alt_src' => $alt_src,
+    'current_path' => $current_path,
+    'current_path_system' => $current_path_system,
+    'new_path' => $new_path,
+    'new_path_system' => $new_path_system,
+  );
+
   // Handle domain alias redirects
   if (   module_exists('domain_alias')
       && isset($_domain['redirect'])
@@ -655,6 +682,7 @@ function boost_redirect_handler($destination) {
     if (isset($path_redirects)) {
       foreach ($path_redirects as $path_redirect) {
         $current_path_system = $path_redirect['redirect'];
+        $debug['new_current_path_system'] = $current_path_system;
         break;
       }
     }
@@ -668,6 +696,7 @@ function boost_redirect_handler($destination) {
     if (isset($path_redirects)) {
       foreach ($path_redirects as $path_redirect) {
         $current_path_system = $path_redirect['redirect'];
+        $debug['new_current_path_system'] = $current_path_system;
         break;
       }
     }
@@ -689,6 +718,7 @@ function boost_redirect_handler($destination) {
       }
     }
   }
+  //watchdog('boost-redirect', 'Nothing Done' . str_replace('    ', '&nbsp;&nbsp;&nbsp;&nbsp;', nl2br(htmlentities(print_r($debug, TRUE)))));
 }
 
 /**
@@ -710,7 +740,7 @@ function boost_redirect_handler($destination) {
 function boost_exit($destination = NULL) {
   global $_boost, $user;
 
-  // Check for redirects
+  // Check for redirects.
   if (!empty($destination) && $_SERVER['REQUEST_METHOD'] != 'POST' && empty($_GET['destination'])) {
     // Make sure path functions are available.
     drupal_bootstrap(DRUPAL_BOOTSTRAP_PATH);
@@ -1245,6 +1275,19 @@ function boost_views_async() {
     if ($key == $_GET['key']) {
       // Break connection so processing is async. Return key.
       boost_async_opp($_GET['key']);
+
+      // Give us lots of ram
+      $m_limit = ini_get('memory_limit');
+      $m_limit_int = substr($m_limit, 0, -1);
+      $m_limit_int = (int) $m_limit_int;
+      $m_limit_scale = strtoupper(substr($m_limit, -1));
+      if ($m_limit_scale == 'M') {
+        @ini_set('memory_limit', $m_limit_int*4 . 'M');
+      }
+
+      // Give us lots of time
+      $t_limit = ini_get('max_execution_time');
+      @ini_set('max_execution_time', $t_limit*4);
     }
     else {
       return;
@@ -1259,7 +1302,17 @@ function boost_views_async() {
   $_boost['new_nodes'] = $_GET['new_nodes'];
 
   // Process list.
-  return _boost_views_runit();
+  $data = _boost_views_runit();
+
+  // Set ini variables back
+  if (isset($m_limit)) {
+    @ini_set('memory_limit', $m_limit);
+  }
+  if (isset($t_limit)) {
+    @ini_set('max_execution_time', $t_limit);
+  }
+
+  return $data;
 }
 
 /**
@@ -3789,6 +3842,7 @@ function boost_cache_set($path, $data, $extension = BOOST_FILE_EXTENSION) {
       _boost_generate_gzip_test_file();
       boost_cache_write($filename, _boost_inject_code($data,
 '<script type="text/javascript">
+<!--//--><![CDATA[//><!--
 function boost_gzip_test_ready() {
   if(boost_xhr.readyState != 4) {
     setTimeout(boost_gzip_test_ready, 1000);
@@ -3804,6 +3858,7 @@ function boost_gzip_test_ready() {
 
 var boost_xhr = $.ajax({url: Drupal.settings.basePath + "boost-gzip-cookie-test.html"});
 boost_gzip_test_ready();
+//--><!]]>
 </script>' . "\n"));
     }
     else {
