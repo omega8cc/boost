@@ -498,10 +498,13 @@ function boost_is_cacheable($parts) {
   // Invoke hook_boost_is_cacheable($path).
   $modules = boost_module_implements('boost_is_cacheable', 'boost');
   foreach ($modules as $module) {
-    if (($result = module_invoke($module, 'boost_is_cacheable', $parts)) !== NULL) {
+    $result = module_invoke($module, 'boost_is_cacheable', $parts);
+    if ($result['is_cacheable'] === FALSE) {
       return $result;
     }
   }
+
+  return $result;
 }
 
 /**
