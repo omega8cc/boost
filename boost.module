@@ -5135,7 +5135,7 @@ function boost_boost_menu_router($router_item) {
 /**
  * Gets menu router contex
  *
- * Allows for any content type to have it's own cache expiration among other things.
+ * Allows for any content type to have its own cache expiration among other things.
  *
  * $GLOBALS['_boost_router_item'] gets set in this function
  *
@@ -5203,7 +5203,7 @@ function _boost_get_menu_router($path = NULL, $get_array = NULL, $reset = FALSE)
   $menu_args = arg(NULL, $router_item['path']);
   $diff = array();
   foreach ($args as $key => $value) {
-    if (!empty($value) && $value !== $menu_args[$key] && $menu_args[$key] !== '%') {
+    if (!empty($value) && !empty($menu_args[$key]) && $value !== $menu_args[$key] && $menu_args[$key] !== '%') {
       $diff[] = $value;
     }
   }
