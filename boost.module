@@ -705,9 +705,16 @@ function boost_boost_menu_router($parts) {
 
   // Handle views.
   if (isset($parts['menu_item']['page_callback']) && $parts['menu_item']['page_callback'] == 'views_page') {
+    $page_arguments = $parts['menu_item']['page_arguments'];
+
+    // Issue #1364090 : views with access control have serialized page arguments
+    if (! is_array($page_arguments)) {
+      $page_arguments = unserialize($page_arguments);
+    }
+
     $parts['menu_item']['page_callback'] = 'view';
-    $parts['menu_item']['page_type'] = array_shift($parts['menu_item']['page_arguments']);
-    $parts['menu_item']['page_id'] = array_shift($parts['menu_item']['page_arguments']);
+    $parts['menu_item']['page_type'] = array_shift($page_arguments);
+    $parts['menu_item']['page_id'] = array_shift($page_arguments);
     // See http://drupal.org/node/651798 for the reason why this if is needed
     if (is_array($parts['menu_item']['page_id'])) {
       $parts['menu_item']['page_id'] = array_shift($parts['menu_item']['page_id']);
