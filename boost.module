@@ -2637,7 +2637,7 @@ function boost_get_http_status() {
 }
 
 function boost_headers_contain($text) {
-  if (function_exists(headers_list)) {
+  if (function_exists('headers_list')) {
     $list = headers_list();
     if (empty($list)) {
       return FALSE;
