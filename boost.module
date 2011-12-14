@@ -6164,7 +6164,7 @@ function boost_crawler_seed_tables($expire) {
  */
 function boost_crawler_add_alias_to_table() {
   // Insert batch of html URL's into boost_crawler table
-  global $base_url, $language;
+  global $base_url, $language, $db_type;
   if (!variable_get('boost_crawl_url_alias', FALSE)) {
     return TRUE;
   }
@@ -6255,6 +6255,8 @@ function boost_crawler_add_alias_to_table() {
  *  Has the site changed, if so get expire column
  */
 function boost_crawler_prune_table($expire) {
+  global $db_type;
+
   if (variable_get('boost_crawl_prune_table', FALSE)) {
     return TRUE;
   }
