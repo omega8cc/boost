@@ -377,7 +377,7 @@ function boost_parse_url($url = NULL, $b_path = NULL) {
   parse_str($parts['query'], $parts['query_array']);
 
   // Check if language prefix for urls is enabled.
-  if (defined('LOCALE_LANGUAGE_NEGOTIATION_URL_PREFIX') && variable_get('locale_language_negotiation_url_part') == LOCALE_LANGUAGE_NEGOTIATION_URL_PREFIX) {
+  if (drupal_multilingual() && variable_get('locale_language_negotiation_url_part') == LOCALE_LANGUAGE_NEGOTIATION_URL_PREFIX) {
     // Get languages grouped by status and select only the enabled ones.
     $languages = language_list('enabled');
     $languages = $languages[1];
