@@ -185,7 +185,7 @@ function boost_init() {
 }
 
 /**
- * Implements boost_exit().
+ * Implements hook_exit().
  */
 function boost_exit($destination = NULL) {
   global $_boost;
