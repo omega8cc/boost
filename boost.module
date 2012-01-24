@@ -163,6 +163,7 @@ function boost_init() {
       || ($_SERVER['REQUEST_METHOD'] != 'GET' && $_SERVER['REQUEST_METHOD'] != 'HEAD')
       || isset($_GET['nocache'])
       || variable_get('site_offline', 0)
+      || isset($_SESSION['messages']) // do not cache pages with messages
   ) {
     $_boost['cache_this'] = FALSE;
   }
