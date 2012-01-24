@@ -245,6 +245,11 @@ function boost_exit($destination = NULL) {
 function boost_cron() {
   // Remove expired files from the cache.
   global $_boost;
+
+  // This was not invoked in hook_init because of the quick check to
+  // avoid caching requests from the CLI
+  $_boost = boost_transform_url();
+
   $_boost['cron'] = TRUE;
   if (   isset($_boost['base_dir'])
       && variable_get('boost_expire_cron', BOOST_EXPIRE_CRON)
