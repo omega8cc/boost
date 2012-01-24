@@ -265,6 +265,11 @@ function boost_cron() {
 function boost_flush_caches() {
   // Remove all files from the cache
   global $_boost;
+
+  // This may not have been invoked in hook_init because of the quick
+  // check to avoid caching requests from the CLI
+  $_boost = boost_transform_url();
+
   if (   isset($_boost['base_dir'])
       && (empty($_boost['cron']) || variable_get('boost_ignore_flush', BOOST_IGNORE_FLUSH) == FALSE)
         ) {
