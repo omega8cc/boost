@@ -261,10 +261,7 @@ function boost_cron() {
   // avoid caching requests from the CLI
   $_boost = boost_transform_url();
 
-  $_boost['cron'] = TRUE;
-  if (   isset($_boost['base_dir'])
-      && variable_get('boost_expire_cron', BOOST_EXPIRE_CRON)
-        ) {
+  if (isset($_boost['base_dir']) && variable_get('boost_expire_cron', BOOST_EXPIRE_CRON)) {
     $count = _boost_rmdir($_boost['base_dir'], FALSE);
     watchdog('boost', 'Expired %count stale files from static page cache.', array('%count' => $count), WATCHDOG_NOTICE);
   }
@@ -281,9 +278,7 @@ function boost_flush_caches() {
   // check to avoid caching requests from the CLI
   $_boost = boost_transform_url();
 
-  if (   isset($_boost['base_dir'])
-      && (empty($_boost['cron']) || variable_get('boost_ignore_flush', BOOST_IGNORE_FLUSH) == FALSE)
-        ) {
+  if (isset($_boost['base_dir']) && (lock_may_be_available('cron') || variable_get('boost_ignore_flush', BOOST_IGNORE_FLUSH) == FALSE)) {
     $count = _boost_rmdir($_boost['base_dir'], TRUE);
     watchdog('boost', 'Flushed all files (%count) from static page cache.', array('%count' => $count), WATCHDOG_NOTICE);
   }
