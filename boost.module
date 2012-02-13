@@ -164,7 +164,7 @@ function boost_init() {
       || isset($_GET['nocache'])
       || variable_get('maintenance_mode', 0)
       || defined('MAINTENANCE_MODE')
-      || isset($_SESSION['messages']) // do not cache pages with messages
+      || !empty($_SESSION['messages']) // do not cache pages with messages
   ) {
     $_boost['cache_this'] = FALSE;
   }
