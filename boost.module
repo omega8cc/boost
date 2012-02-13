@@ -278,6 +278,8 @@ function boost_flush_caches() {
   // check to avoid caching requests from the CLI
   $_boost = boost_transform_url();
 
+  // The lock_may_be_available() checks to see if the flush was requested by
+  // the core cron, since we may want to ignore it (boost_ignore_flush)
   if (isset($_boost['base_dir']) && (lock_may_be_available('cron') || variable_get('boost_ignore_flush', BOOST_IGNORE_FLUSH) == FALSE)) {
     $count = _boost_rmdir($_boost['base_dir'], TRUE);
     watchdog('boost', 'Flushed all files (%count) from static page cache.', array('%count' => $count), WATCHDOG_NOTICE);
