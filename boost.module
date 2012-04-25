@@ -1097,8 +1097,9 @@ function _boost_rmdir($dir, $flush = TRUE) {
       }
     }
   }
-  if ($empty_dir) {
-    rmdir($dir);
+  if ($empty_dir && is_dir($dir)) {
+    // #1138630 @ error suppression used due to rmdir being a race condition.
+    @rmdir($dir);
   }
   return $counter;
 }
