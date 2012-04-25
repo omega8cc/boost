@@ -271,7 +271,7 @@ function boost_admin_boost_performance_page() {
       '#type'          => 'checkbox',
       '#title'         => t('Clear all cached views pages associated with a node on update/delete'),
       '#default_value' => BOOST_FLUSH_VIEWS,
-      '#description'   => t(''),
+      // '#description'   => '', // TODO
     );
     $form['views']['boost_flush_views_insert'] = array(
       '#type'          => 'checkbox',
@@ -403,7 +403,7 @@ function boost_admin_boost_performance_page() {
     '#size'          => 15,
     '#maxlength'     => 255,
     '#required'      => TRUE,
-    '#description'   => t(''),
+    // '#description'   => '', // TODO
   );
   $form['directories']['boost_multisite_single_db'] = array(
     '#type'          => 'checkbox',
@@ -418,7 +418,7 @@ function boost_admin_boost_performance_page() {
 //       '#default_value' => BOOST_HOST,
 //       '#size'          => 60,
 //       '#maxlength'     => 255,
-//       '#description'   => t(''),
+//       '#description'   => '',
 //     );
     $form['directories']['boost_file_path'] = array(
       '#type'          => 'textfield',

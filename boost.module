@@ -180,7 +180,7 @@ function boost_help($path, $arg) {
       }
       break;
     case 'admin/settings/performance/boost':
-      return '<p>' . t('') . '</p>'; // TODO: add help text.
+      return '<p>' . '' . '</p>'; // TODO: add help text.
   }
   //hack to get drupal_get_messages before they are destroyed.
   $GLOBALS['_boost_message_count'] = count(drupal_get_messages(NULL, FALSE));
