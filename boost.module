@@ -6222,7 +6222,7 @@ function boost_crawler_add_alias_to_table() {
     $list = db_query_range("SELECT ua.dst, ua.language FROM {url_alias} AS ua LEFT JOIN {node} AS n ON n.nid = CAST(substring(ua.src, 6) AS UNSIGNED) WHERE (n.status = 1 OR n.status IS NULL) $extra", $loaded, $count);
     $data = array();
     while ($row = db_fetch_array($list)) {
-      if (empty($row['language']) || $language->language != $row['language']) {
+      if (empty($row['language']) || ($language->language != $row['language'] && empty($language->prefix))) {
         $url = $base_url . '/' . $row['dst'];
       }
       else {
