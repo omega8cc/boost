@@ -1090,36 +1090,35 @@ function boost_admin_boost_performance_page_submit($form, &$form_state) {
       }
     }
     unset($form_state['values'][$key]);
-
-    //split white/blacklists into arrays
-    $whitelist_values = explode("\n", $form_state['values']['boost_domain_whitelist']);
-    $whitelist_values = array_map('trim', $whitelist_values);
-    $whitelist = array_combine($whitelist_values, $whitelist_values);
-    if ($form_state['values']['boost_domain_whitelist_use_domain'] && function_exists('domain_domains')) {
-      $extra_domains = domain_domains();
-      foreach ($extra_domains as $key => $extra_domain) {
-        $whitelist[ $extra_domain['subdomain'] ] = $extra_domain['subdomain'];
-      }
-    }
-    asort($whitelist);
-    variable_set('boost_domain_whitelist', $whitelist);
-    unset($form_state['values']['boost_domain_whitelist']);
-
-    $whitelist_wild_values = explode("\n", $form_state['values']['boost_domain_whitelist_wild']);
-    $whitelist_wild_values = array_map('trim', $whitelist_wild_values);
-    $whitelist_wild = array_combine($whitelist_wild_values, $whitelist_wild_values);
-    asort($whitelist_wild);
-    variable_set('boost_domain_whitelist_wild', $whitelist_wild);
-    unset($form_state['values']['boost_domain_whitelist_wild']);
-
-    $blacklist_values = explode("\n", $form_state['values']['boost_domain_blacklist']);
-    $blacklist_values = array_map('trim', $blacklist_values);
-    $blacklist = array_combine($blacklist_values, $blacklist_values);
-    asort($blacklist);
-    variable_set('boost_domain_blacklist', $blacklist);
-    unset($form_state['values']['boost_domain_blacklist']);
-
   }
+
+  //split white/blacklists into arrays
+  $whitelist_values = explode("\n", $form_state['values']['boost_domain_whitelist']);
+  $whitelist_values = array_map('trim', $whitelist_values);
+  $whitelist = array_combine($whitelist_values, $whitelist_values);
+  if ($form_state['values']['boost_domain_whitelist_use_domain'] && function_exists('domain_domains')) {
+    $extra_domains = domain_domains();
+    foreach ($extra_domains as $key => $extra_domain) {
+      $whitelist[ $extra_domain['subdomain'] ] = $extra_domain['subdomain'];
+    }
+  }
+  asort($whitelist);
+  variable_set('boost_domain_whitelist', $whitelist);
+  unset($form_state['values']['boost_domain_whitelist']);
+
+  $whitelist_wild_values = explode("\n", $form_state['values']['boost_domain_whitelist_wild']);
+  $whitelist_wild_values = array_map('trim', $whitelist_wild_values);
+  $whitelist_wild = array_combine($whitelist_wild_values, $whitelist_wild_values);
+  asort($whitelist_wild);
+  variable_set('boost_domain_whitelist_wild', $whitelist_wild);
+  unset($form_state['values']['boost_domain_whitelist_wild']);
+
+  $blacklist_values = explode("\n", $form_state['values']['boost_domain_blacklist']);
+  $blacklist_values = array_map('trim', $blacklist_values);
+  $blacklist = array_combine($blacklist_values, $blacklist_values);
+  asort($blacklist);
+  variable_set('boost_domain_blacklist', $blacklist);
+  unset($form_state['values']['boost_domain_blacklist']);
 }
 
 /**
