@@ -709,7 +709,7 @@ function boost_admin_boost_performance_page() {
     '#description'   => t('Go old school and don\'t use the database. Very extreme tweak & support for features in this mode is pretty much non existent.'),
   );
 
-  // Domain Access
+  // Domain Access. Issue #1056578
   $form['domain'] = array(
     '#type'          => 'fieldset',
     '#title'         => t('Domain-specific settings'),
@@ -724,7 +724,7 @@ function boost_admin_boost_performance_page() {
         BOOST_DOMAIN_BOTH_LISTS     => t('Whitelist and Blacklist'),
       ),
     '#default_value' => variable_get('boost_domain_use_lists', BOOST_DOMAIN_NO_LISTS),
-    '#description'   => t('These settings allow you to specify which domains will and won\'t be cached.  If you\'re not running a multi-domain site, don\'t worry about this.'),
+    '#description'   => t("Allows you to specify which domains will and won't be cached.  If you're not running a multi-domain site, don't worry about this."),
   );
   $whitelist = variable_get('boost_domain_whitelist', array());
   if (variable_get('boost_domain_whitelist_use_domain', FALSE) && function_exists('domain_domains')) {
@@ -737,7 +737,7 @@ function boost_admin_boost_performance_page() {
     '#type'          => 'textarea',
     '#title'         => t('Whitelist'),
     '#default_value' => implode("\n", $whitelist),
-    '#description'   => t('Domains in this list will be considered for caching, if they don\'t apepar on the blacklist.  Note that if a domain does not appear in this list and is not matched by an entry on the wildcard whitelist, Boost will not cache pages on that domain.<br>List fully-qualified domain names here, one per line.  Example: foo.example.com'),
+    '#description'   => t("Domains in this list will be considered for caching, if they don't appear on the blacklist.  Note that if a domain does not appear in this list and is not matched by an entry on the wildcard whitelist, Boost will not cache pages on that domain.<br>List fully-qualified domain names here, one per line.  Example: foo.example.com"),
     '#prefix'        => '<div id="boost-domain-whitelist">',
   );
   if (module_exists('domain')) {
