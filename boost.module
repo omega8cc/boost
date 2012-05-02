@@ -5704,7 +5704,7 @@ if (!function_exists('http_build_query')) {
  *  Has the site changed, if so get expire column
  */
 function boost_crawler_run($expire = -1) {
-  Global $base_url, $_boost;
+  global $base_url, $_boost;
   $this_thread = (isset($_GET['thread']) && is_numeric($_GET['thread'])) ? $_GET['thread'] : NULL;
   $total_threads = (isset($_GET['total']) && is_numeric($_GET['total'])) ? $_GET['total'] : NULL;
   $expire = ($expire == -1 && isset($_GET['expire']) && is_numeric($_GET['expire'])) ? $_GET['expire'] : $expire;
