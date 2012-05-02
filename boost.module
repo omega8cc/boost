@@ -760,12 +760,13 @@ function boost_exit($destination = NULL) {
       $types = array_pop($types);
 
       // Match extension
-      if (stristr($types, 'text/javascript')) {
+      if (stristr($types, 'text/javascript') || stristr($types, 'application/json')) {
         $extension = BOOST_JSON_EXTENSION;
       }
       elseif (   stristr($types, 'application/rss')
               || stristr($types, 'text/xml')
               || stristr($types, 'application/rss+xml')
+              || stristr($types, 'application/xml')
                 ) {
         $extension = BOOST_JSON_EXTENSION;
       }
