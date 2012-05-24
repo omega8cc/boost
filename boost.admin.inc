@@ -1181,7 +1181,7 @@ function boost_admin_boost_performance_page_validate($form, &$form_state) {
     $whitelist_values = explode("\n", $form_state['values']['boost_domain_whitelist']);
     $whitelist_values = array_map('trim', $whitelist_values);
     $whitelist = array_combine($whitelist_values, $whitelist_values);
-    if ($form_state['values']['boost_domain_whitelist'] && function_exists('domain_valid_domain')) {
+    if (function_exists('domain_valid_domain')) {
       foreach ($whitelist as $key => $value) {
         $error_msg = domain_valid_domain($value);
         if (!empty($error_msg)) {
@@ -1194,7 +1194,7 @@ function boost_admin_boost_performance_page_validate($form, &$form_state) {
     $whitelist_wild_values = explode("\n", $form_state['values']['boost_domain_whitelist_wild']);
     $whitelist_wild_values = array_map('trim', $whitelist_wild_values);
     $whitelist_wild = array_combine($whitelist_wild_values, $whitelist_wild_values);
-    if ($form_state['values']['boost_domain_whitelist_wild']) {
+    if (function_exists('domain_valid_domain')) {
       foreach ($whitelist_wild as $key => $value) {
         $value = str_replace('*', 'qwerqwrkasdwiopekasdn', $value);
         $error_msg = domain_valid_domain($value);
@@ -1211,7 +1211,7 @@ function boost_admin_boost_performance_page_validate($form, &$form_state) {
     $blacklist_values = explode("\n", $form_state['values']['boost_domain_blacklist']);
     $blacklist_values = array_map('trim', $blacklist_values);
     $blacklist = array_combine($blacklist_values, $blacklist_values);
-    if ($form_state['values']['boost_domain_blacklist']) {
+    if (function_exists('domain_valid_domain')) {
       foreach ($blacklist as $key => $value) {
         $error_msg = domain_valid_domain($value);
         if (!empty($error_msg)) {
