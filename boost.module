@@ -2997,7 +2997,7 @@ function boost_htaccess_cache_dir_put() {
 }
 
 function boost_htaccess_cache_dir_generate() {
-  Global $base_path;
+  global $base_path;
 
   // no dot
   $_html = str_replace('.', '', BOOST_FILE_EXTENSION);
