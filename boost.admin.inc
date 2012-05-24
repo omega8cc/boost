@@ -1646,11 +1646,10 @@ function boost_reset_database_file_submit($form, &$form_state, $first = TRUE) {
   $GLOBALS['conf']['boost_ignore_flush'] = 0;
   if (boost_cache_clear_all()) {
     db_query("TRUNCATE {boost_cache}");
-    db_query("TRUNCATE {boost_cache_settings}");
     db_query("TRUNCATE {boost_cache_relationships}");
     db_query("TRUNCATE {boost_crawler}");
     _boost_rmdir_rf(BOOST_ROOT_CACHE_DIR, TRUE, TRUE, TRUE);
-    drupal_set_message(t('Boost: Static page cache & 4 database tables cleared.'));
+    drupal_set_message(t('Boost: Static page cache & 3 database tables cleared.'));
   }
   else {
     drupal_set_message(t('Boost: Set "Ignore cache flushing:" to \'Disabled\' in the <a href="!link">boost advanced settings</a> & try again.', array('!link' => url('admin/settings/performance/boost', array('fragment' => 'edit-boost-ignore-flush-0-wrapper')))), 'warning');

@@ -79,11 +79,10 @@ function boost_drush_cache_reset() {
   $GLOBALS['conf']['boost_ignore_flush'] = 0;
   if (boost_cache_clear_all()) {
     db_query("TRUNCATE {boost_cache}");
-    db_query("TRUNCATE {boost_cache_settings}");
     db_query("TRUNCATE {boost_cache_relationships}");
     db_query("TRUNCATE {boost_crawler}");
     _boost_rmdir_rf(BOOST_ROOT_CACHE_DIR, TRUE, TRUE, TRUE);
-    print drush_log(dt('Boost: Static page cache & 4 database tables cleared.'), 'ok');
+    print drush_log(dt('Boost: Static page cache & 3 database tables cleared.'), 'ok');
   }
   else {
     print drush_log(dt('Boost: Static page cache & database tables NOT cleared'), 'error');
