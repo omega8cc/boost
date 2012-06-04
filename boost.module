@@ -68,6 +68,7 @@ define('BOOST_CHARSET_TYPE', 'utf-8');
 
 /**
  * Shows this block on every page except the listed pages.
+ * (do not depend on block.module, see #1612448)
  */
 define('BOOST_VISIBILITY_NOTLISTED', 0);
 
