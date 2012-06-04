@@ -66,6 +66,20 @@ define('BOOST_ADD_DEFAULT_CHARSET', TRUE);
  */
 define('BOOST_CHARSET_TYPE', 'utf-8');
 
+/**
+ * Shows this block on every page except the listed pages.
+ */
+define('BOOST_VISIBILITY_NOTLISTED', 0);
+
+/**
+ * Shows this block on only the listed pages.
+ */
+define('BOOST_VISIBILITY_LISTED', 1);
+
+/**
+ * Shows this block if the associated PHP code returns TRUE.
+ */
+define('BOOST_VISIBILITY_PHP', 2);
 
 /**
  * Implements hook_menu().
@@ -493,13 +507,13 @@ function boost_is_cacheable($parts) {
 
   // Match the user's cacheability settings against the path.
   // See http://api.drupal.org/api/function/block_block_list_alter/7
-  $visibility = variable_get('boost_cacheability_option', BLOCK_VISIBILITY_NOTLISTED);
+  $visibility = variable_get('boost_cacheability_option', BOOST_VISIBILITY_NOTLISTED);
   $pages_setting = variable_get('boost_cacheability_pages', BOOST_CACHEABILITY_PAGES);
   if ($pages_setting) {
     // Convert path string to lowercase. This allows comparison of the same path
     // with different case. Ex: /Page, /page, /PAGE.
     $pages = drupal_strtolower($pages_setting);
-    if ($visibility < BLOCK_VISIBILITY_PHP) {
+    if ($visibility < BOOST_VISIBILITY_PHP) {
       // Convert the alias to lowercase.
       $path = drupal_strtolower($alias);
       // Compare the lowercase internal and lowercase path alias (if any).
@@ -507,9 +521,9 @@ function boost_is_cacheable($parts) {
       if ($path != $normal_path) {
         $page_match = $page_match || drupal_match_path($normal_path, $pages);
       }
-      // When 'boost_cacheability_option' has a value of 0 (BLOCK_VISIBILITY_NOTLISTED),
+      // When 'boost_cacheability_option' has a value of 0 (BOOST_VISIBILITY_NOTLISTED),
       // Boost will cache all pages except those listed in 'boost_cacheability_pages'.
-      // When set to 1 (BLOCK_VISIBILITY_LISTED), Boost will only cache those
+      // When set to 1 (BOOST_VISIBILITY_LISTED), Boost will only cache those
       // pages listed in 'boost_cacheability_pages'.
       $page_match = !($visibility xor $page_match);
     }
