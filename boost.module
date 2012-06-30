@@ -162,6 +162,45 @@ function boost_menu() {
 }
 
 /**
+ * Implements hook_permissions().
+ */
+function boost_permission() {
+  return array(
+    'boost flush pages' => array(
+      'title' => t('Flush pages from Boost cache'), 
+      'description' => t('Allow users to flush individual pages from the Boost cache using the Boost status block.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function boost_block_info() {
+  $blocks['status'] = array(
+    'info' => t('Boost: Pages cache status'), 
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function boost_block_view($delta = '') {
+  $block = array();
+
+  switch ($delta) {
+    case 'status':
+      module_load_include('inc', 'boost', 'boost.blocks');
+      return boost_block_view_status();
+  }
+
+  return $block;
+}
+
+/**
  * Implements hook_init().
  *
  * Performs page setup tasks.
@@ -1436,3 +1475,4 @@ function boost_htaccess_cache_dir_generate() {
 
   return $string;
 }
+
