@@ -456,10 +456,16 @@ function boost_parse_url($url = NULL, $b_path = NULL) {
  *
  * @param $parts
  *   $parts
+ * @param $request_type
+ *   May be 'status' to skip some checks in order to show the status
+ *   block on the admin interface (otherwise we will always mention
+ *   that the page is non-cacheable, since user is logged in).
+ *   Please don't rely on this parameter if you are extending boost,
+ *   this is likely to change in the future. Contact us if you use it.
  *
  * @return $parts
  */
-function boost_is_cacheable($parts) {
+function boost_is_cacheable($parts, $request_type = 'normal') {
   // Set local variables.
   $path = $parts['path'];
   $query = $parts['query'];
@@ -546,7 +552,7 @@ function boost_is_cacheable($parts) {
   // Invoke hook_boost_is_cacheable($path).
   $modules = boost_module_implements('boost_is_cacheable', 'boost');
   foreach ($modules as $module) {
-    $result = module_invoke($module, 'boost_is_cacheable', $parts);
+    $result = module_invoke($module, 'boost_is_cacheable', $parts, $request_type);
     if ($result['is_cacheable'] === FALSE) {
       return $result;
     }
@@ -562,12 +568,16 @@ function boost_is_cacheable($parts) {
  *
  * @param $parts
  *   info about this request
+ * @param $request_type
+ *   if the request_type is "status", we assume that this is being
+ *   called from the admin status block. Since the user must be
+ *   logged in to view this block, we do not return false.
  *
  * @return $parts
  */
-function boost_boost_is_cacheable($parts) {
+function boost_boost_is_cacheable($parts, $request_type = 'normal') {
   global $user;
-  if ($user->uid != 0) {
+  if ($user->uid != 0 && $request_type != 'status') {
     $parts['is_cacheable'] = FALSE;
   }
   else {
