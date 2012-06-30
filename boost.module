@@ -500,6 +500,7 @@ function boost_is_cacheable($parts, $request_type = 'normal') {
       || !empty($query_array['destination'])
     ) {
     $parts['is_cacheable'] = FALSE;
+    $parts['is_cacheable_reason'] = 'Core Drupal dynamic pages';
     return $parts;
   }
 
@@ -509,6 +510,7 @@ function boost_is_cacheable($parts, $request_type = 'normal') {
   $chars = '"*:<>|';
   if (stristr(PHP_OS, 'WIN') && preg_match("/[" . $chars . "]/", $full)) {
     $parts['is_cacheable'] = FALSE;
+    $parts['is_cacheable_reason'] = 'Reserved characters on MS Windows';
     return $parts;
   }
 
@@ -544,7 +546,13 @@ function boost_is_cacheable($parts, $request_type = 'normal') {
   else {
     $page_match = TRUE;
   }
+
   $parts['is_cacheable'] = $page_match;
+
+  if (! $page_match) {
+    $parts['is_cacheable_reason'] = 'Page excluded from cache by the include/exclude paths defined by site admin.';
+  }
+
   if (!$parts['is_cacheable']) {
     return $parts;
   }
@@ -554,6 +562,10 @@ function boost_is_cacheable($parts, $request_type = 'normal') {
   foreach ($modules as $module) {
     $result = module_invoke($module, 'boost_is_cacheable', $parts, $request_type);
     if ($result['is_cacheable'] === FALSE) {
+      if (! isset($result['is_cacheable'])) {
+        $result['is_cacheable_reason'] = 'Page excluded from cache by a third-party module.';
+      }
+
       return $result;
     }
   }
@@ -579,6 +591,7 @@ function boost_boost_is_cacheable($parts, $request_type = 'normal') {
   global $user;
   if ($user->uid != 0 && $request_type != 'status') {
     $parts['is_cacheable'] = FALSE;
+    $parts['is_cacheable_reason'] = 'Boost only works for authenticated users.';
   }
   else {
     $parts['is_cacheable'] = TRUE;
