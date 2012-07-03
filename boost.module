@@ -838,7 +838,14 @@ function boost_boost_menu_router($parts) {
 
   // Handle panels.
   if (isset($parts['menu_item']['page_callback']) && $parts['menu_item']['page_callback'] == 'page_manager_page_execute') {
-    $subtask_id = array_shift($parts['menu_item']['page_arguments']);
+    $page_arguments = $parts['menu_item']['page_arguments'];
+
+    // Issue #1653206 : panels with access control have serialized page arguments
+    if (! is_array($page_arguments)) {
+      $page_arguments = unserialize($page_arguments);
+    }
+
+    $subtask_id = array_shift($page_arguments);
     $page = page_manager_page_load($subtask_id);
     $task = page_manager_get_task($page->task);
     if ($function = ctools_plugin_get_function($task, 'page callback')) {
