@@ -1282,7 +1282,8 @@ function boost_views_async() {
       $m_limit_int = substr($m_limit, 0, -1);
       $m_limit_int = (int) $m_limit_int;
       $m_limit_scale = strtoupper(substr($m_limit, -1));
-      if ($m_limit_scale == 'M') {
+
+      if ($m_limit_scale == 'M' && $m_limit_int < 256) {
         @ini_set('memory_limit', $m_limit_int*4 . 'M');
       }
 
