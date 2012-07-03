@@ -675,13 +675,14 @@ function boost_cookie_handler() {
   if (isset($_COOKIE[BOOST_COOKIE]) && $uid == 0) {
     boost_set_cookie($uid, REQUEST_TIME - 86400);
   }
+  // Set Boost cookie if it doesn't exists (or is -1 likely because of a login POST) and user is logged in.
+  // c.f. Issue #1616356 comment #7
+  elseif ((!isset($_COOKIE[BOOST_COOKIE]) || $_COOKIE[BOOST_COOKIE] == '-1') && $uid != 0) {
+    boost_set_cookie($uid);
+  }
   // Remove Boost cookie if set to -1 & Request Method is a GET/HEAD.
   elseif (isset($_COOKIE[BOOST_COOKIE]) && $_COOKIE[BOOST_COOKIE] == '-1' && ($_SERVER['REQUEST_METHOD'] == 'GET' || $_SERVER['REQUEST_METHOD'] == 'HEAD')) {
     boost_set_cookie($uid, REQUEST_TIME - 86400);
-  }
-  // Set Boost cookie if it doesn't exists and user is logged in.
-  elseif (!isset($_COOKIE[BOOST_COOKIE]) && $uid != 0) {
-    boost_set_cookie($uid);
   }
 
   // Issue #1242416: Set a nocache cookie on a POST, remove it immediately after
