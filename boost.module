@@ -1367,6 +1367,13 @@ function _boost_view_insert() {
   if (empty($ip)) {
     $ip = $_SERVER['SERVER_ADDR'];
   }
+
+  // Check for IPv6 addresses, must be un square brackets
+  // http://www.sixxs.net/wiki/Detecting_IPv6_In_a_Web_Page
+  if (substr_count($ip, ":") > 0 && substr_count($ip, ".") == 0) {
+    $ip = "[" . $ip . "]";
+  }
+
   $url = 'http://' . $ip . $base_path . 'boost_views.php?' . $query_string;
   $headers['Host'] = $_SERVER['HTTP_HOST'];
 
