@@ -631,7 +631,7 @@ function boost_boost_is_cacheable($parts, $request_type = 'normal') {
   global $user;
   if ($user->uid != 0 && $request_type != 'status') {
     $parts['is_cacheable'] = FALSE;
-    $parts['is_cacheable_reason'] = 'Boost only works for authenticated users.';
+    $parts['is_cacheable_reason'] = 'Boost only works for anonymous users.';
   }
   else {
     $parts['is_cacheable'] = TRUE;
