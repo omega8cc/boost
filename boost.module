@@ -263,10 +263,10 @@ function boost_exit($destination = NULL) {
     }
   }
 
-  if ($_boost['cache_this'] == FALSE) {
+  if (isset($_boost['cache_this']) && $_boost['cache_this'] == FALSE) {
     return;
   }
-  elseif (!$_boost['is_cacheable']) {
+  elseif (!isset($_boost['is_cacheable']) || !$_boost['is_cacheable']) {
     return;
   }
   elseif ($_boost['menu_item']['status'] != 200) {
