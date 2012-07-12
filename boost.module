@@ -3524,13 +3524,6 @@ function boost_cache_kill_url($urls, $force_flush = TRUE) {
   while ($row = db_fetch_array($result)) {
     $files[] = array('filename' => $row['filename'], 'hash' => $row['hash']);
   }
-  // Try again with a more expensive query
-  if (empty($files)) {
-    $result = boost_db_multi_select_in('boost_cache', 'url', "'%s'", $urls);
-    while ($row = db_fetch_array($result)) {
-      $files[] = array('filename' => $row['filename'], 'hash' => $row['hash']);
-    }
-  }
   if (!empty($files)) {
     boost_cache_kill($files, $force_flush);
     boost_remove_db($files);
