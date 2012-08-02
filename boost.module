@@ -343,6 +343,38 @@ function boost_flush_caches() {
 }
 
 /**
+ * Implements hook_expire_cache (from the 'expire' module)
+ */
+function boost_expire_cache($urls) {
+  global $base_root;
+
+  foreach ($urls as $url) {
+    // Check if the URL to be flushed matches our base URL
+    if (strpos($base_root, $url) == 0) {
+      $boost = boost_transform_url($url);
+
+      // We need the extention for the filename
+      $boost['header_info'] = boost_get_header_info();
+      $boost['matched_header_info'] = boost_match_header_attributes($boost['header_info']);
+
+      $filename = (isset($boost['filename']) ? $boost['filename'] . '.' . $boost['matched_header_info']['extension'] : NULL);
+
+      if ($filename && file_exists($filename)) {
+        if (unlink($filename)) {
+          boost_log(t('Removed !file from the boost cache.', array('!file' => $filename)), WATCHDOG_DEBUG);
+        }
+        else {
+          boost_log(t('Could not delete !file from the boost cache. Check file permissions.'), WATCHDOG_WARNING);
+        }
+      }
+      else {
+        boost_log(t('Could not delete the cache for !url, file !file does not exist.', array('!url' => $url, '!file' => $filename)), WATCHDOG_DEBUG);
+      }
+    }
+  }
+}
+
+/**
  * Implements hook_page_delivery_callback_alter().
  */
 function boost_page_delivery_callback_alter(&$callback, $set = FALSE) {
@@ -1483,5 +1515,17 @@ function boost_htaccess_cache_dir_generate() {
   $string .= "\n";
 
   return $string;
+}
+
+/**
+ * Simple function to output log and debug messages
+ */
+function boost_log($message, $severity = WATCHDOG_NOTICE) {
+  // Log debug info only if boost debugging is enabled
+  if ($severity == WATCHDOG_DEBUG && ! variable_get('boost_message_debug', BOOST_MESSAGE_DEBUG)) {
+    return;
+  }
+
+  watchdog('boost', $message, $severity);
 }
 
