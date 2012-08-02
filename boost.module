@@ -361,14 +361,14 @@ function boost_expire_cache($urls) {
 
       if ($filename && file_exists($filename)) {
         if (unlink($filename)) {
-          boost_log(t('Removed !file from the boost cache.', array('!file' => $filename)), WATCHDOG_DEBUG);
+          boost_log('Removed !file from the boost cache.', array('!file' => $filename), WATCHDOG_DEBUG);
         }
         else {
-          boost_log(t('Could not delete !file from the boost cache. Check file permissions.'), WATCHDOG_WARNING);
+          boost_log('Could not delete !file from the boost cache. Check file permissions.', array('!file' => $filename), WATCHDOG_WARNING);
         }
       }
       else {
-        boost_log(t('Could not delete the cache for !url, file !file does not exist.', array('!url' => $url, '!file' => $filename)), WATCHDOG_DEBUG);
+        boost_log('Could not delete the cache for !url, file !file does not exist.', array('!url' => $url, '!file' => $filename), WATCHDOG_DEBUG);
       }
     }
   }
@@ -1520,12 +1520,12 @@ function boost_htaccess_cache_dir_generate() {
 /**
  * Simple function to output log and debug messages
  */
-function boost_log($message, $severity = WATCHDOG_NOTICE) {
+function boost_log($message, $variables, $severity = WATCHDOG_NOTICE) {
   // Log debug info only if boost debugging is enabled
   if ($severity == WATCHDOG_DEBUG && ! variable_get('boost_message_debug', BOOST_MESSAGE_DEBUG)) {
     return;
   }
 
-  watchdog('boost', $message, $severity);
+  watchdog('boost', $message, $variables, $severity);
 }
 
