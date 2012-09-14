@@ -5183,15 +5183,16 @@ function _boost_get_menu_router($path = NULL, $get_array = NULL, $reset = FALSE)
     return $menu_router[$index];
   }
 
-  // Declare array keys
   $router_item = array();
-  $router_item['page_type'] = '';
-  $router_item['page_id'] = '';
   // Load the menu item
   $item = menu_get_item($path);
   if (is_array($item)) {
-    $router_item += $item;
+    $router_item = $item;
   }
+  // Declare default array keys if not done.
+  $router_item['page_callback'] = empty($router_item['page_callback']) ? '' : $router_item['page_callback'];
+  $router_item['page_type'] = empty($router_item['page_type']) ? '' : $router_item['page_type'];
+  $router_item['page_id'] = empty($router_item['page_id']) ? '' : $router_item['page_id'];
 
   // Get all args
   $args = arg($path);
