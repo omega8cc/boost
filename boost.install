@@ -1539,6 +1539,9 @@ function boost_update_6127() {
 function boost_update_6128() {
   $ret = array();
 
+  // Issue #1780860: Must truncate the table because it tends to be huge
+  $ret[] = update_sql('TRUNCATE {boost_cache_relationships}');
+
   db_drop_index($ret, 'boost_cache', 'page_id');
   db_change_field($ret, 'boost_cache', 'page_id', 'page_id', array(
         'description' => 'The ID of the page.',
