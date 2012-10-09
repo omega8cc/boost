@@ -5,4 +5,5 @@ core = 7.x
 files[] = boost_crawler.module
 recommends[] = boost
 dependencies[] = httprl
+dependencies[] = expire
 configure = admin/config/system/boost/crawler

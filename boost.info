@@ -5,4 +5,5 @@ core = 7.x
 files[] = boost.module
 files[] = boost.admin.inc
 files[] = boost.blocks.inc
+recommends[] = expire
 configure = admin/config/system/boost
