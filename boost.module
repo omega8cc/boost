@@ -83,6 +83,12 @@ define('BOOST_VISIBILITY_LISTED', 1);
 define('BOOST_VISIBILITY_PHP', 2);
 
 /**
+ * Default Setting for .htaccess files +FollowSymLinks, some ISP's require
+ * +SymlinksIfOwnerMatch to avoid http 500 error.
+ */
+define('BOOST_MATCH_SYMLINKS_OPTIONS', 1);
+
+/**
  * Implements hook_menu().
  */
 function boost_menu() {
@@ -1511,7 +1517,7 @@ function boost_htaccess_cache_dir_generate() {
   $string .= "\n";
   $string .= "SetHandler Drupal_Security_Do_Not_Remove_See_SA_2006_006\n";
   $string .= "Options None\n";
-  $string .= "Options +FollowSymLinks\n";
+  $string .= "Options +" . ( variable_get('boost_match_symlinks_options', BOOST_MATCH_SYMLINKS_OPTIONS) ? "FollowSymLinks" : "SymLinksIfOwnerMatch" ) . "\n";
   $string .= "\n";
 
   return $string;

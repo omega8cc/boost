@@ -39,7 +39,7 @@ function boost_admin_htaccess_settings() {
   );
   $form['htaccess']['boost_server_name_http_host'] = array(
     '#type'          => 'radios',
-    '#title'         => t('Servers URL or Name'),
+    '#title'         => t("Server's URL or Name"),
     '#default_value' => variable_get('boost_server_name_http_host', BOOST_SERVER_NAME_HTTP_HOST),
     '#options'       => array(
       '%{HTTP_HOST}' => '%{HTTP_HOST}',
@@ -122,6 +122,16 @@ function boost_admin_htaccess_settings() {
     '#title'         => t('Add "AddDefaultCharset utf-8" to the htaccess rules'),
     '#default_value' => variable_get('boost_charset_type', BOOST_CHARSET_TYPE),
     '#description'   => t('Depending on your i18n settings you might want this disabled or enabled.'),
+  );
+  $form['htaccess']['boost_match_symlinks_options'] = array(
+    '#type'          => 'radios',
+    '#title'         => t('%cache_folder Options', array( '%cache_folder' => $document_root . '/' . variable_get('boost_root_cache_dir', BOOST_ROOT_CACHE_DIR) . '/' . variable_get('boost_normal_dir', BOOST_NORMAL_DIR) . '/' . variable_get('boost_server_name_http_host', BOOST_SERVER_NAME_HTTP_HOST) . '/.htaccess' )),
+    '#default_value' => variable_get('boost_match_symlinks_options', BOOST_MATCH_SYMLINKS_OPTIONS),
+    '#options'       => array(
+      1 => 'Set "Options +FollowSymLinks"',
+      0 => 'Set "Options +SymLinksIfOwnerMatch"',
+    ),
+    '#description'   => t('The .htaccess file in the cache folder requires "Options +FollowSymLinks" or "Options +SymLinksIfOwnerMatch" for mod_rewrite. Some hosting companies only permit the SymLinksIfOwnerMatch option. If you get a http 500 error code try setting SymLinksIfOwnerMatch.'),
   );
 
   // reset htaccess on submit;
