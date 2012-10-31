@@ -12,6 +12,11 @@
 define('BOOST_CACHEABILITY_PAGES', '');
 
 /**
+ * Whether the host supports gzip
+ */
+define('BOOST_GZIP', function_exists('gzencode'));
+
+/**
  * Default cookie name.
  */
 define('BOOST_COOKIE', 'DRUPAL_UID');
