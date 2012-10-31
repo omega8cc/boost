@@ -316,7 +316,8 @@ function boost_exit($destination = NULL) {
 
     // Gzip support.
     if (BOOST_GZIP && $_boost['matched_header_info']['gzip']) {
-      boost_write_file($_boost['filename'] . '.gz', gzencode($data, 9));
+      // #1416214
+      // boost_write_file($_boost['filename'] . '.gz', gzencode($data, 9));
     }
   }
 }
