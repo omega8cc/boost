@@ -308,6 +308,11 @@ function boost_exit($destination = NULL) {
     $_boost['filename'] .= '.' . $_boost['matched_header_info']['extension'];
     // Write to file.
     boost_write_file($_boost['filename'], $data);
+
+    // Gzip support.
+    if (function_exists('gzencode')) {
+      boost_write_file($_boost['filename'] . '.gz', gzencode($data, 9));
+    }
   }
 }
 

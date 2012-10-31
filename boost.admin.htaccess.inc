@@ -204,8 +204,8 @@ function boost_admin_htaccess_generate_htaccess() {
   foreach ($enabled_file_extensions as $extension => $values) {
     $type = $values['content_type'];
     if ($values['gzip']) {
-      $output['gzip'] .= "  RewriteCond $document_root$base_path$cache_dir/%{ENV:boostpath}/$server_name%{REQUEST_URI}$char%{QUERY_STRING}\.$extension -s\n";
-      $output['gzip'] .= "  RewriteRule .* $cache_dir/%{ENV:boostpath}/$server_name%{REQUEST_URI}$char%{QUERY_STRING}\.$extension [L,T=$type,E=no-gzip:1]\n";
+      $output['gzip'] .= "  RewriteCond $document_root$base_path$cache_dir/%{ENV:boostpath}/$server_name%{REQUEST_URI}$char%{QUERY_STRING}\.$extension\.gz -s\n";
+      $output['gzip'] .= "  RewriteRule .* $cache_dir/%{ENV:boostpath}/$server_name%{REQUEST_URI}$char%{QUERY_STRING}\.$extension\.gz [L,T=$type,E=no-gzip:1]\n";
       $gzip_count++;
     }
     $output['normal'] .= "  RewriteCond $document_root$base_path$cache_dir/%{ENV:boostpath}/$server_name%{REQUEST_URI}$char%{QUERY_STRING}\.$extension -s\n";
