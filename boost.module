@@ -168,6 +168,16 @@ function boost_menu() {
     'file' => 'boost.admin.expiration.inc',
     'file path' => $path,
   );
+  $items['admin/config/system/boost/listmodules'] = array(
+    'title' => 'Boost Modules',
+    'description' => ' Compatible Modules that add features to Boost.',
+    'page callback' => 'boost_admin_modules_theme',
+    'page callback' => 'boost_compatible_output',
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'boost.admin.modules.inc',
+    'weight' => 100,
+  );
 
   return $items;
 }
