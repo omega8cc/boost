@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * @file
  * Prints the cache status of the currently displayed page.
  *
  * see @boost_block_view()
