@@ -24,29 +24,27 @@ function boost_compatible_output() {
     }
   }
 
-  $project_page = t('Project page');
-
   // list of compatible modules
   $recommended = array(
     'boost_crawler' => array(
       'title' => 'Boost Crawler',
       'link' => 'http://drupal.org/project/boost' ,
-      'description' => t('Minimal crawler - expires and regenerates pages only when content is edited and on next cron run.'),
+      'description' => t('Minimal crawler - expires and regenerates pages only when content is edited and on next cron run. This is a Boost sub-module.'),
     ),
     'fast_404' => array(
       'title' => 'Fast 404',
       'link' => 'http://drupal.org/project/fast_404' ,
-      'description' => t('Caches a static page for 404 errors, reducing server load'),
+      'description' => t('Produces a faster "page not found" (404) page, reducing server load. Boost does not cache 404 pages since it would increase the size of the cache for pages which should not be accessed anyway. However, the default 404 mechanism of Drupal can be expensive in terms of performance. If you have a large amount of 404, consider adding a redirection for them in your .htaccess file.'),
     ),
     'globalredirect' => array(
       'title' => 'Global Redirect',
       'link' => 'http://drupal.org/project/globalredirect',
-      'description' => t('Redirects missing/ expired URI aliases back to home page, saves boost generation of deprecated aliases'),
+      'description' => t('Redirects pages to their canonical URL. Avoids caching two pages for the same content.'),
     ),
     'httprl' => array(
       'title' => 'HTTP Parallel Request & Threading Library',
       'link' =>  'http://drupal.org/project/httprl',
-      'description' => t('Required by boost crawler, performs http requests to regenerate expired pages.'),
+      'description' => t('Required by Boost crawler, performs HTTP requests to regenerate expired pages.'),
     ),
     'expire' => array(
       'title' => 'Cache Expiration',
@@ -63,27 +61,29 @@ function boost_compatible_output() {
   $not_installed = array_diff( array_diff( array_keys($recommended), $installed), $disabled );
 
   // prepare the table
-  $header = array('Module', 'Status', 'Description');
+  $header = array(t('Module'), t('Status'), t('Description'));
 
   $rows = array();
 
   foreach ($recommended as $module => $data) {
-    $status = in_array($module, $not_installed) ? 'Not Installed' : (in_array($module, $disabled) ? 'Disabled' : 'Enabled' ) ;
+    $status = in_array($module, $not_installed) ? t('Not Installed') : (in_array($module, $disabled) ? t('Disabled') : t('Enabled'));
     $trclass = in_array($module, $not_installed) ? 'info' : (in_array($module, $disabled) ? 'warning' : 'ok' ) ;
-    $module_link = (in_array($module, $not_installed) ? '<div style="float:right">' . l($project_page, $data['link']) . '<br />' . l($data['link'], $data['link']) . '</div>' : '' ) ;
+    $module_link = l($data['title'], $data['link']);
 
     $rows[] = array(
       'data' => array(
-        $data['title'],
+        $module_link,
         $status,
-        $data['description'] . $module_link,
+        $data['description'],
       ),
       'class' => array($trclass),
       'no_striping' => TRUE,
     );
   }
 
-  $output = theme('table', array('attributes' => array('class' => array('system-status-report')), 'header' => $header, 'rows' => $rows));
+  $output = '<p class="boost-listmodules-intro">' . t("The following modules can be useful for most common use cases. For more information, please read and contribute to the <a href='!url'>Boost handbook</a>.", array('!url' => 'http://drupal.org/node/1434362')) . '</p>';
+
+  $output .= theme('table', array('attributes' => array('class' => array('system-status-report')), 'header' => $header, 'rows' => $rows));
 
   return array(
    'my_page' => array(
