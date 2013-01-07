@@ -345,7 +345,9 @@ function boost_cron() {
 
   if (isset($_boost['base_dir']) && variable_get('boost_expire_cron', BOOST_EXPIRE_CRON)) {
     $count = _boost_rmdir($_boost['base_dir'], FALSE);
-    watchdog('boost', 'Expired %count stale files from static page cache.', array('%count' => $count), WATCHDOG_NOTICE);
+    if (variable_get('boost_message_debug', BOOST_MESSAGE_DEBUG)) {
+      watchdog('boost', 'Expired %count stale files from static page cache.', array('%count' => $count), WATCHDOG_NOTICE);
+    }
   }
 }
 
