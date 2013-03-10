@@ -118,7 +118,7 @@ function boost_requirements($phase) {
             'value'       => $t('Cache path'),
           );
         }
-        if (is_dir($cache_directory) && (!$root_file || !is_writable($cache_directory))) {
+        if (!is_dir($cache_directory) && (!$root_file || !is_writable($cache_directory))) {
           $requirements['boost_permissions'] = array(
             'title'       => $t('Boost'),
             'description' => $t('Directory %dir credentials - Permissions: %fp. Owner %fo. Group %fg.<br /> Your credentials - Group ID: %gid. User ID: %uid. Current script owner: %user.', array('%dir' => getcwd() . '/' . $cache_directory, '%gid' => getmygid(), '%uid' => getmyuid(), '%user' => get_current_user(), '%fp' => substr(sprintf('%o', fileperms($cache_directory)), -4), '%fo' => fileowner($cache_directory), '%fg' => filegroup($cache_directory) )),
